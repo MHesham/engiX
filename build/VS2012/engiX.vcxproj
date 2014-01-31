@@ -11,10 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\include\Precision.h" />
     <ClInclude Include="..\..\common\include\stdafx.h" />
+    <ClInclude Include="..\..\common\include\Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\src\stdafx.cpp" />
+    <ClCompile Include="..\..\common\src\Vector.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B77F0AC8-3324-4D6C-84FE-477017332E98}</ProjectGuid>
