@@ -1,4 +1,4 @@
 engiX
 =====
 
-Experimental Game Engine for left-handed cooridnate system, namely DirectX 11.
+Experimental Game Engine based on DirectX 11
