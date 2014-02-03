@@ -109,10 +109,17 @@ ID3D11ShaderResourceView* D3dHelper::CreateTexture2DArraySRV(
 	// Cleanup--we only need the resource view.
 	//
 
+<<<<<<< HEAD
 	SafeRelease(texArray);
 
 	for(UINT i = 0; i < size; ++i)
 		SafeRelease(srcTex[i]);
+=======
+	ReleaseCOM(texArray);
+
+	for(UINT i = 0; i < size; ++i)
+		ReleaseCOM(srcTex[i]);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	return texArraySRV;
 }
@@ -165,7 +172,11 @@ ID3D11ShaderResourceView* D3dHelper::CreateRandomTexture1DSRV(ID3D11Device* devi
 	ID3D11ShaderResourceView* randomTexSRV = 0;
     HR(device->CreateShaderResourceView(randomTex, &viewDesc, &randomTexSRV));
 
+<<<<<<< HEAD
 	SafeRelease(randomTex);
+=======
+	ReleaseCOM(randomTex);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	return randomTexSRV;
 }

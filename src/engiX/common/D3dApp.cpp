@@ -55,17 +55,29 @@ D3dApp::D3dApp(HINSTANCE hInstance)
 
 D3dApp::~D3dApp()
 {
+<<<<<<< HEAD
 	SafeRelease(mRenderTargetView);
 	SafeRelease(mDepthStencilView);
 	SafeRelease(mSwapChain);
 	SafeRelease(mDepthStencilBuffer);
+=======
+	ReleaseCOM(mRenderTargetView);
+	ReleaseCOM(mDepthStencilView);
+	ReleaseCOM(mSwapChain);
+	ReleaseCOM(mDepthStencilBuffer);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// Restore all default settings.
 	if( md3dImmediateContext )
 		md3dImmediateContext->ClearState();
 
+<<<<<<< HEAD
 	SafeRelease(md3dImmediateContext);
 	SafeRelease(md3dDevice);
+=======
+	ReleaseCOM(md3dImmediateContext);
+	ReleaseCOM(md3dDevice);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 }
 
 HINSTANCE D3dApp::AppInst()const
@@ -138,9 +150,15 @@ void D3dApp::VOnResize()
 	// Release the old views, as they hold references to the buffers we
 	// will be destroying.  Also release the old depth/stencil buffer.
 
+<<<<<<< HEAD
 	SafeRelease(mRenderTargetView);
 	SafeRelease(mDepthStencilView);
 	SafeRelease(mDepthStencilBuffer);
+=======
+	ReleaseCOM(mRenderTargetView);
+	ReleaseCOM(mDepthStencilView);
+	ReleaseCOM(mDepthStencilBuffer);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 
 	// Resize the swap chain and recreate the render target view.
@@ -149,7 +167,11 @@ void D3dApp::VOnResize()
 	ID3D11Texture2D* backBuffer;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
 	HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
+<<<<<<< HEAD
 	SafeRelease(backBuffer);
+=======
+	ReleaseCOM(backBuffer);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// Create the depth/stencil buffer and view.
 
@@ -457,9 +479,15 @@ bool D3dApp::InitDirect3D()
 
 	HR(dxgiFactory->CreateSwapChain(md3dDevice, &sd, &mSwapChain));
 	
+<<<<<<< HEAD
 	SafeRelease(dxgiDevice);
 	SafeRelease(dxgiAdapter);
 	SafeRelease(dxgiFactory);
+=======
+	ReleaseCOM(dxgiDevice);
+	ReleaseCOM(dxgiAdapter);
+	ReleaseCOM(dxgiFactory);
+>>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// The remaining steps that need to be carried out for d3d creation
 	// also need to be executed every time the window is resized.  So
