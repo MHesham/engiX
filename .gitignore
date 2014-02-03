@@ -18,3 +18,11 @@ Debug
 *.user
 *.suo
 *.sdf
+*.exe
+/temp/engiX_2012Win32Debug
+/game/Win32Debug
+*.opensdf
+/temp/engiXWin32Debug
+/temp/SolarSample_2012Win32Debug
+/temp/SolarSampleWin32Debug
+/lib/Win32Debug
