@@ -52,21 +52,11 @@ namespace engiX
     // Convenience macro for releasing COM objects.
     //---------------------------------------------------------------------------------------
 
-<<<<<<< HEAD
 #define SafeRelease(x) { if(x){ x->Release(); x = nullptr; } }
-=======
-#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
-
     //---------------------------------------------------------------------------------------
     // Convenience macro for deleting objects.
     //---------------------------------------------------------------------------------------
-
-<<<<<<< HEAD
 #define SafeDelete(x) { delete x; x = nullptr; }
-=======
-#define SafeDelete(x) { delete x; x = 0; }
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
     //---------------------------------------------------------------------------------------
     // Utility classes.

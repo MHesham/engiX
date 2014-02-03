@@ -55,29 +55,17 @@ D3dApp::D3dApp(HINSTANCE hInstance)
 
 D3dApp::~D3dApp()
 {
-<<<<<<< HEAD
 	SafeRelease(mRenderTargetView);
 	SafeRelease(mDepthStencilView);
 	SafeRelease(mSwapChain);
 	SafeRelease(mDepthStencilBuffer);
-=======
-	ReleaseCOM(mRenderTargetView);
-	ReleaseCOM(mDepthStencilView);
-	ReleaseCOM(mSwapChain);
-	ReleaseCOM(mDepthStencilBuffer);
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// Restore all default settings.
 	if( md3dImmediateContext )
 		md3dImmediateContext->ClearState();
 
-<<<<<<< HEAD
 	SafeRelease(md3dImmediateContext);
 	SafeRelease(md3dDevice);
-=======
-	ReleaseCOM(md3dImmediateContext);
-	ReleaseCOM(md3dDevice);
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 }
 
 HINSTANCE D3dApp::AppInst()const
@@ -106,12 +94,12 @@ int D3dApp::Run()
 		// If there are Window messages then process them.
 		if(PeekMessage( &msg, 0, 0, 0, PM_REMOVE ))
 		{
-            TranslateMessage( &msg );
-            DispatchMessage( &msg );
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
 		}
 		// Otherwise, do animation/game stuff.
 		else
-        {	
+		{	
 			mTimer.Tick();
 
 			if( !mAppPaused )
@@ -124,8 +112,8 @@ int D3dApp::Run()
 			{
 				Sleep(100);
 			}
-        }
-    }
+		}
+	}
 
 	return (int)msg.wParam;
 }
@@ -150,16 +138,9 @@ void D3dApp::VOnResize()
 	// Release the old views, as they hold references to the buffers we
 	// will be destroying.  Also release the old depth/stencil buffer.
 
-<<<<<<< HEAD
 	SafeRelease(mRenderTargetView);
 	SafeRelease(mDepthStencilView);
 	SafeRelease(mDepthStencilBuffer);
-=======
-	ReleaseCOM(mRenderTargetView);
-	ReleaseCOM(mDepthStencilView);
-	ReleaseCOM(mDepthStencilBuffer);
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
-
 
 	// Resize the swap chain and recreate the render target view.
 
@@ -167,11 +148,8 @@ void D3dApp::VOnResize()
 	ID3D11Texture2D* backBuffer;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
 	HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
-<<<<<<< HEAD
+
 	SafeRelease(backBuffer);
-=======
-	ReleaseCOM(backBuffer);
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// Create the depth/stencil buffer and view.
 
@@ -323,8 +301,8 @@ LRESULT D3dApp::VMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	// The WM_MENUCHAR message is sent when a menu is active and the user presses 
 	// a key that does not correspond to any mnemonic or accelerator key. 
 	case WM_MENUCHAR:
-        // Don't beep when we alt-enter.
-        return MAKELRESULT(0, MNC_CLOSE);
+		// Don't beep when we alt-enter.
+		return MAKELRESULT(0, MNC_CLOSE);
 
 	// Catch this message so to prevent the window from becoming too small.
 	case WM_GETMINMAXINFO:
@@ -373,7 +351,7 @@ bool D3dApp::InitMainWindow()
 
 	// Compute window rectangle dimensions based on requested client area dimensions.
 	RECT R = { 0, 0, mClientWidth, mClientHeight };
-    AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+	AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 	int width  = R.right - R.left;
 	int height = R.bottom - R.top;
 
@@ -397,7 +375,7 @@ bool D3dApp::InitDirect3D()
 
 	UINT createDeviceFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)  
-    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
 	D3D_FEATURE_LEVEL featureLevel;
@@ -470,7 +448,7 @@ bool D3dApp::InitDirect3D()
 
 	IDXGIDevice* dxgiDevice = 0;
 	HR(md3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice));
-	      
+		  
 	IDXGIAdapter* dxgiAdapter = 0;
 	HR(dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter));
 
@@ -479,15 +457,9 @@ bool D3dApp::InitDirect3D()
 
 	HR(dxgiFactory->CreateSwapChain(md3dDevice, &sd, &mSwapChain));
 	
-<<<<<<< HEAD
 	SafeRelease(dxgiDevice);
 	SafeRelease(dxgiAdapter);
 	SafeRelease(dxgiFactory);
-=======
-	ReleaseCOM(dxgiDevice);
-	ReleaseCOM(dxgiAdapter);
-	ReleaseCOM(dxgiFactory);
->>>>>>> 5761e9fa1bfb774655092176211f43f6baf8c54e
 
 	// The remaining steps that need to be carried out for d3d creation
 	// also need to be executed every time the window is resized.  So
