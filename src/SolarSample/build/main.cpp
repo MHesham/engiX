@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "D3dApp.h"
+#include "engiX.h"
+#include "Logger.h"
 
 using namespace engiX;
 
@@ -23,10 +25,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
 
+    if (!engiX::Init())
+    {
+        wprintf_s(L"Failed to initialize one or all of engiX subsystems");
+        return 0;
+    }
+
+    LogInfo("engiX subsystems initialized successfully");
+
+    LogInfo("Starting SolarSample");
+
     SolarSample sample(hInstance);
 
-    if( !sample.VInit() )
+    if(!sample.VInit())
+    {
+        LogError("Failed to initialize app");
         return 0;
+    }
 
     return sample.Run();
 }

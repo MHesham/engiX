@@ -11,9 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\Console.h" />
     <ClInclude Include="..\common\D3dApp.h" />
     <ClInclude Include="..\common\D3dUtil.h" />
     <ClInclude Include="..\common\d3dx11effect.h" />
+    <ClInclude Include="..\common\engiX.h" />
+    <ClInclude Include="..\common\Logger.h" />
     <ClInclude Include="..\common\Timer.h" />
     <ClInclude Include="..\common\LightHelper.h" />
     <ClInclude Include="..\common\MathHelper.h" />
@@ -21,8 +24,11 @@
     <ClInclude Include="..\common\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\Console.cpp" />
     <ClCompile Include="..\common\D3dApp.cpp" />
     <ClCompile Include="..\common\D3dUtil.cpp" />
+    <ClCompile Include="..\common\engiX.cpp" />
+    <ClCompile Include="..\common\Logger.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\LightHelper.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
