@@ -19,34 +19,31 @@ namespace engiX
     public:
         D3dApp(HINSTANCE hInstance);
         virtual ~D3dApp();
+        virtual LRESULT VMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        int Run();
+        virtual bool VInit();
 
+    protected:
         HINSTANCE AppInst()const;
         HWND      MainWnd()const;
         real     AspectRatio()const;
 
-        int Run();
-
         // Framework methods.  Derived client class overrides these methods to 
         // implement specific application requirements.
 
-        virtual bool VInit();
         virtual void VOnResize(); 
         virtual void VUpdateScene(const Timer& time)=0;
-        virtual void VDrawScene()=0; 
-        virtual LRESULT VMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        virtual void VDrawScene()=0;
 
         // Convenience overrides for handling mouse input.
         virtual void VOnMouseDown(WPARAM btnState, int x, int y){ }
         virtual void VOnMouseUp(WPARAM btnState, int x, int y)  { }
         virtual void VOnMouseMove(WPARAM btnState, int x, int y){ }
 
-    protected:
         bool InitMainWindow();
         bool InitDirect3D();
 
         void CalculateFrameStats();
-
-    protected:
 
         HINSTANCE mhAppInst;
         HWND      mhMainWnd;

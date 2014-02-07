@@ -28,7 +28,7 @@
 
 namespace engiX {
 
-#if 0
+#ifndef SINGLE_PRECISION
     /**
      * Defines we're in single precision mode, for any code
      * that needs to be conditionally compiled.
