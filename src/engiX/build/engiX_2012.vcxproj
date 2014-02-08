@@ -34,6 +34,13 @@
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Vector.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\graphics\fx\color.fx">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorTech</EntryPointName>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AssemblerOutputFile>
+    </FxCompile>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{722455D2-BCA5-4C93-A90C-51975633687F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -80,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\common;..\graphics;..\physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4005;4100;4127</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,6 +96,14 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(IntDir)\fx\%(Filename).fxo</ObjectFileOutput>
+      <AdditionalOptions>/Fc"$(IntDir)\fx\%(Filename).fxasm" %(AdditionalOptions)</AdditionalOptions>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

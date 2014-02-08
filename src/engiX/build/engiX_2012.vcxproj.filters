@@ -16,6 +16,12 @@
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{c38e8aab-5a64-41ff-a1f4-4998c73574a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{3382071a-23eb-496d-bc7c-f5f69f6d877e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\fx">
+      <UniqueIdentifier>{5f336725-b1ea-4db3-95d0-eda42a884f6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -80,5 +86,10 @@
     <ClCompile Include="..\common\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\graphics\fx\color.fx">
+      <Filter>Header Files\graphics\fx</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

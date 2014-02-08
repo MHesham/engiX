@@ -79,6 +79,9 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy "$(IntDir)..\engiX$(PlatformName)$(Configuration)\fx" "$(OutDir)data\fx\" /y /e /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

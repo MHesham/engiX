@@ -9,7 +9,7 @@ Timer::Timer()
 {
 	__int64 countsPerSec;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
-	mSecondsPerCount = 1.0 / (real)countsPerSec;
+	mSecondsPerCount = 1.0f / (real)countsPerSec;
 }
 
 // Returns the total time elapsed since Reset() was called, NOT counting any
