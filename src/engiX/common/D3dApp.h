@@ -32,8 +32,8 @@ namespace engiX
         // implement specific application requirements.
 
         virtual void VOnResize(); 
-        virtual void VUpdateScene(const Timer& time)=0;
-        virtual void VDrawScene()=0;
+        virtual void VUpdateScene(const Timer& time) { }
+        virtual void VDrawScene() = 0;
 
         // Convenience overrides for handling mouse input.
         virtual void VOnMouseDown(WPARAM btnState, int x, int y){ }
