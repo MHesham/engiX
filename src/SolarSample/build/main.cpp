@@ -4,15 +4,20 @@
 #include "Logger.h"
 #include <fstream>
 #include <vector>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 
+
+using namespace DirectX; 
+using namespace DirectX::PackedVector;
 using namespace std;
 using namespace engiX;
 
 
 struct Vertex
 {
-    XMFLOAT3 Pos;
-    XMFLOAT4 Color;
+    DirectX::XMFLOAT3 Pos;
+    DirectX::XMFLOAT4 Color;
 };
 
 class BoxApp : public D3dApp
@@ -45,9 +50,9 @@ private:
 
     ID3D11InputLayout* mInputLayout;
 
-    XMFLOAT4X4 mWorld;
-    XMFLOAT4X4 mView;
-    XMFLOAT4X4 mProj;
+    DirectX::XMFLOAT4X4 mWorld;
+    DirectX::XMFLOAT4X4 mView;
+    DirectX::XMFLOAT4X4 mProj;
 
     real mTheta;
     real mPhi;
@@ -95,10 +100,10 @@ BoxApp::BoxApp(HINSTANCE hInstance)
     mLastMousePos.x = 0;
     mLastMousePos.y = 0;
 
-    XMMATRIX I = XMMatrixIdentity();
-    XMStoreFloat4x4(&mWorld, I);
-    XMStoreFloat4x4(&mView, I);
-    XMStoreFloat4x4(&mProj, I);
+    DirectX::XMMATRIX I = DirectX::XMMatrixIdentity();
+    DirectX::XMStoreFloat4x4(&mWorld, I);
+    DirectX::XMStoreFloat4x4(&mView, I);
+    DirectX::XMStoreFloat4x4(&mProj, I);
 }
 
 BoxApp::~BoxApp()
@@ -121,123 +126,19 @@ bool BoxApp::VInit()
     return true;
 }
 
-void BoxApp::VOnResize()
-{
-    D3dApp::VOnResize();
-
-    // The window resized, so update the aspect ratio and recompute the projection matrix.
-    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
-    XMStoreFloat4x4(&mProj, P);
-}
-
-void BoxApp::VUpdateScene(const Timer& timer)
-{
-    // Convert Spherical to Cartesian coordinates.
-    real x = mRadius*sinf(mPhi)*cosf(mTheta);
-    real z = mRadius*sinf(mPhi)*sinf(mTheta);
-    real y = mRadius*cosf(mPhi);
-
-    // Build the view matrix.
-    XMVECTOR pos    = XMVectorSet(x, y, z, 1.0f);
-    XMVECTOR target = XMVectorZero();
-    XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-    XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
-    XMStoreFloat4x4(&mView, V);
-}
-
-void BoxApp::VDrawScene()
-{
-    md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const real*>(&Colors::LightSteelBlue));
-    md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-    md3dImmediateContext->IASetInputLayout(mInputLayout);
-    md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    UINT stride = sizeof(Vertex);
-    UINT offset = 0;
-    md3dImmediateContext->IASetVertexBuffers(0, 1, &mBoxVB, &stride, &offset);
-    md3dImmediateContext->IASetIndexBuffer(mBoxIB, DXGI_FORMAT_R32_UINT, 0);
-
-    // Set constants
-    XMMATRIX world = XMLoadFloat4x4(&mWorld);
-    XMMATRIX view  = XMLoadFloat4x4(&mView);
-    XMMATRIX proj  = XMLoadFloat4x4(&mProj);
-    XMMATRIX worldViewProj = world*view*proj;
-
-    mfxWorldViewProj->SetMatrix(reinterpret_cast<real*>(&worldViewProj));
-
-    D3DX11_TECHNIQUE_DESC techDesc;
-    mTech->GetDesc( &techDesc );
-    for(UINT p = 0; p < techDesc.Passes; ++p)
-    {
-        mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
-
-        // 36 indices for the box.
-        md3dImmediateContext->DrawIndexed(36, 0, 0);
-    }
-
-    HR(mSwapChain->Present(0, 0));
-}
-
-void BoxApp::VOnMouseDown(WPARAM btnState, int x, int y)
-{
-    mLastMousePos.x = x;
-    mLastMousePos.y = y;
-
-    SetCapture(mhMainWnd);
-}
-
-void BoxApp::VOnMouseUp(WPARAM btnState, int x, int y)
-{
-    ReleaseCapture();
-}
-
-void BoxApp::VOnMouseMove(WPARAM btnState, int x, int y)
-{
-    if( (btnState & MK_LBUTTON) != 0 )
-    {
-        // Make each pixel correspond to a quarter of a degree.
-        real dx = XMConvertToRadians(0.25f*static_cast<real>(x - mLastMousePos.x));
-        real dy = XMConvertToRadians(0.25f*static_cast<real>(y - mLastMousePos.y));
-
-        // Update angles based on input to orbit camera around box.
-        mTheta += dx;
-        mPhi   += dy;
-
-        // Restrict the angle mPhi.
-        mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi-0.1f);
-    }
-    else if( (btnState & MK_RBUTTON) != 0 )
-    {
-        // Make each pixel correspond to 0.005 unit in the scene.
-        real dx = 0.005f*static_cast<real>(x - mLastMousePos.x);
-        real dy = 0.005f*static_cast<real>(y - mLastMousePos.y);
-
-        // Update the camera radius based on input.
-        mRadius += dx - dy;
-
-        // Restrict the radius.
-        mRadius = MathHelper::Clamp(mRadius, 3.0f, 15.0f);
-    }
-
-    mLastMousePos.x = x;
-    mLastMousePos.y = y;
-}
-
 void BoxApp::BuildGeometryBuffers()
 {
     // Create vertex buffer
     Vertex vertices[] =
     {
-        { XMFLOAT3(-1.0f, -1.0f, -1.0f), (const real*)&Colors::White   },
-        { XMFLOAT3(-1.0f, +1.0f, -1.0f), (const real*)&Colors::Black   },
-        { XMFLOAT3(+1.0f, +1.0f, -1.0f), (const real*)&Colors::Red     },
-        { XMFLOAT3(+1.0f, -1.0f, -1.0f), (const real*)&Colors::Green   },
-        { XMFLOAT3(-1.0f, -1.0f, +1.0f), (const real*)&Colors::Blue    },
-        { XMFLOAT3(-1.0f, +1.0f, +1.0f), (const real*)&Colors::Yellow  },
-        { XMFLOAT3(+1.0f, +1.0f, +1.0f), (const real*)&Colors::Cyan    },
-        { XMFLOAT3(+1.0f, -1.0f, +1.0f), (const real*)&Colors::Magenta }
+        { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White)   },
+        { XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black)   },
+        { XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red)     },
+        { XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green)   },
+        { XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue)    },
+        { XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow)  },
+        { XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan)    },
+        { XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) }
     };
 
     D3D11_BUFFER_DESC vbd;
@@ -249,7 +150,7 @@ void BoxApp::BuildGeometryBuffers()
     vbd.StructureByteStride = 0;
     D3D11_SUBRESOURCE_DATA vinitData;
     vinitData.pSysMem = vertices;
-    HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &mBoxVB));
+    CHR(md3dDevice->CreateBuffer(&vbd, &vinitData, &mBoxVB));
 
 
     // Create the index buffer
@@ -289,12 +190,12 @@ void BoxApp::BuildGeometryBuffers()
     ibd.StructureByteStride = 0;
     D3D11_SUBRESOURCE_DATA iinitData;
     iinitData.pSysMem = indices;
-    HR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mBoxIB));
+    CHR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mBoxIB));
 }
 
 void BoxApp::BuildFX()
 {
-    std::string fxFilename = "data\\fx\\color.fxo";
+    std::string fxFilename = "data\\fx\\default.fxo";
     ifstream fxFile;
 
     fxFile.open(fxFilename.c_str(), ios::in | ios::binary);
@@ -313,25 +214,132 @@ void BoxApp::BuildFX()
     fxFile.read(&fxBinary[0], fxBinarySize);
     fxFile.close();
 
-    HR(D3DX11CreateEffectFromMemory((const void*)&fxBinary[0], (SIZE_T)fxBinarySize, 
+    CHR(D3DX11CreateEffectFromMemory((const void*)&fxBinary[0], (SIZE_T)fxBinarySize, 
         0, md3dDevice, &mFX));
 
-    mTech    = mFX->GetTechniqueByName("ColorTech");
+    mTech = mFX->GetTechniqueByName("DefaultTech");
     mfxWorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 }
 
 void BoxApp::BuildVertexLayout()
 {
-    // Create the vertex input layout.
+    // Describe the vertex format
     D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
     {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
         {"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
 
-    // Create the input layout
+    // Create the input layout using the vertex format
+    // Pass the shader inpute signature to get it validated against the vertex format provided
+    // to ensure type consistentcy
     D3DX11_PASS_DESC passDesc;
-    mTech->GetPassByIndex(0)->GetDesc(&passDesc);
-    HR(md3dDevice->CreateInputLayout(vertexDesc, 2, passDesc.pIAInputSignature, 
+    CHR(mTech->GetPassByIndex(0)->GetDesc(&passDesc));
+    CHR(md3dDevice->CreateInputLayout(vertexDesc, 2, passDesc.pIAInputSignature, 
         passDesc.IAInputSignatureSize, &mInputLayout));
+}
+
+
+void BoxApp::VOnResize()
+{
+    D3dApp::VOnResize();
+
+    // The window resized, so update the aspect ratio and recompute the projection matrix.
+    DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+    DirectX::XMStoreFloat4x4(&mProj, proj);
+}
+
+void BoxApp::VUpdateScene(const Timer& timer)
+{
+    // Convert Spherical to Cartesian coordinates.
+    real x = mRadius*sinf(mPhi)*cosf(mTheta);
+    real z = mRadius*sinf(mPhi)*sinf(mTheta);
+    real y = mRadius*cosf(mPhi);
+
+    // Build the view matrix.
+    DirectX::XMVECTOR pos    = DirectX::XMVectorSet(x, y, z, 1.0f);
+    DirectX::XMVECTOR target = DirectX::XMVectorZero();
+    DirectX::XMVECTOR up     = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+    DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up);
+    DirectX::XMStoreFloat4x4(&mView, V);
+}
+
+void BoxApp::VDrawScene()
+{
+    md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const real*>(&Colors::LightSteelBlue));
+    md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+    md3dImmediateContext->IASetInputLayout(mInputLayout);
+    md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    UINT stride = sizeof(Vertex);
+    UINT offset = 0;
+    md3dImmediateContext->IASetVertexBuffers(0, 1, &mBoxVB, &stride, &offset);
+    md3dImmediateContext->IASetIndexBuffer(mBoxIB, DXGI_FORMAT_R32_UINT, 0);
+
+    // Set constants
+    DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&mWorld);
+    DirectX::XMMATRIX view  = DirectX::XMLoadFloat4x4(&mView);
+    DirectX::XMMATRIX proj  = DirectX::XMLoadFloat4x4(&mProj);
+    DirectX::XMMATRIX worldViewProj = world * view * proj;
+
+    CHR(mfxWorldViewProj->SetMatrix(reinterpret_cast<real*>(&worldViewProj.r)));
+
+    D3DX11_TECHNIQUE_DESC techDesc;
+    CHR(mTech->GetDesc( &techDesc ));
+    for(UINT p = 0; p < techDesc.Passes; ++p)
+    {
+        CHR(mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext));
+
+        // 36 indices for the box.
+        md3dImmediateContext->DrawIndexed(36, 0, 0);
+    }
+
+    CHR(mSwapChain->Present(0, 0));
+}
+
+void BoxApp::VOnMouseDown(WPARAM btnState, int x, int y)
+{
+    mLastMousePos.x = x;
+    mLastMousePos.y = y;
+
+    SetCapture(mhMainWnd);
+}
+
+void BoxApp::VOnMouseUp(WPARAM btnState, int x, int y)
+{
+    ReleaseCapture();
+}
+
+void BoxApp::VOnMouseMove(WPARAM btnState, int x, int y)
+{
+    if( (btnState & MK_LBUTTON) != 0 )
+    {
+        // Make each pixel correspond to a quarter of a degree.
+        real dx = DirectX::XMConvertToRadians(0.25f*static_cast<real>(x - mLastMousePos.x));
+        real dy = DirectX::XMConvertToRadians(0.25f*static_cast<real>(y - mLastMousePos.y));
+
+        // Update angles based on input to orbit camera around box.
+        mTheta += dx;
+        mPhi   += dy;
+
+        // Restrict the angle mPhi.
+        mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi-0.1f);
+    }
+    else if( (btnState & MK_RBUTTON) != 0 )
+    {
+        // Make each pixel correspond to 0.005 unit in the scene.
+        real dx = 0.005f*static_cast<real>(x - mLastMousePos.x);
+        real dy = 0.005f*static_cast<real>(y - mLastMousePos.y);
+
+        // Update the camera radius based on input.
+        mRadius += dx - dy;
+
+        // Restrict the radius.
+        mRadius = MathHelper::Clamp(mRadius, 3.0f, 15.0f);
+    }
+
+    mLastMousePos.x = x;
+    mLastMousePos.y = y;
 }

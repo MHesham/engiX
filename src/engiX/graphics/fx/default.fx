@@ -39,7 +39,7 @@ float4 PS(VertexOut pin) : SV_Target
     return pin.Color;
 }
 
-technique11 ColorTech
+technique11 DefaultTech
 {
     pass P0
     {

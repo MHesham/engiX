@@ -57,6 +57,9 @@
     <ClInclude Include="..\common\Console.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\engiXDefs.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Vector.cpp">
@@ -88,7 +91,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\graphics\fx\color.fx">
+    <FxCompile Include="..\graphics\fx\default.fx">
       <Filter>Header Files\graphics\fx</Filter>
     </FxCompile>
   </ItemGroup>

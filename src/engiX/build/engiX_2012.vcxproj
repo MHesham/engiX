@@ -16,6 +16,7 @@
     <ClInclude Include="..\common\D3dUtil.h" />
     <ClInclude Include="..\common\d3dx11effect.h" />
     <ClInclude Include="..\common\engiX.h" />
+    <ClInclude Include="..\common\engiXDefs.h" />
     <ClInclude Include="..\common\Logger.h" />
     <ClInclude Include="..\common\Timer.h" />
     <ClInclude Include="..\common\LightHelper.h" />
@@ -35,7 +36,7 @@
     <ClCompile Include="..\common\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\graphics\fx\color.fx">
+    <FxCompile Include="..\graphics\fx\default.fx">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorTech</EntryPointName>
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </AssemblerOutputFile>
