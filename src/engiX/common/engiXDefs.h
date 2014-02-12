@@ -4,32 +4,45 @@
 
 #if defined(DEBUG) | defined(_DEBUG)
 
-#ifndef CHE
-#define CHE(x)                                               \
+#ifndef CHRR
+#define CHRR(x)                                               \
     {                                                       \
     HRESULT hr = (x);                                       \
     if(FAILED(hr))                                          \
     {                                                       \
-    LogError("'%s' failed, hr=%x", L#x);                \
-    goto exit_error;                                        \
-    }                                                       \
-    }
-#else
-#define CHE(x) (x)
-#endif
-
-#ifndef CHR
-#define CHR(x)                                               \
-    {                                                       \
-    HRESULT hr = (x);                                       \
-    if(FAILED(hr))                                          \
-    {                                                       \
-    LogError("'%s' failed, hr=%x", L#x);                \
+    LogError("'%s' failed, hr=%x", L#x, hr);                \
     return;                                        \
     }                                                       \
     }
 #else
-#define CHR(x) (x)
+#define CHRR(x) (x)
+#endif
+
+#ifndef CHRRE
+#define CHRRE(x)                                               \
+    {                                                       \
+    HRESULT hr = (x);                                       \
+    if(FAILED(hr))                                          \
+    {                                                       \
+    LogError("'%s' failed, hr=%x", L#x, hr);                \
+    return hr;                                        \
+    }                                                       \
+    }
+#else
+#define CHRRE(x) (x)
+#endif
+
+#ifndef CBRE
+#define CBRE(x, hr)                                               \
+    {                                                       \
+    if(!(x))                                         \
+    {                                                       \
+    LogError("'%s' failed, hr=%x", L#x, hr);                \
+    return hr;                                        \
+    }                                                       \
+    }
+#else
+#define CBRE(x) (x)
 #endif
 
 #endif 

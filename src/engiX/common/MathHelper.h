@@ -9,20 +9,21 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
+#include "Precision.h"
 
 namespace engiX
 {
     class MathHelper
     {
     public:
-        // Returns random float in [0, 1).
-        static float RandF()
+        // Returns random real in [0, 1).
+        static real RandF()
         {
-            return (float)(rand()) / (float)RAND_MAX;
+            return (real)(rand()) / (real)RAND_MAX;
         }
 
-        // Returns random float in [a, b).
-        static float RandF(float a, float b)
+        // Returns random real in [a, b).
+        static real RandF(real a, real b)
         {
             return a + RandF()*(b-a);
         }
@@ -40,7 +41,7 @@ namespace engiX
         }
 
         template<typename T>
-        static T Lerp(const T& a, const T& b, float t)
+        static T Lerp(const T& a, const T& b, real t)
         {
             return a + (b-a)*t;
         }
@@ -52,7 +53,7 @@ namespace engiX
         }
 
         // Returns the polar angle of the point (x,y) in [0, 2*PI).
-        static float AngleFromXY(float x, float y);
+        static real AngleFromXY(real x, real y);
 
         static DirectX::XMMATRIX InverseTranspose(DirectX::CXMMATRIX M)
         {
@@ -66,11 +67,25 @@ namespace engiX
             return XMMatrixTranspose(XMMatrixInverse(&det, A));
         }
 
+        // Spherical Coordinats (radius r, inclination Theta, azimuth Phi)
+        // Radius r: The radius of the spherical coordinate system
+        // Inclination Theta: Rotation angle in radians around Y axis in the XZ plane, Theta = [0, 2Pi]
+        // Azimuth Phi: Rotation angle in radians around the axis between the sphera center and the rotate point around the Y axis, Phi = [0, Pi]
+        // The method assums the provided Theta and Phi are within the correct range
+        // Conversion formulas: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
+        template<typename T>
+        static void ConvertSphericalToCartesian(_In_ const T& sphericalRadius, _In_ const T& sphericalTheta, _In_ const T& sphericalPhi, _Out_ DirectX::XMFLOAT3& cartesianXyz)
+        {
+            cartesianXyz.x = sphericalRadius * real_sin(sphericalPhi) * real_cos(sphericalTheta);
+            cartesianXyz.z = sphericalRadius * real_sin(sphericalPhi) * real_sin(sphericalTheta);
+	        cartesianXyz.y = sphericalRadius * real_cos(sphericalPhi);
+        }
+
         static DirectX::XMVECTOR RandUnitVec3();
         static DirectX::XMVECTOR RandHemisphereUnitVec3(DirectX::XMVECTOR n);
 
-        static const float Infinity;
-        static const float Pi;
+        static const real Infinity;
+        static const real Pi;
 
 
     };

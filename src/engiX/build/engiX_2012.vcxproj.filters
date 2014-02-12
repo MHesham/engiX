@@ -30,13 +30,7 @@
     <ClInclude Include="..\common\Vector.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\LightHelper.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\MathHelper.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\d3dx11effect.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Timer.h">
@@ -60,15 +54,24 @@
     <ClInclude Include="..\common\engiXDefs.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\graphics\d3dx11effect.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\GeometryGenerator.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\LightHelper.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphics\EffectHelper.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\MathHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\LightHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\Timer.cpp">
@@ -87,6 +90,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\GeometryGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\LightHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphics\EffectHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

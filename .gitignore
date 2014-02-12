@@ -26,3 +26,6 @@ Debug
 /temp/SolarSample_2012Win32Debug
 /temp/SolarSampleWin32Debug
 /lib/Win32Debug
+*.lastbuildstate
+BoxSampleWin32Debug
+/temp
