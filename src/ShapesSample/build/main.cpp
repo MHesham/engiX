@@ -14,6 +14,8 @@ using namespace DirectX::PackedVector;
 using namespace std;
 using namespace engiX;
 
+#pragma warning(disable: 4100 4238)
+
 struct Vertex
 {
 	XMFLOAT3 Pos;
@@ -187,13 +189,12 @@ void ShapesApp::VOnResize()
 
 void ShapesApp::VUpdateScene(const Timer& time)
 {
+    XMFLOAT3 cameraXyz;
 	// Convert Spherical to Cartesian coordinates.
-	float x = mRadius*sinf(mPhi)*cosf(mTheta);
-	float z = mRadius*sinf(mPhi)*sinf(mTheta);
-	float y = mRadius*cosf(mPhi);
+    MathHelper::ConvertSphericalToCartesian(mRadius, mTheta, mPhi, cameraXyz);
 
 	// Build the view matrix.
-	XMVECTOR pos    = XMVectorSet(x, y, z, 1.0f);
+    XMVECTOR pos    = XMVectorSet(cameraXyz.x, cameraXyz.y, cameraXyz.z, 1.0f);
 	XMVECTOR target = XMVectorZero();
 	XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 

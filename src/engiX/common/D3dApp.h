@@ -12,6 +12,9 @@
 #include "Timer.h"
 #include <string>
 
+#pragma warning(push)
+#pragma warning(disable: 4100)
+
 namespace engiX
 {
     class D3dApp
@@ -71,3 +74,5 @@ namespace engiX
         bool mEnable4xMsaa;
     };
 }
+
+#pragma warning(pop)

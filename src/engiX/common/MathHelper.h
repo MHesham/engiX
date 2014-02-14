@@ -10,6 +10,7 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include "Precision.h"
+#include <crtdbg.h>
 
 namespace engiX
 {
@@ -73,9 +74,14 @@ namespace engiX
         // Azimuth Phi: Rotation angle in radians around the axis between the sphera center and the rotate point around the Y axis, Phi = [0, Pi]
         // The method assums the provided Theta and Phi are within the correct range
         // Conversion formulas: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
-        template<typename T>
-        static void ConvertSphericalToCartesian(_In_ const T& sphericalRadius, _In_ const T& sphericalTheta, _In_ const T& sphericalPhi, _Out_ DirectX::XMFLOAT3& cartesianXyz)
+        static void ConvertSphericalToCartesian(_In_ const real& sphericalRadius, _In_ const real& sphericalTheta, _In_ const real& sphericalPhi, _Out_ DirectX::XMFLOAT3& cartesianXyz)
         {
+            _ASSERTE(sphericalRadius >= 0.0f);
+            _ASSERTE(sphericalTheta >= 0.0f);
+            _ASSERTE(sphericalTheta <= DirectX::g_XMTwoPi.f[0]);
+            _ASSERTE(sphericalPhi >= 0.0f);
+            _ASSERTE(sphericalPhi <= DirectX::g_XMPi.f[0]);
+
             cartesianXyz.x = sphericalRadius * real_sin(sphericalPhi) * real_cos(sphericalTheta);
             cartesianXyz.z = sphericalRadius * real_sin(sphericalPhi) * real_sin(sphericalTheta);
 	        cartesianXyz.y = sphericalRadius * real_cos(sphericalPhi);
