@@ -323,6 +323,9 @@ LRESULT D3dApp::VMsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		VOnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
+    case WM_KEYDOWN:
+        VOnKeyDown(wParam);
+        return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);

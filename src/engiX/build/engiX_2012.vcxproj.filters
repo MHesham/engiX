@@ -22,6 +22,9 @@
     <Filter Include="Header Files\graphics\fx">
       <UniqueIdentifier>{5f336725-b1ea-4db3-95d0-eda42a884f6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\system">
+      <UniqueIdentifier>{2e4d61c4-f585-46a6-ae7a-78d152132ed8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -66,6 +69,15 @@
     <ClInclude Include="..\graphics\EffectHelper.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\system\Event.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\EventManager.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\Delegate.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Vector.cpp">
@@ -99,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\graphics\EffectHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\system\EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
