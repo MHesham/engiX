@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Precision.h"
 #include "Logger.h"
 
 #if defined(DEBUG) | defined(_DEBUG)

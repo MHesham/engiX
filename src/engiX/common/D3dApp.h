@@ -40,8 +40,10 @@ namespace engiX
 
         // Convenience overrides for handling mouse input.
         virtual void VOnMouseDown(WPARAM btnState, int x, int y){ }
-        virtual void VOnMouseUp(WPARAM btnState, int x, int y)  { }
+        virtual void VOnMouseUp(WPARAM btnState, int x, int y) { }
         virtual void VOnMouseMove(WPARAM btnState, int x, int y){ }
+        virtual void VOnKeyDown(WPARAM vkey){ }
+        virtual void VOnKeyUp(WPARAM vkey){ }
 
         bool InitMainWindow();
         bool InitDirect3D();

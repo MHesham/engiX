@@ -11,54 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\Console.h" />
-    <ClInclude Include="..\common\D3dApp.h" />
-    <ClInclude Include="..\common\D3dUtil.h" />
-    <ClInclude Include="..\common\engiX.h" />
-    <ClInclude Include="..\common\engiXDefs.h" />
-    <ClInclude Include="..\common\Logger.h" />
-    <ClInclude Include="..\common\Timer.h" />
-    <ClInclude Include="..\common\MathHelper.h" />
-    <ClInclude Include="..\common\Precision.h" />
-    <ClInclude Include="..\common\Vector.h" />
-    <ClInclude Include="..\graphics\d3dx11effect.h" />
-    <ClInclude Include="..\graphics\EffectHelper.h" />
-    <ClInclude Include="..\graphics\GeometryGenerator.h" />
-    <ClInclude Include="..\graphics\LightHelper.h" />
-    <ClInclude Include="..\system\Delegate.h" />
-    <ClInclude Include="..\system\Event.h" />
-    <ClInclude Include="..\system\EventManager.h" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\Console.cpp" />
-    <ClCompile Include="..\common\D3dApp.cpp" />
-    <ClCompile Include="..\common\D3dUtil.cpp" />
-    <ClCompile Include="..\common\engiX.cpp" />
-    <ClCompile Include="..\common\Logger.cpp" />
-    <ClCompile Include="..\common\Timer.cpp" />
-    <ClCompile Include="..\common\MathHelper.cpp" />
-    <ClCompile Include="..\common\Vector.cpp" />
-    <ClCompile Include="..\graphics\EffectHelper.cpp" />
-    <ClCompile Include="..\graphics\GeometryGenerator.cpp" />
-    <ClCompile Include="..\graphics\LightHelper.cpp" />
-    <ClCompile Include="..\system\EventManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\graphics\fx\default.fx">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorTech</EntryPointName>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </AssemblerOutputFile>
-    </FxCompile>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{722455D2-BCA5-4C93-A90C-51975633687F}</ProjectGuid>
+    <ProjectGuid>{B77F0AC8-3324-4D6C-84FE-477017332E98}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>engiX</RootNamespace>
-    <ProjectName>engiX</ProjectName>
+    <ProjectName>BulletSample</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -81,41 +48,40 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\..\..\lib\$(PlatformName)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)..\..\..\Game\$(PlatformName)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\..\temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
+    <TargetExt>.exe</TargetExt>
     <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\common;..\graphics;..\physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\engiX\common;..\..\engiX\physics;..\..\engiX\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <DisableSpecificWarnings>4005;4100;4127</DisableSpecificWarnings>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>false</MinimalRebuild>
+      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>engiX$(PlatformName)$(Configuration).lib;d3d11.lib;d3dx11d.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <MapExports>true</MapExports>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib\$(PlatformName)$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
-    <FxCompile>
-      <ShaderType>Effect</ShaderType>
-    </FxCompile>
-    <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
-      <ObjectFileOutput>$(IntDir)\fx\%(Filename).fxo</ObjectFileOutput>
-      <AdditionalOptions>/Fc"$(IntDir)\fx\%(Filename).fxasm" %(AdditionalOptions)</AdditionalOptions>
-    </FxCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(IntDir)..\engiX$(PlatformName)$(Configuration)\fx" "$(OutDir)data\fx\" /y /e /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
