@@ -75,6 +75,15 @@
     <ClInclude Include="..\system\Delegate.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
+    <ClInclude Include="..\system\SceneManager.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\InputManager.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\system\Events.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Vector.cpp">

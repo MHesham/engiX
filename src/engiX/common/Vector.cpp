@@ -2,6 +2,6 @@
 
 using namespace engiX;
 
-const static Vector3<real> UP = Vector3<real>(0, 1.0, 0);
-const static Vector3<real> ZERO = Vector3<real>(0, 0, 0);
-const static Vector3<real> ONE = Vector3<real>(1.0, 1.0, 1.0);
+const static Vec3F UP = Vec3F(0, 1.0, 0);
+const static Vec3F ZERO = Vec3F(0, 0, 0);
+const static Vec3F ONE = Vec3F(1.0, 1.0, 1.0);

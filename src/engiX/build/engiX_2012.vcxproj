@@ -27,6 +27,9 @@
     <ClInclude Include="..\graphics\LightHelper.h" />
     <ClInclude Include="..\system\Delegate.h" />
     <ClInclude Include="..\system\EventManager.h" />
+    <ClInclude Include="..\system\Events.h" />
+    <ClInclude Include="..\system\InputManager.h" />
+    <ClInclude Include="..\system\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Console.cpp" />

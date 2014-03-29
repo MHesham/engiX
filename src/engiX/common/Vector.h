@@ -12,7 +12,7 @@ namespace engiX
     * mathematics. The implementations are included in the header
     * file.
     */
-    template<class T>
+    template<class T, int W>
     class Vector3
     {
     public:
@@ -25,20 +25,23 @@ namespace engiX
         /** Holds the value along the z axis. */
         T z;
 
+        /** The 4th component for working homogeneous coordinates*/
+        T w;
+
     private:
         /** Padding to ensure 4 word alignment. */
         T pad;
 
     public:
         /** The default constructor creates a zero vector. */
-        Vector3() : x(0), y(0), z(0) {}
+        Vector3() : x(0), y(0), z(0), w(W) {}
 
         /**
         * The explicit constructor creates a vector with the given
         * components.
         */
         Vector3(const T x, const T y, const T z)
-            : x(x), y(y), z(z) {}
+            : x(x), y(y), z(z), w(W) {}
 
         const static Vector3 UP;
         const static Vector3 ZERO;
@@ -305,5 +308,17 @@ namespace engiX
         }
     };
 
-    typedef Vector3<real> Vector3F;
+    /*
+    Uniformly. With homogeneous coordinates, we augment to 4-tuples and what we
+    place in the fourth w-coordinate depends on whether we are describing a point or vector. Specifically, we write:
+    1. (x, y, z, 0) for vectors
+    2. (x, y, z, 1) for points
+    Setting w = 1 for points allows translations of points to work correctly, and setting w = 0 for vectors
+    prevents the coordinates of vectors from being modified by translations
+    */
+    typedef Vector3<real, 0> Vec3F;
+    typedef Vector3<int, 0> Vec3;
+
+    typedef Vector3<real, 1> Point3F;
+    typedef Vector3<int, 1> Point3;
 }
