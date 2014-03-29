@@ -8,38 +8,43 @@
 
 namespace engiX
 {
-    typedef unsigned MessageType;
+    typedef unsigned EventType;
 
-    class Message
+    class Event
     {
     public:
-        Message(real timestamp)
+        Event(real timestamp)
             : m_timestamp(m_timestamp) {}
 
-        virtual ~Message() {}
+        virtual ~Event() {}
         real Timestamp() const { return m_timestamp; }
-        virtual MessageType VType() const = 0;
+        virtual EventType VType() const = 0;
 
     private:
-        MessageType m_type;
+        EventType m_type;
         real m_timestamp;
     };
 
-    typedef std::shared_ptr<Message> MessagePtr;
-    typedef IDelegate1P<MessagePtr> EventHandler;
-    typedef std::shared_ptr<EventHandler> EventDelegatePtr;
-    typedef std::list<MessagePtr> EventQueue;
-    typedef std::list<EventHandler> EventListenerList;
-    typedef std::map<MessageType, EventListenerList> EventListenerMap;
+    typedef std::shared_ptr<Event> EventPtr;
+    
+    typedef IDelegate1P<EventPtr> EventHandler;
+    typedef std::shared_ptr<EventHandler> EventHandlerPtr;
+
+    typedef MulticastDelegate1P<EventPtr> EventHandlerList;
+    typedef std::shared_ptr<EventHandlerList> EventHandlerListPtr;
+
+    typedef std::list<EventPtr> EventQueue;
+    typedef std::map<EventType, EventHandlerListPtr> EventListenerMap;
 
     class EventManager
     {
     public:
         static EventManager& Instance() { static EventManager inst; return inst; }
         void Update(_In_ const Timer& time);
-        void Queue(_In_ MessagePtr evt);
-        void Register(_In_ const EventHandler& handler, _In_ const MessageType& type);
-        void Unregister(_In_ const EventHandler& handler);
+        void Queue(_In_ EventPtr evt);
+        void Register(_In_ EventHandlerPtr handler, _In_ const EventType& type) { m_eventListeners[type]->Register(handler); }
+        void Unregister(_In_ EventHandlerPtr handler, _In_ const EventType& type) { m_eventListeners[type]->Unregister(handler); }
+        void Unregister(_In_ EventHandlerPtr handler);
 
     private:
         EventQueue m_eventQ;

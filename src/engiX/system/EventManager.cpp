@@ -9,9 +9,19 @@ void EventManager::Queue(_In_ EventPtr evt)
 //////////////////////////////////////////////////////////////////////////
 void EventManager::Update(_In_ const Timer& time)
 {
-    for each(auto evt in m_eventQ)
+    for (auto evt : m_eventQ)
     {
-        
+        EventHandlerListPtr handlers = m_eventListeners[evt->VType()];
+        handlers->Fire(evt);
+    }
+
+    m_eventQ.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void EventManager::Unregister(_In_ EventHandlerPtr handler)
+{
+    for (auto evtEntry : m_eventListeners)
+    {
+        evtEntry.second->Unregister(handler);
     }
 }
-

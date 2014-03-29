@@ -26,7 +26,6 @@
     <ClInclude Include="..\graphics\GeometryGenerator.h" />
     <ClInclude Include="..\graphics\LightHelper.h" />
     <ClInclude Include="..\system\Delegate.h" />
-    <ClInclude Include="..\system\Event.h" />
     <ClInclude Include="..\system\EventManager.h" />
   </ItemGroup>
   <ItemGroup>

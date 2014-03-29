@@ -8,6 +8,7 @@
 #include <cassert>
 #include <process.h>
 #include <windows.h>
+#include <set>
 
 namespace engiX
 {
@@ -133,4 +134,89 @@ namespace engiX
         TReciever   *m_pObj;
     };
 
+    /// <summary>
+    /// This generic base class encapsulates the basic functionalities for MulticastDelegates
+    /// A concrete MulticastDelegate class should be inheriting from MulticastDelegateBase and pass to its class template parameter the appropriate delegate class to use
+    /// As well as implement Fire(*) and call operator (*) appropriately
+    /// </summary>
+    template<class TDelegate>
+    class MulticastDelegateBase
+    {
+    public:
+        typedef std::shared_ptr<TDelegate> TDelegatePtr;
+        typedef std::set<TDelegatePtr> ObserverList;
+
+        virtual MulticastDelegateBase::~MulticastDelegateBase()
+        {
+            m_observers.clear();
+        }
+
+        /// <summary>Register a delegate to be called when the MulticastDelegate is fired</summary>
+        /// <param name="pCallback">The delegate to register</param>
+        /// <returns>true on successful register, false otherwise</returns>
+        ///
+        bool operator += (TDelegatePtr pCallback) { return Register(pCallback); }
+
+        /// <summary>Unregister a delegate</summary>
+        /// <param name="pCallback">The delegate to unregister</param>
+        /// <returns>true on successful unregister, false otherwise</returns>
+        ///
+        bool operator -= (TDelegatePtr pCallback) { return Unregister(pCallback); }
+
+        /// <summary>Fire the MulticastDelegate by calling all registered delegates</summary>
+
+        bool Register(TDelegatePtr pCallback)
+        {
+            _ASSERTE(pCallback);
+            return m_observers.insert(pCallback).second;
+        }
+
+        bool Unregister(TDelegatePtr pCallback)
+        {
+            _ASSERTE(pCallback);
+            return m_observers.erase(pCallback) == 1;
+        }
+
+    protected:
+        // Protected constructor to prMulticastDelegate instantiation
+        MulticastDelegateBase() {}
+
+        ObserverList m_observers;
+    };
+
+    /// <summary>
+    /// Represents an MulticastDelegate to which many delegates can be registered to be called when the MulticastDelegate is fired
+    /// </summary>
+    class MulticastDelegate : public MulticastDelegateBase<IDelegate>
+    {
+    public:
+        /// <summary>Fire the MulticastDelegate by calling all registered delegates</summary>
+        /// <param name="pParam">A parameter to be passed to all delegates when called</param>
+        ///
+        void operator () () { Fire(); }
+
+        void MulticastDelegate::Fire()
+        {
+            for(auto handler : m_observers)
+                handler->Call();
+        }
+    };
+
+    /// <summary>
+    /// Represents an MulticastDelegate to which many delegates can be registered to be called when the MulticastDelegate is fired
+    /// </summary>
+    template<class TParam>
+    class MulticastDelegate1P : public MulticastDelegateBase< IDelegate1P<TParam> >
+    {
+    public:
+        /// <param name="pParam">A parameter to be passed to all delegates when called</param>
+        ///
+        void operator () (TParam param) { Fire(param); }
+
+        void Fire(TParam param)
+        {
+            for(auto handler : m_observers)
+                handler->Call(param);
+        }
+    };
 }
