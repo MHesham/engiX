@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engiX", "..\..\engiX\build\engiX_2012.vcxproj", "{722455D2-BCA5-4C93-A90C-51975633687F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletSample", "BulletSample_2012.vcxproj", "{B77F0AC8-3324-4D6C-84FE-477017332E98}"
+	ProjectSection(ProjectDependencies) = postProject
+		{722455D2-BCA5-4C93-A90C-51975633687F} = {722455D2-BCA5-4C93-A90C-51975633687F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

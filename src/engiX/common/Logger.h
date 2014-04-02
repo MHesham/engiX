@@ -1,10 +1,13 @@
 #pragma once
 
-#include <stack>
+#include <fstream>
 #include "Console.h"
 
 namespace engiX
 {
+
+#define LOG_FILENAME L"engiXLog.txt"
+
     class Logger
     {
     public:
@@ -13,28 +16,30 @@ namespace engiX
             LOG_Warning,
             LOG_Error,
             LOG_Info,
-            LOG_PerfStart,
-            LOG_PerfEnd,
             LOG_END
         };
 
         const static unsigned LogBufferMax  = 1024;
 
-        bool Init();
+        void Setup();
+        void Cleanup();
         void Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...);
         static Logger& Instance() { static Logger inst; return inst; }
 
     private:
         Logger() :
-            m_logToConsole(false),
             m_logToDebugWindow(false),
-            m_initialized(false)
+            m_isLogFileInitialized(false),
+            m_isConsoleInitialized(false),
+            m_isInitialized(false)
         {}
         
-        bool m_logToConsole;
-        bool m_logToDebugWindow;
-        bool m_initialized;
+        std::wfstream m_pen;
         CConsole m_consoleWindow;
+        bool m_logToDebugWindow;
+        bool m_isLogFileInitialized;
+        bool m_isConsoleInitialized;
+        bool m_isInitialized;
     };
 }
 

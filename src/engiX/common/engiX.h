@@ -1,7 +1,11 @@
 #pragma once
 
+#include <Windows.h>
+
 namespace engiX
 {
-    // Initialize engiX subsystems
-    bool Init();
+    INT Main(HINSTANCE hInstance,
+        HINSTANCE hPrevInstance,
+        LPWSTR    lpCmdLine,
+        int       nCmdShow);
 }

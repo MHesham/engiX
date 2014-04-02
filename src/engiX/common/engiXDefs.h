@@ -46,4 +46,7 @@
 #define CBRE(x) (x)
 #endif
 
+#define DISALLOW_COPY_AND_ASSIGN(C) \
+    C(const C&); C& operator = (const C&);
+
 #endif 

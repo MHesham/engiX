@@ -1,41 +1,53 @@
-#ifndef LOGGER_H
 #include "Logger.h"
-#endif
-
-#include <fstream>
-#include <cassert>
-#include <crtdefs.h>
 #include <Windows.h>
 
 using namespace engiX;
+using namespace std;
 
 const wchar_t* LogTypeName[] = {
     L"Warning",
     L"Error",
     L"Info",
-    L"Perf-Start",
-    L"Perf-End"
 };
 
-bool Logger::Init()
+void Logger::Setup()
 {
-    if (!m_initialized)
+    _ASSERTE(!m_isInitialized);
+    if (!m_isInitialized)
     {
 
 #if defined(DEBUG) | defined(_DEBUG)
-        m_logToConsole = true;
+        m_logToDebugWindow = true;
 #endif
+        _ASSERTE(!m_isConsoleInitialized);
+        m_isConsoleInitialized = m_consoleWindow.Init();
+        SetConsoleTitleW(L"engiX Log");
+        _ASSERTE(m_isConsoleInitialized);
 
-        m_logToDebugWindow = (IsDebuggerPresent() == TRUE);
-        m_initialized = m_consoleWindow.Init();
+        _ASSERTE(!m_isLogFileInitialized);
+        m_pen.open(LOG_FILENAME, ios::out);
+        if (m_pen.is_open())
+            m_isLogFileInitialized = true;
+        _ASSERTE(m_isLogFileInitialized);
+
+        m_isInitialized = true;
     }
-
-    return m_initialized;
 }
-
+//////////////////////////////////////////////////////////////////////////
+void Logger::Cleanup()
+{
+    if (m_isLogFileInitialized)
+    {
+        m_pen.flush();
+        m_pen.close();
+        m_isLogFileInitialized = false;
+    }
+}
+//////////////////////////////////////////////////////////////////////////
 void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...)
 {
-    assert(m_initialized);
+    _ASSERTE(m_isInitialized);
+
     wchar_t buffer1[LogBufferMax];
     wchar_t buffer2[LogBufferMax];
 
@@ -53,9 +65,11 @@ void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtForm
         pFuncName,
         buffer1);
 
-    if (m_logToConsole)
-        wprintf_s(buffer2);
+    wprintf_s(buffer2);
 
-    if (m_logToDebugWindow)
+    if (m_logToDebugWindow && (IsDebuggerPresent() == TRUE))
         OutputDebugStringW(buffer2);
+
+    if (m_isLogFileInitialized)
+        m_pen << buffer2;
 }

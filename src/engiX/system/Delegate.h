@@ -9,6 +9,7 @@
 #include <process.h>
 #include <windows.h>
 #include <set>
+#include "engiXDefs.h"
 
 namespace engiX
 {
@@ -55,27 +56,28 @@ namespace engiX
         bool Equals(const IDelegate* pOther) const
         {
             const Delegate<TReciever>* other = static_cast<const Delegate<TReciever>*>(pOther);
-            assert(pOther);
+            _ASSERTE(pOther);
             return other->m_pObj == m_pObj && other->m_pfnCallback == m_pfnCallback;
         }
 
         void operator()()
         {
-            assert(m_pObj);
-            assert(m_pfnCallback);
+            _ASSERTE(m_pObj);
+            _ASSERTE(m_pfnCallback);
             (m_pObj->*m_pfnCallback)();
         }
 
         void Call()
         {
-            assert(m_pObj);
-            assert(m_pfnCallback);
+            _ASSERTE(m_pObj);
+            _ASSERTE(m_pfnCallback);
             (m_pObj->*m_pfnCallback)();
         }
 
         void CallAsync()
         {
             HANDLE hThread = (HANDLE)_beginthreadex(nullptr, 0, (PfnCrtThreadStartEx)CallAsyncThreadStart_Static, this, 0, nullptr);
+            _ASSERTE(hThread);
             (void)CloseHandle(hThread);
         }
 
@@ -83,17 +85,15 @@ namespace engiX
         {
             IDelegate* pDelegate = reinterpret_cast<IDelegate*>(lpParameter);
 
-            if (pDelegate)
-            {
-                pDelegate->Call();
-            }
+            _ASSERTE(pDelegate)
+            pDelegate->Call();
 
             return 0;
         }
 
     private:
-        Callback    m_pfnCallback;
-        TReciever   *m_pObj;
+        Callback m_pfnCallback;
+        TReciever *m_pObj;
     };
 
     /// <summary>
@@ -111,27 +111,27 @@ namespace engiX
         bool Equals(const IDelegate1P* pOther) const
         {
             const Delegate1P<TReciever, TParam>* other = static_cast<const Delegate1P<TReciever, TParam>*>(pOther);
-            assert(pOther);
+            _ASSERTE(pOther);
             return other->m_pObj == m_pObj && other->m_pfnCallback == m_pfnCallback;
         }
 
         virtual void operator()(TParam param)
         {
-            assert(m_pObj);
-            assert(m_pfnCallback);
+            _ASSERTE(m_pObj);
+            _ASSERTE(m_pfnCallback);
             (m_pObj->*m_pfnCallback)(param);
         }
 
         virtual void Call(TParam param)
         {
-            assert(m_pObj);
-            assert(m_pfnCallback);
+            _ASSERTE(m_pObj);
+            _ASSERTE(m_pfnCallback);
             (m_pObj->*m_pfnCallback)(param);
         }
 
     private:
-        Callback    m_pfnCallback;
-        TReciever   *m_pObj;
+        Callback m_pfnCallback;
+        TReciever *m_pObj;
     };
 
     /// <summary>
@@ -143,8 +143,7 @@ namespace engiX
     class MulticastDelegateBase
     {
     public:
-        typedef std::shared_ptr<TDelegate> TDelegatePtr;
-        typedef std::set<TDelegatePtr> ObserverList;
+        typedef std::set<TDelegate*> ObserverList;
 
         virtual MulticastDelegateBase::~MulticastDelegateBase()
         {
@@ -155,31 +154,30 @@ namespace engiX
         /// <param name="pCallback">The delegate to register</param>
         /// <returns>true on successful register, false otherwise</returns>
         ///
-        bool operator += (TDelegatePtr pCallback) { return Register(pCallback); }
+        bool operator += (TDelegate* pCallback) { return Register(pCallback); }
 
         /// <summary>Unregister a delegate</summary>
         /// <param name="pCallback">The delegate to unregister</param>
         /// <returns>true on successful unregister, false otherwise</returns>
         ///
-        bool operator -= (TDelegatePtr pCallback) { return Unregister(pCallback); }
+        bool operator -= (TDelegate* callpCallbackback) { return Unregister(pCallback); }
 
         /// <summary>Fire the MulticastDelegate by calling all registered delegates</summary>
 
-        bool Register(TDelegatePtr pCallback)
+        bool Register(TDelegate* pCallback)
         {
-            _ASSERTE(pCallback);
             return m_observers.insert(pCallback).second;
         }
 
-        bool Unregister(TDelegatePtr pCallback)
+        bool Unregister(TDelegate* pCallback)
         {
-            _ASSERTE(pCallback);
             return m_observers.erase(pCallback) == 1;
         }
 
     protected:
-        // Protected constructor to prMulticastDelegate instantiation
+        // Disallow MulticastDelegate instantiation
         MulticastDelegateBase() {}
+        DISALLOW_COPY_AND_ASSIGN(MulticastDelegateBase);
 
         ObserverList m_observers;
     };
