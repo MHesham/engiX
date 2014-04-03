@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\app\engiX.h" />
+    <ClInclude Include="..\app\engiXWin.h" />
     <ClInclude Include="..\app\InputManager.h" />
     <ClInclude Include="..\app\Logger.h" />
     <ClInclude Include="..\app\WinGameApp.h" />
@@ -32,8 +32,8 @@
     <ClInclude Include="..\view\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\app\engiX.cpp" />
     <ClCompile Include="..\app\Logger.cpp" />
+    <ClCompile Include="..\app\WinGameApp.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />
@@ -44,6 +44,9 @@
     <ClCompile Include="..\view\EffectHelper.cpp" />
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\view\fx\default.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{722455D2-BCA5-4C93-A90C-51975633687F}</ProjectGuid>

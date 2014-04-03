@@ -21,10 +21,10 @@ namespace engiX
 
         const static unsigned LogBufferMax  = 1024;
 
-        void Setup();
-        void Cleanup();
+        void Init();
+        void Deinit();
         void Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...);
-        static Logger& Instance() { static Logger inst; return inst; }
+        static Logger& Inst() { static Logger inst; return inst; }
 
     private:
         Logger() :
@@ -43,7 +43,7 @@ namespace engiX
     };
 }
 
-#define g_Logger					engiX::Logger::Instance()
+#define g_Logger					engiX::Logger::Inst()
 
 #if defined(UNICODE) | defined(_UNICODE)
 #define LogWarning(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Warning, __FUNCTIONW__, L##Format, __VA_ARGS__)

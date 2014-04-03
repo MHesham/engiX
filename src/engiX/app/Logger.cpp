@@ -10,7 +10,7 @@ const wchar_t* LogTypeName[] = {
     L"Info",
 };
 
-void Logger::Setup()
+void Logger::Init()
 {
     _ASSERTE(!m_isInitialized);
     if (!m_isInitialized)
@@ -34,7 +34,7 @@ void Logger::Setup()
     }
 }
 //////////////////////////////////////////////////////////////////////////
-void Logger::Cleanup()
+void Logger::Deinit()
 {
     if (m_isLogFileInitialized)
     {

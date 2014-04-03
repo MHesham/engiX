@@ -1,10 +1,19 @@
-#include "stdafx.h"
-#include "engiX.h"
+#include <Windows.h>
+#include <memory>
+#include "BulletGameApp.h"
 
-INT WINAPI wWinMain(HINSTANCE hInstance,
+using namespace engiX;
+
+int WINAPI wWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPWSTR    lpCmdLine,
                      int       nCmdShow)
 {
-    return engiX::engiXWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    BulletGameApp* pApp = eNEW BulletGameApp;
+
+    int ret = BulletGameApp::Main(hPrevInstance, hPrevInstance, lpCmdLine, nCmdShow);
+
+    delete pApp;
+
+    return ret;
 }

@@ -12,7 +12,7 @@ namespace engiX
     {
     public:
         Event(real timestamp)
-            : m_timestamp(m_timestamp) {}
+            : m_timestamp(timestamp) {}
 
         virtual ~Event() {}
         real Timestamp() const { return m_timestamp; }

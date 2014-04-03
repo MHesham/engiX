@@ -49,4 +49,10 @@
 #define DISALLOW_COPY_AND_ASSIGN(C) \
     C(const C&); C& operator = (const C&);
 
+#if defined(_DEBUG)
+#	define eNEW new(_NORMAL_BLOCK,__FILE__, __LINE__)
+#else
+#	define eNEW new
+#endif
+
 #endif 

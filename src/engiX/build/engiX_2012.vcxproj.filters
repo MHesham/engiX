@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{c38e8aab-5a64-41ff-a1f4-4998c73574a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\View\FX">
+      <UniqueIdentifier>{ff9e8a6c-70a3-4c9c-9614-facc6296a67b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -49,9 +52,6 @@
       <Filter>Header Files\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\app\Logger.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\app\engiX.h">
       <Filter>Header Files\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\view\D3dApp.h">
@@ -84,11 +84,11 @@
     <ClInclude Include="..\app\WinGameApp.h">
       <Filter>Header Files\Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\app\engiXWin.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\app\engiX.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\app\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,5 +122,13 @@
     <ClCompile Include="..\common\Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\app\WinGameApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\view\fx\default.fx">
+      <Filter>Header Files\View\FX</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

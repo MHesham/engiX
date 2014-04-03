@@ -7,10 +7,7 @@
 
 namespace engiX
 {
-    INT engiXWinMain(HINSTANCE hInstance,
-        HINSTANCE hPrevInstance,
-        LPWSTR    lpCmdLine,
-        int       nCmdShow);
+    
 
     class IGameApp
     {
@@ -40,11 +37,6 @@ namespace engiX
     };
 
     class IKeyboardInputManager
-    {
-
-    };
-
-    class IPointerInputManager
     {
 
     };
