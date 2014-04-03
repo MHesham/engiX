@@ -38,20 +38,13 @@ int WinGameApp::Main(HINSTANCE hInstance,
     DXUTSetCallbackFrameMove( WinGameApp::OnUpdateGame );
     DXUTSetCallbackDeviceChanging( WinGameApp::ModifyDeviceSettings );
 
-    DXUTSetCallbackD3D9DeviceAcceptable( WinGameApp::IsD3D9DeviceAcceptable );
-    DXUTSetCallbackD3D9DeviceCreated( WinGameApp::OnD3D9CreateDevice );
-    DXUTSetCallbackD3D9DeviceReset( WinGameApp::OnD3D9ResetDevice );
-    DXUTSetCallbackD3D9DeviceLost( WinGameApp::OnD3D9LostDevice );
-    DXUTSetCallbackD3D9DeviceDestroyed( WinGameApp::OnD3D9DestroyDevice );
-    DXUTSetCallbackD3D9FrameRender( WinGameApp::OnD3D9FrameRender );
-
-    DXUTSetCallbackD3D11DeviceAcceptable( WinGameApp::IsD3D11DeviceAcceptable );
-    DXUTSetCallbackD3D11DeviceCreated( WinGameApp::OnD3D11CreateDevice );
-    DXUTSetCallbackD3D11SwapChainResized( WinGameApp::OnD3D11ResizedSwapChain );
-    DXUTSetCallbackD3D11SwapChainReleasing( WinGameApp::OnD3D11ReleasingSwapChain );
-    DXUTSetCallbackD3D11DeviceDestroyed( WinGameApp::OnD3D11DestroyDevice );
-    DXUTSetCallbackD3D11FrameRender( WinGameApp::OnD3D11FrameRender );	
-
+    // Set Direct3D 10 callbacks
+    DXUTSetCallbackD3D10DeviceAcceptable( WinGameApp::IsD3D10DeviceAcceptable );
+    DXUTSetCallbackD3D10DeviceCreated( WinGameApp::OnD3D10CreateDevice );
+    DXUTSetCallbackD3D10SwapChainResized( WinGameApp::OnD3D10ResizedSwapChain );
+    DXUTSetCallbackD3D10FrameRender( WinGameApp::OnD3D10FrameRender );
+    DXUTSetCallbackD3D10SwapChainReleasing( WinGameApp::OnD3D10ReleasingSwapChain );
+    DXUTSetCallbackD3D10DeviceDestroyed( WinGameApp::OnD3D10DestroyDevice );
 
     // Show the cursor and clip it when in full screen
     DXUTSetCursorSettings(true, true);
@@ -83,15 +76,9 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
 {
     LogInfo("Initializing Game App");
 
-    DXUTInit(false, true); 
-    DXUTCreateWindow(VGameAppTitle(), hInstance);
-
-    DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy);
-    
-    if (DXUTDeviceSettings().ver == DXUTDeviceVersion::DXUT_D3D9_DEVICE)
-        LogInfo("engiX is running under DirectX9");
-    else
-        LogInfo("engiX is running under DirectX11");
+    CHRR(DXUTInit(false, true));
+    CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
+    CHRR(DXUTCreateDevice(true, m_screenSize.cx, m_screenSize.cy));
 }
 //////////////////////////////////////////////////////////////////////////
 void WinGameApp::Deinit()
@@ -103,10 +90,11 @@ void WinGameApp::Deinit()
 //////////////////////////////////////////////////////////////////////////
 void WinGameApp::Run()
 {
+    LogInfo("Starting Main Loop ...");
     // Pass control to the sample framework for handling the message pump and 
     // dispatching render calls. The sample framework will call your FrameMove 
     // and FrameRender callback when there is idle time between handling window messages.
-    DXUTMainLoop();
+    CHRR(DXUTMainLoop());
 }
 
 //----------------------------------------------------------
@@ -130,14 +118,11 @@ LRESULT CALLBACK WinGameApp::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
     return result;
 }
 
-
 //--------------------------------------------------------------------------------------
 // This callback function will be called once at the beginning of every frame. This is the
 // best location for your application to handle updates to the scene, but is not 
 // intended to contain actual rendering calls, which should instead be placed in the 
 // OnFrameRender callback.  
-//
-// See Game Coding Complete - 4th Edition - Chapter X, page Y
 //--------------------------------------------------------------------------------------
 void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* pUserContext )
 {
@@ -145,64 +130,9 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
 
 
 //--------------------------------------------------------------------------------------
-// Called right before creating a D3D9 or D3D11 device, allowing the app to modify the device settings as needed
+// Called right before creating a D3D device, allowing the app to modify the device settings as needed
 //--------------------------------------------------------------------------------------
 bool CALLBACK WinGameApp::ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, void* pUserContext )
 {
     return true;
-}
-
-//--------------------------------------------------------------------------------------
-// This callback function will be called at the end of every frame to perform all the 
-// rendering calls for the scene, and it will also be called if the window needs to be 
-// repainted. After this function has returned, the sample framework will call 
-// IDirect3DDevice9::Present to display the contents of the next buffer in the swap chain
-//
-// See Game Coding Complete - 3rd Edition - Chapter 6 - page 154
-//--------------------------------------------------------------------------------------
-void CALLBACK WinGameApp::OnD3D9FrameRender( IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime, void* pUserContext  )
-{
-}
-
-//--------------------------------------------------------------------------------------
-// Create any D3D9 resources that will live through a device reset (D3DPOOL_MANAGED)
-// and aren't tied to the back buffer size
-//--------------------------------------------------------------------------------------
-HRESULT CALLBACK WinGameApp::OnD3D9CreateDevice( IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc,
-                                                 void* pUserContext )
-{
-    return S_OK;
-}
-
-//--------------------------------------------------------------------------------------
-// Release D3D9 resources created in the OnD3D9CreateDevice callback 
-//--------------------------------------------------------------------------------------
-void CALLBACK WinGameApp::OnD3D9DestroyDevice( void* pUserContext )
-{
-}
-
-//--------------------------------------------------------------------------------------
-// Release D3D9 resources created in the OnD3D9ResetDevice callback 
-//--------------------------------------------------------------------------------------
-void CALLBACK WinGameApp::OnD3D9LostDevice(void* pUserContext )
-{
-}
-
-//--------------------------------------------------------------------------------------
-// Create any D3D9 resources that won't live through a device reset (D3DPOOL_DEFAULT) 
-// or that are tied to the back buffer size 
-//--------------------------------------------------------------------------------------
-HRESULT CALLBACK WinGameApp::OnD3D9ResetDevice( IDirect3DDevice9* pd3dDevice,
-                                                const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext )
-{
-    return S_OK;
-}
-
-//--------------------------------------------------------------------------------------
-// Rejects any D3D9 devices that aren't acceptable to the app by returning false
-//--------------------------------------------------------------------------------------
-bool CALLBACK WinGameApp::IsD3D9DeviceAcceptable( D3DCAPS9* pCaps, D3DFORMAT AdapterFormat,
-                                                 D3DFORMAT BackBufferFormat, bool bWindowed, void* pUserContext )
-{
-    return false;
 }

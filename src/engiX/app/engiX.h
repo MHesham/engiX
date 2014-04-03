@@ -8,7 +8,6 @@
 namespace engiX
 {
     
-
     class IGameApp
     {
 

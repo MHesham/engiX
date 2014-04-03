@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\app\engiXWin.h" />
+    <ClInclude Include="..\app\engiX.h" />
     <ClInclude Include="..\app\InputManager.h" />
     <ClInclude Include="..\app\Logger.h" />
     <ClInclude Include="..\app\WinGameApp.h" />

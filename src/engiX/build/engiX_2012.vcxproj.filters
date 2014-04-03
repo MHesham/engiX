@@ -84,7 +84,7 @@
     <ClInclude Include="..\app\WinGameApp.h">
       <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\app\engiXWin.h">
+    <ClInclude Include="..\app\engiX.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
