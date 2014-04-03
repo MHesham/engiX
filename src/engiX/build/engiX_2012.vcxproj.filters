@@ -13,89 +13,104 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\common">
+    <Filter Include="Header Files\Application">
+      <UniqueIdentifier>{5fe65b3b-ef42-46a8-9746-b032488a4fe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\View">
+      <UniqueIdentifier>{4c27a27d-00f1-49b0-9d57-4177ceccaf13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{5ff5bdf1-be33-4883-84b5-f87cf21a3ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
       <UniqueIdentifier>{c38e8aab-5a64-41ff-a1f4-4998c73574a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system">
-      <UniqueIdentifier>{2e4d61c4-f585-46a6-ae7a-78d152132ed8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system\event">
-      <UniqueIdentifier>{496db9bd-594c-417a-ade0-9b94a5457498}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system\logging">
-      <UniqueIdentifier>{9f9741f2-6a91-4b93-b442-e7fd88f5f48a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system\input">
-      <UniqueIdentifier>{6d23652c-ed68-4c0f-ba6b-46b55fc4b95a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system\graphics">
-      <UniqueIdentifier>{3382071a-23eb-496d-bc7c-f5f69f6d877e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system\graphics\fx">
-      <UniqueIdentifier>{5f336725-b1ea-4db3-95d0-eda42a884f6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
-      <Filter>Header Files\common</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Vector.h">
-      <Filter>Header Files\common</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\MathHelper.h">
-      <Filter>Header Files\common</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Timer.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\D3dUtil.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\engiX.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\engiXDefs.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\graphics\d3dx11effect.h">
-      <Filter>Header Files\system\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\graphics\GeometryGenerator.h">
-      <Filter>Header Files\system\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\graphics\LightHelper.h">
-      <Filter>Header Files\system\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\graphics\EffectHelper.h">
-      <Filter>Header Files\system\graphics</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\system\Delegate.h">
-      <Filter>Header Files\common</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\system\EventManager.h">
-      <Filter>Header Files\system\event</Filter>
+    <ClInclude Include="..\app\InputManager.h">
+      <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\system\Events.h">
-      <Filter>Header Files\system\event</Filter>
+    <ClInclude Include="..\app\Logger.h">
+      <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\Logger.h">
-      <Filter>Header Files\system\logging</Filter>
+    <ClInclude Include="..\app\engiX.h">
+      <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\Console.h">
-      <Filter>Header Files\system\logging</Filter>
+    <ClInclude Include="..\view\D3dApp.h">
+      <Filter>Header Files\View</Filter>
     </ClInclude>
-    <ClInclude Include="..\system\InputManager.h">
-      <Filter>Header Files\system\input</Filter>
+    <ClInclude Include="..\view\D3dUtil.h">
+      <Filter>Header Files\View</Filter>
     </ClInclude>
-    <ClInclude Include="..\system\SceneManager.h">
-      <Filter>Header Files\system\graphics</Filter>
+    <ClInclude Include="..\view\d3dx11effect.h">
+      <Filter>Header Files\View</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\D3dApp.h">
-      <Filter>Header Files\system\graphics</Filter>
+    <ClInclude Include="..\view\EffectHelper.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\GeometryGenerator.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\LightHelper.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\SceneManager.h">
+      <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\EventManager.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\Events.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\app\WinGameApp.h">
+      <Filter>Header Files\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\Vector.cpp">
+    <ClCompile Include="..\app\engiX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\app\Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\EventManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\D3dApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\D3dUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\EffectHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\GeometryGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\LightHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\MathHelper.cpp">
@@ -104,37 +119,8 @@
     <ClCompile Include="..\common\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\D3dUtil.cpp">
+    <ClCompile Include="..\common\Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\D3dApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\engiX.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\graphics\GeometryGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\graphics\LightHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\graphics\EffectHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\system\EventManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\graphics\fx\default.fx">
-      <Filter>Header Files\system\graphics\fx</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

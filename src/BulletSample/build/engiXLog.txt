@@ -1,0 +1,2 @@
+[Info@18:36:04.148@engiX::engiXWinMain] engiX is initializing start
+[Info@18:36:04.148@engiX::engiXWinMain] engiX is shutting down start

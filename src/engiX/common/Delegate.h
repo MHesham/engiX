@@ -177,8 +177,6 @@ namespace engiX
     protected:
         // Disallow MulticastDelegate instantiation
         MulticastDelegateBase() {}
-        DISALLOW_COPY_AND_ASSIGN(MulticastDelegateBase);
-
         ObserverList m_observers;
     };
 

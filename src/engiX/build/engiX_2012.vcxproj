@@ -11,46 +11,39 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\Console.h" />
-    <ClInclude Include="..\common\D3dApp.h" />
-    <ClInclude Include="..\common\D3dUtil.h" />
-    <ClInclude Include="..\common\engiX.h" />
+    <ClInclude Include="..\app\engiX.h" />
+    <ClInclude Include="..\app\InputManager.h" />
+    <ClInclude Include="..\app\Logger.h" />
+    <ClInclude Include="..\app\WinGameApp.h" />
     <ClInclude Include="..\common\engiXDefs.h" />
-    <ClInclude Include="..\common\Logger.h" />
     <ClInclude Include="..\common\Timer.h" />
     <ClInclude Include="..\common\MathHelper.h" />
     <ClInclude Include="..\common\Precision.h" />
     <ClInclude Include="..\common\Vector.h" />
-    <ClInclude Include="..\graphics\d3dx11effect.h" />
-    <ClInclude Include="..\graphics\EffectHelper.h" />
-    <ClInclude Include="..\graphics\GeometryGenerator.h" />
-    <ClInclude Include="..\graphics\LightHelper.h" />
+    <ClInclude Include="..\logic\EventManager.h" />
+    <ClInclude Include="..\logic\Events.h" />
     <ClInclude Include="..\system\Delegate.h" />
-    <ClInclude Include="..\system\EventManager.h" />
-    <ClInclude Include="..\system\Events.h" />
-    <ClInclude Include="..\system\InputManager.h" />
-    <ClInclude Include="..\system\SceneManager.h" />
+    <ClInclude Include="..\view\D3dApp.h" />
+    <ClInclude Include="..\view\D3dUtil.h" />
+    <ClInclude Include="..\view\d3dx11effect.h" />
+    <ClInclude Include="..\view\EffectHelper.h" />
+    <ClInclude Include="..\view\GeometryGenerator.h" />
+    <ClInclude Include="..\view\LightHelper.h" />
+    <ClInclude Include="..\view\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\app\engiX.cpp" />
+    <ClCompile Include="..\app\Logger.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
-    <ClCompile Include="..\common\D3dApp.cpp" />
-    <ClCompile Include="..\common\D3dUtil.cpp" />
-    <ClCompile Include="..\common\engiX.cpp" />
-    <ClCompile Include="..\common\Logger.cpp" />
-    <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
+    <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\Vector.cpp" />
-    <ClCompile Include="..\graphics\EffectHelper.cpp" />
-    <ClCompile Include="..\graphics\GeometryGenerator.cpp" />
-    <ClCompile Include="..\graphics\LightHelper.cpp" />
-    <ClCompile Include="..\system\EventManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\graphics\fx\default.fx">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorTech</EntryPointName>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </AssemblerOutputFile>
-    </FxCompile>
+    <ClCompile Include="..\logic\EventManager.cpp" />
+    <ClCompile Include="..\view\D3dApp.cpp" />
+    <ClCompile Include="..\view\D3dUtil.cpp" />
+    <ClCompile Include="..\view\EffectHelper.cpp" />
+    <ClCompile Include="..\view\GeometryGenerator.cpp" />
+    <ClCompile Include="..\view\LightHelper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{722455D2-BCA5-4C93-A90C-51975633687F}</ProjectGuid>
@@ -96,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\common;..\graphics;..\physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\app;..\view;..\logic;..\..\3rdParty\DXUT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <DisableSpecificWarnings>4005;4100;4127</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -128,6 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\common;..\app;..\view;..\logic;..\..\3rdParty\DXUT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

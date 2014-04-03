@@ -6,5 +6,5 @@ INT WINAPI wWinMain(HINSTANCE hInstance,
                      LPWSTR    lpCmdLine,
                      int       nCmdShow)
 {
-    return engiX::Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    return engiX::engiXWinMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }

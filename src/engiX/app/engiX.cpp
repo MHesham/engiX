@@ -3,7 +3,7 @@
 
 namespace engiX
 {
-    INT Main(HINSTANCE hInstance,
+    INT engiXWinMain(HINSTANCE hInstance,
         HINSTANCE hPrevInstance,
         LPWSTR    lpCmdLine,
         int       nCmdShow)
@@ -37,6 +37,8 @@ namespace engiX
         g_Logger.Cleanup();
 
         system("pause");
+
+        _CrtDumpMemoryLeaks();
 
         return 0;
     }

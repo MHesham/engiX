@@ -3,18 +3,14 @@
 #include <list>
 #include <memory>
 #include <map>
-#include "Timer.h"
-#include "Delegate.h"
-#include "Events.h"
+#include "engiX.h"
 
 namespace engiX
 {
-    typedef IDelegate1P<EventPtr> EventHandler;
-    typedef MulticastDelegate1P<EventPtr> EventHandlerList;
     typedef std::list<EventPtr> EventQueue;
     typedef std::map<EventType, EventHandlerList> EventRegistry;
 
-    class EventManager
+    class EventManager : public IEventManager
     {
     public:
         static EventManager& Instance() { static EventManager inst; return inst; }
@@ -27,6 +23,4 @@ namespace engiX
         EventQueue m_eventQ;
         EventRegistry m_eventRegistry;
     };
-
-#define g_EventMgr engiX::EventManager::Instance()
 }
