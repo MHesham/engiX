@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\app\engiX.h" />
-    <ClInclude Include="..\app\InputManager.h" />
+    <ClInclude Include="..\app\WinInputManager.h" />
     <ClInclude Include="..\app\Logger.h" />
     <ClInclude Include="..\app\WinGameApp.h" />
     <ClInclude Include="..\common\engiXDefs.h" />
@@ -22,11 +22,13 @@
     <ClInclude Include="..\common\Vector.h" />
     <ClInclude Include="..\logic\EventManager.h" />
     <ClInclude Include="..\logic\Events.h" />
+    <ClInclude Include="..\logic\GameLogic.h" />
     <ClInclude Include="..\system\Delegate.h" />
     <ClInclude Include="..\view\D3dApp.h" />
     <ClInclude Include="..\view\D3dUtil.h" />
     <ClInclude Include="..\view\d3dx11effect.h" />
     <ClInclude Include="..\view\EffectHelper.h" />
+    <ClInclude Include="..\view\GameView.h" />
     <ClInclude Include="..\view\GeometryGenerator.h" />
     <ClInclude Include="..\view\LightHelper.h" />
     <ClInclude Include="..\view\SceneManager.h" />
@@ -34,6 +36,7 @@
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp" />
     <ClCompile Include="..\app\WinGameApp.cpp" />
+    <ClCompile Include="..\app\WinInputManager.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />

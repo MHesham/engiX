@@ -24,7 +24,7 @@ namespace engiX
         void Init();
         void Deinit();
         void Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...);
-        static Logger& Inst() { static Logger inst; return inst; }
+        static Logger* Inst();
 
     private:
         Logger() :
@@ -46,15 +46,15 @@ namespace engiX
 #define g_Logger					engiX::Logger::Inst()
 
 #if defined(UNICODE) | defined(_UNICODE)
-#define LogWarning(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Warning, __FUNCTIONW__, L##Format, __VA_ARGS__)
-#define LogError(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Error, __FUNCTIONW__, L##Format, __VA_ARGS__)
-#define LogInfo(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Info, __FUNCTIONW__, L##Format, __VA_ARGS__)
-#define LogStart(Format, ...)       g_Logger.Log(engiX::Logger::LOG_PerfStart, __FUNCTIONW__, L##Format, __VA_ARGS__)
-#define LogEnd(Format, ...)         g_Logger.Log(engiX::Logger::LOG_PerfEnd, __FUNCTIONW__, L##Format, __VA_ARGS__)
-#else
-#define LogWarning(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Warning, __FUNCTION__, Format, __VA_ARGS__)
-#define LogError(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Error, __FUNCTION__, Format, __VA_ARGS__)
-#define LogInfo(Format, ...)		g_Logger.Log(engiX::Logger::LOG_Info, __FUNCTION__, Format, __VA_ARGS__)
-#define LogStart(Format, ...)       g_Logger.Log(engiX::Logger::LOG_PerfStart, __FUNCTION__, Format, __VA_ARGS__)
-#define LogEnd(Format, ...)         g_Logger.Log(engiX::Logger::LOG_PerfEnd, __FUNCTION__, Format, __VA_ARGS__)
+#define LogWarning(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Warning, __FUNCTIONW__, L##Format, __VA_ARGS__)
+#define LogError(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Error, __FUNCTIONW__, L##Format, __VA_ARGS__)
+#define LogInfo(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Info, __FUNCTIONW__, L##Format, __VA_ARGS__)
+#define LogStart(Format, ...)       g_Logger->Log(engiX::Logger::LOG_PerfStart, __FUNCTIONW__, L##Format, __VA_ARGS__)
+#define LogEnd(Format, ...)         g_Logger->Log(engiX::Logger::LOG_PerfEnd, __FUNCTIONW__, L##Format, __VA_ARGS__)
+#else                                       
+#define LogWarning(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Warning, __FUNCTION__, Format, __VA_ARGS__)
+#define LogError(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Error, __FUNCTION__, Format, __VA_ARGS__)
+#define LogInfo(Format, ...)		g_Logger->Log(engiX::Logger::LOG_Info, __FUNCTION__, Format, __VA_ARGS__)
+#define LogStart(Format, ...)       g_Logger->Log(engiX::Logger::LOG_PerfStart, __FUNCTION__, Format, __VA_ARGS__)
+#define LogEnd(Format, ...)         g_Logger->Log(engiX::Logger::LOG_PerfEnd, __FUNCTION__, Format, __VA_ARGS__)
 #endif

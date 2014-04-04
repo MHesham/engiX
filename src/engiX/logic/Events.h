@@ -20,9 +20,18 @@ namespace engiX
         virtual const wchar_t* VToString() const = 0;
 
     private:
-        EventType m_type;
         real m_timestamp;
     };
 
     typedef std::shared_ptr<Event> EventPtr;
+
+    class ToggleCameraEvt : public Event
+    {
+    public:
+        static const EventType TypeID = 0x7D030697;
+
+        ToggleCameraEvt(real timestamp) : Event(timestamp) {}
+        EventType VType() const { return TypeID; }
+        const wchar_t* VToString() const { return L"ToggleCameraEvt"; }
+    };
 }

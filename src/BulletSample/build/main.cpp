@@ -9,7 +9,5 @@ int WINAPI wWinMain(HINSTANCE hInstance,
                      LPWSTR    lpCmdLine,
                      int       nCmdShow)
 {
-    std::unique_ptr<BulletGameApp> pApp(eNEW BulletGameApp);
-
-    return BulletGameApp::Main(hPrevInstance, hPrevInstance, lpCmdLine, nCmdShow);;
+    return BulletGameApp::Main(eNEW BulletGameApp, hInstance, hPrevInstance, lpCmdLine, nCmdShow);;
 }

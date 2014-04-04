@@ -1,5 +1,6 @@
 #include "Logger.h"
 #include <Windows.h>
+#include "engiXDefs.h"
 
 using namespace engiX;
 using namespace std;
@@ -9,6 +10,18 @@ const wchar_t* LogTypeName[] = {
     L"Error",
     L"Info",
 };
+
+Logger* g_pLoggerInst = nullptr;
+
+Logger* Logger::Inst()
+{
+    // Note that this is not thread safe
+    if (g_pLoggerInst == nullptr)
+        g_pLoggerInst = eNEW Logger;
+
+    _ASSERTE(g_pLoggerInst);
+    return g_pLoggerInst;
+}
 
 void Logger::Init()
 {
@@ -42,6 +55,8 @@ void Logger::Deinit()
         m_pen.close();
         m_isLogFileInitialized = false;
     }
+
+    SAFE_DELETE(g_pLoggerInst);
 }
 //////////////////////////////////////////////////////////////////////////
 void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...)

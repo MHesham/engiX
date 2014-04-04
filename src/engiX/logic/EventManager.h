@@ -18,9 +18,14 @@ namespace engiX
         void Queue(_In_ EventPtr evt);
         void Register(_In_ EventHandler* pHandler, _In_ const EventType& type);
         void Unregister(_In_ EventHandler* pHandler, _In_ const EventType& type);
+        void Init();
+        void Deinit();
+        static EventManager* Inst();
 
     private:
         EventQueue m_eventQ;
         EventRegistry m_eventRegistry;
     };
+
+#define g_EventMgr EventManager::Inst()
 }
