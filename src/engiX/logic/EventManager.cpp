@@ -37,7 +37,7 @@ void EventManager::Queue(_In_ EventPtr evt)
     LogInfo("Event %s queued", evt->VToString());
 }
 //////////////////////////////////////////////////////////////////////////
-void EventManager::Update(_In_ const Timer& time)
+void EventManager::OnUpdate(_In_ const Timer& time)
 {
     for (auto evt : m_eventQ)
     {

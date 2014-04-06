@@ -3,10 +3,8 @@
 #include <memory>
 #include "DXUT.h"
 #include "engiXDefs.h"
-#include "WinInputManager.h"
 #include "GameLogic.h"
-#include "GameView.h"
-#include "D3d11Renderer.h"
+#include "HumanD3dGameView.h"
 
 namespace engiX
 {
@@ -16,14 +14,14 @@ namespace engiX
         static const int DEFAULT_SCREEN_WIDTH = 1024;
         static const int DEFAULT_SCREEN_HEIGHT = 768;
 
+        static WinGameApp* Inst();
+
         static int Main(
             WinGameApp* pGameInst,
             HINSTANCE hInstance,
             HINSTANCE hPrevInstance,
             LPWSTR    lpCmdLine,
             int       nCmdShow);
-
-        static WinGameApp* Inst();
 
         WinGameApp();
         void Init(HINSTANCE hInstance, LPWSTR lpCmdLine);
@@ -32,12 +30,13 @@ namespace engiX
         int ExitCode() const { return DXUTGetExitCode(); }
         const SIZE& ScreenSize() const { return m_screenSize; }
         const Timer& GameTime() const { return m_gameTime; }
+        real AspectRatio() const { return (real)m_screenSize.cx / (real)m_screenSize.cy; }
 
     protected:
         virtual const wchar_t* VGameAppTitle() const = 0;
         HWND WindowHandle() const { return DXUTGetHWND(); }
         virtual GameLogic* VCreateLogic() const = 0;
-        virtual GameView* VCreateStartView() const = 0;
+        virtual HumanD3dGameView* VCreateStartView() const = 0;
 
     private:
         // DXUT General Handlers
@@ -48,18 +47,16 @@ namespace engiX
         // DXUT DirectX11 Handlers
         static bool CALLBACK IsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo *AdapterInfo, UINT Output, const CD3D11EnumDeviceInfo *DeviceInfo, DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext ) { return true; }
         static HRESULT CALLBACK OnD3D11CreateDevice( ID3D11Device* pd3dDevice, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext ) { return S_OK; }
-        static HRESULT CALLBACK OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext ) { return S_OK; }
+        static HRESULT CALLBACK OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext );
         static void CALLBACK OnD3D11ReleasingSwapChain( void* pUserContext ) {}
         static void CALLBACK OnD3D11DestroyDevice( void* pUserContext ) {}
-        static void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime, float fElapsedTime, void* pUserContext ) {}
+        static void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime, float fElapsedTime, void* pUserContext );
 
-        WinInputManager m_inputMgr;
         SIZE m_screenSize;
         Timer m_gameTime;
         bool m_firstUpdate;
-        std::shared_ptr<GameLogic> m_gameLogic;
-        std::shared_ptr<GameView> m_gameView;
-        std::shared_ptr<D3d11Renderer> m_pRenderer;
+        std::shared_ptr<GameLogic> m_pGameLogic;
+        std::shared_ptr<HumanD3dGameView> m_pGameView;
    };
 
 #define g_pApp engiX::WinGameApp::Inst() 

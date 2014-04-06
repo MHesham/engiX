@@ -68,11 +68,11 @@ namespace engiX
             return XMMatrixTranspose(XMMatrixInverse(&det, A));
         }
 
-        // Spherical Coordinats (radius r, inclination Theta, azimuth Phi)
+        // Spherical Coordinates (radius r, inclination Theta, azimuth Phi)
         // Radius r: The radius of the spherical coordinate system
         // Inclination Theta: Rotation angle in radians around Y axis in the XZ plane, Theta = [0, 2Pi]
-        // Azimuth Phi: Rotation angle in radians around the axis between the sphera center and the rotate point around the Y axis, Phi = [0, Pi]
-        // The method assums the provided Theta and Phi are within the correct range
+        // Azimuth Phi: Rotation angle in radians around the axis between the sphere center and the rotate point around the Y axis, Phi = [0, Pi]
+        // The method assumes the provided Theta and Phi are within the correct range
         // Conversion formulas: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         static void ConvertSphericalToCartesian(_In_ const real& sphericalRadius, _In_ const real& sphericalTheta, _In_ const real& sphericalPhi, _Out_ DirectX::XMFLOAT3& cartesianXyz)
         {

@@ -14,7 +14,7 @@ namespace engiX
     {
     public:
         static EventManager& Instance() { static EventManager inst; return inst; }
-        void Update(_In_ const Timer& time);
+        void OnUpdate(_In_ const Timer& time);
         void Queue(_In_ EventPtr evt);
         void Register(_In_ EventHandler* pHandler, _In_ const EventType& type);
         void Unregister(_In_ EventHandler* pHandler, _In_ const EventType& type);

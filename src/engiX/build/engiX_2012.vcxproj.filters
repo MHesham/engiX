@@ -28,6 +28,12 @@
     <Filter Include="Header Files\View\FX">
       <UniqueIdentifier>{ff9e8a6c-70a3-4c9c-9614-facc6296a67b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\View\Scene">
+      <UniqueIdentifier>{96e93c62-e88b-4a38-95bd-0ef026fbf538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\View\Graphics">
+      <UniqueIdentifier>{9c18e606-b1a3-4fa9-b952-fb1fce4a3fe8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -51,27 +57,6 @@
     <ClInclude Include="..\app\Logger.h">
       <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\D3dApp.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\D3dUtil.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\d3dx11effect.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\EffectHelper.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\GeometryGenerator.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\LightHelper.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\SceneManager.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\EventManager.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
@@ -84,14 +69,32 @@
     <ClInclude Include="..\app\engiX.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\app\WinInputManager.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\GameLogic.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\GameView.h">
+    <ClInclude Include="..\view\GameScene.h">
+      <Filter>Header Files\View\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\D3d11Renderer.h">
+      <Filter>Header Files\View\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\D3dShader.h">
+      <Filter>Header Files\View\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\GeometryGenerator.h">
+      <Filter>Header Files\View\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\LightHelper.h">
+      <Filter>Header Files\View\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\SceneCamera.h">
+      <Filter>Header Files\View\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\HumanD3dGameView.h">
       <Filter>Header Files\View</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\Actor.h">
+      <Filter>Header Files\Logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,15 +102,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\logic\EventManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\view\D3dApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\view\D3dUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\view\EffectHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\view\GeometryGenerator.cpp">
@@ -128,10 +122,28 @@
     <ClCompile Include="..\common\Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\view\D3dShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\SceneCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\HumanD3dGameView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\app\WinGameApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\app\WinInputManager.cpp">
+    <ClCompile Include="..\view\GameScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\GameLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\GameActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

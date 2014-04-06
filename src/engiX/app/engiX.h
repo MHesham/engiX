@@ -29,7 +29,7 @@ namespace engiX
     class IEventManager
     {
     public:
-        virtual void Update(_In_ const Timer& time) = 0;
+        virtual void OnUpdate(_In_ const Timer& time) = 0;
         virtual void Queue(_In_ EventPtr evt) = 0;
         virtual void Register(_In_ EventHandler* pHandler, _In_ const EventType& type) = 0;
         virtual void Unregister(_In_ EventHandler* pHandler, _In_ const EventType& type) = 0;

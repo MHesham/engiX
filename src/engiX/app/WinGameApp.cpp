@@ -10,11 +10,11 @@ WinGameApp* g_pAppInst = nullptr;
 
 WinGameApp* WinGameApp::Inst() { _ASSERTE(g_pAppInst); return g_pAppInst; }
 
-int WinGameApp::Main(WinGameApp* pGameInst,
-                     HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPWSTR    lpCmdLine,
-                     int       nCmdShow)
+int WinGameApp::Main (WinGameApp* pGameInst,
+                      HINSTANCE hInstance,
+                      HINSTANCE hPrevInstance,
+                      LPWSTR    lpCmdLine,
+                      int       nCmdShow)
 {
     // Set up checks for memory leaks.
     // Game Coding Complete reference - Chapter 21, page 834
@@ -39,15 +39,15 @@ int WinGameApp::Main(WinGameApp* pGameInst,
     LogInfo("engiX is initializing ...");
     g_EventMgr->Init();
 
-    DXUTSetCallbackMsgProc( WinGameApp::OnMsgProc );
-    DXUTSetCallbackFrameMove( WinGameApp::OnUpdateGame );
-    DXUTSetCallbackDeviceChanging( WinGameApp::ModifyDeviceSettings );
-    DXUTSetCallbackD3D11DeviceAcceptable( WinGameApp::IsD3D11DeviceAcceptable );
-    DXUTSetCallbackD3D11DeviceCreated( WinGameApp::OnD3D11CreateDevice );
-    DXUTSetCallbackD3D11SwapChainResized( WinGameApp::OnD3D11ResizedSwapChain );
-    DXUTSetCallbackD3D11SwapChainReleasing( WinGameApp::OnD3D11ReleasingSwapChain );
-    DXUTSetCallbackD3D11DeviceDestroyed( WinGameApp::OnD3D11DestroyDevice );
-    DXUTSetCallbackD3D11FrameRender( WinGameApp::OnD3D11FrameRender );	
+    DXUTSetCallbackMsgProc( WinGameApp::OnMsgProc, (void*)g_pApp);
+    DXUTSetCallbackFrameMove( WinGameApp::OnUpdateGame, (void*)g_pApp);
+    DXUTSetCallbackDeviceChanging( WinGameApp::ModifyDeviceSettings, (void*)g_pApp);
+    DXUTSetCallbackD3D11DeviceAcceptable( WinGameApp::IsD3D11DeviceAcceptable, (void*)g_pApp);
+    DXUTSetCallbackD3D11DeviceCreated( WinGameApp::OnD3D11CreateDevice, (void*)g_pApp);
+    DXUTSetCallbackD3D11SwapChainResized( WinGameApp::OnD3D11ResizedSwapChain, (void*)g_pApp);
+    DXUTSetCallbackD3D11SwapChainReleasing( WinGameApp::OnD3D11ReleasingSwapChain, (void*)g_pApp);
+    DXUTSetCallbackD3D11DeviceDestroyed( WinGameApp::OnD3D11DestroyDevice, (void*)g_pApp);
+    DXUTSetCallbackD3D11FrameRender( WinGameApp::OnD3D11FrameRender, (void*)g_pApp);	
     g_pApp->Init(hInstance, lpCmdLine);
 
     g_pApp->Run();
@@ -82,15 +82,18 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
     CHRR(DXUTInit(false, true));
     CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
     CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_10_1, true, m_screenSize.cx, m_screenSize.cy));
-    m_pRenderer = shared_ptr<D3d11Renderer>(eNEW D3d11Renderer);
 
-    m_gameLogic = shared_ptr<GameLogic>(VCreateLogic());
-    m_gameView = shared_ptr<GameView>(VCreateStartView());
+    m_pGameLogic = shared_ptr<GameLogic>(VCreateLogic());
+    m_pGameView = shared_ptr<HumanD3dGameView>(VCreateStartView());
+
+    m_pGameLogic->VInit();
 }
 
 void WinGameApp::Deinit()
 {
     LogInfo("Finalizing Game App");
+
+    m_pGameLogic->Deinit();
 
     SAFE_DELETE(g_pAppInst);
 }
@@ -121,9 +124,12 @@ void WinGameApp::Run()
 //
 LRESULT CALLBACK WinGameApp::OnMsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing, void* pUserContext )
 {
+    WinGameApp* pApp = (WinGameApp*)pUserContext;
+    _ASSERTE(pApp);
+
     LRESULT result = 0;
 
-    if (!g_pApp)
+    if (!pApp)
         return result;
 
     switch (uMsg) 
@@ -136,7 +142,8 @@ LRESULT CALLBACK WinGameApp::OnMsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
         {
-            *pbNoFurtherProcessing = g_pApp->m_inputMgr.OnMsgProc(g_pApp->m_gameTime, uMsg, wParam, lParam);
+            _ASSERTE(pApp->m_pGameView);
+            *pbNoFurtherProcessing = pApp->m_pGameView->OnMsgProc(pApp->m_gameTime, uMsg, wParam, lParam);
             break;
         }
     }
@@ -152,16 +159,26 @@ LRESULT CALLBACK WinGameApp::OnMsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 //--------------------------------------------------------------------------------------
 void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* pUserContext )
 {
-    if (!g_pApp)
+    WinGameApp* pApp = (WinGameApp*)pUserContext;
+    _ASSERTE(pApp);
+
+    if (!pApp)
         return;
 
-    if (g_pApp->m_firstUpdate)
-        g_pApp->m_gameTime.Start();
+    if (pApp->m_firstUpdate)
+        pApp->m_gameTime.Start();
 
-    g_pApp->m_inputMgr.Update(g_pApp->m_gameTime);
-    g_EventMgr->Update(g_pApp->m_gameTime);
+    // 1. Dispatch engine events
+    g_EventMgr->OnUpdate(pApp->m_gameTime);
+
+    // 2. Update game logic
+    _ASSERTE(pApp->m_pGameLogic);
+    pApp->m_pGameLogic->VOnUpdate(pApp->m_gameTime);
+
+    // 3. Redraw scene with updated logic
+    _ASSERTE(pApp->m_pGameView);
+    pApp->m_pGameView->OnUpdate(pApp->m_gameTime);
 }
-
 
 //--------------------------------------------------------------------------------------
 // Called right before creating a D3D device, allowing the app to modify the device settings as needed
@@ -169,4 +186,26 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
 bool CALLBACK WinGameApp::ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, void* pUserContext )
 {
     return true;
+}
+
+HRESULT CALLBACK WinGameApp::OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwapChain* pSwapChain, const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext )
+{
+    WinGameApp* pApp = (WinGameApp*)pUserContext;
+    _ASSERTE(pApp);
+
+    pApp->m_screenSize.cx = pBackBufferSurfaceDesc->Width;
+    pApp->m_screenSize.cy = pBackBufferSurfaceDesc->Height;
+
+    g_EventMgr->Queue(EventPtr(eNEW DisplaySettingsChangedEvt(pApp->m_gameTime.TotalTime())));
+
+    return S_OK;
+}
+
+void CALLBACK WinGameApp::OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, double fTime, float fElapsedTime, void* pUserContext )
+{
+    WinGameApp* pApp = (WinGameApp*)pUserContext;
+    _ASSERTE(pApp);
+
+    _ASSERTE(pApp->m_pGameView);
+    pApp->m_pGameView->OnRender(pApp->m_gameTime);
 }

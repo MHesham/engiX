@@ -34,4 +34,14 @@ namespace engiX
         EventType VType() const { return TypeID; }
         const wchar_t* VToString() const { return L"ToggleCameraEvt"; }
     };
+
+    class DisplaySettingsChangedEvt : public Event
+    {
+    public:
+        static const EventType TypeID = 0xDC31296F;
+
+        DisplaySettingsChangedEvt(real timestamp) : Event(timestamp) {}
+        EventType VType() const { return TypeID; }
+        const wchar_t* VToString() const { return L"DisplaySettingsChangedEvt"; }
+    };
 }

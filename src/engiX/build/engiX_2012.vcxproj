@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\app\engiX.h" />
-    <ClInclude Include="..\app\WinInputManager.h" />
     <ClInclude Include="..\app\Logger.h" />
     <ClInclude Include="..\app\WinGameApp.h" />
     <ClInclude Include="..\common\engiXDefs.h" />
@@ -22,31 +21,34 @@
     <ClInclude Include="..\common\Vector.h" />
     <ClInclude Include="..\logic\EventManager.h" />
     <ClInclude Include="..\logic\Events.h" />
+    <ClInclude Include="..\logic\Actor.h" />
     <ClInclude Include="..\logic\GameLogic.h" />
     <ClInclude Include="..\system\Delegate.h" />
-    <ClInclude Include="..\view\D3dApp.h" />
-    <ClInclude Include="..\view\D3dUtil.h" />
-    <ClInclude Include="..\view\d3dx11effect.h" />
-    <ClInclude Include="..\view\EffectHelper.h" />
-    <ClInclude Include="..\view\GameView.h" />
+    <ClInclude Include="..\view\D3d11Renderer.h" />
+    <ClInclude Include="..\view\D3dShader.h" />
+    <ClInclude Include="..\view\SceneCamera.h" />
+    <ClInclude Include="..\view\HumanD3dGameView.h" />
     <ClInclude Include="..\view\GeometryGenerator.h" />
     <ClInclude Include="..\view\LightHelper.h" />
-    <ClInclude Include="..\view\SceneManager.h" />
+    <ClInclude Include="..\view\GameScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp" />
     <ClCompile Include="..\app\WinGameApp.cpp" />
-    <ClCompile Include="..\app\WinInputManager.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\Vector.cpp" />
+    <ClCompile Include="..\logic\Actor.cpp" />
     <ClCompile Include="..\logic\EventManager.cpp" />
-    <ClCompile Include="..\view\D3dApp.cpp" />
-    <ClCompile Include="..\view\D3dUtil.cpp" />
-    <ClCompile Include="..\view\EffectHelper.cpp" />
+    <ClCompile Include="..\logic\GameActor.cpp" />
+    <ClCompile Include="..\logic\GameLogic.cpp" />
+    <ClCompile Include="..\view\D3dShader.cpp" />
+    <ClCompile Include="..\view\GameScene.cpp" />
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
+    <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
+    <ClCompile Include="..\view\SceneCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\view\fx\default.fx" />
@@ -99,8 +101,9 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <DisableSpecificWarnings>4005;4100;4127</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,7 +116,7 @@
       <ShaderType>Effect</ShaderType>
     </FxCompile>
     <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
+      <ShaderModel>4.0</ShaderModel>
       <ObjectFileOutput>$(IntDir)\fx\%(Filename).fxo</ObjectFileOutput>
       <AdditionalOptions>/Fc"$(IntDir)\fx\%(Filename).fxasm" %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>

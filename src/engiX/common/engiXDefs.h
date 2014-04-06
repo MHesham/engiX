@@ -3,7 +3,22 @@
 #include "Precision.h"
 #include "Logger.h"
 
+#include <DirectXMath.h>
+
 #if defined(DEBUG) | defined(_DEBUG)
+
+#ifndef CHR
+#define CHR(x)                                               \
+    {                                                       \
+    hr = (x);                                       \
+    if(FAILED(hr))                                          \
+    {                                                       \
+    LogError("'%s' failed, hr=%x", L#x, hr);                \
+    }                                                       \
+    }
+#else
+#define CHR(x) (x)
+#endif
 
 #ifndef CHRR
 #define CHRR(x)                                               \
@@ -61,5 +76,10 @@
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
 #endif
+
+
+typedef DirectX::XMFLOAT4X4 Mat4x4;
+typedef DirectX::XMFLOAT3 Vec3;
+typedef DirectX::XMFLOAT4 Vec4;
 
 #endif 
