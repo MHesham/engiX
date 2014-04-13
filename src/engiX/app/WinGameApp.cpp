@@ -201,6 +201,12 @@ HRESULT CALLBACK WinGameApp::OnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, 
     pApp->m_screenSize.cx = pBackBufferSurfaceDesc->Width;
     pApp->m_screenSize.cy = pBackBufferSurfaceDesc->Height;
 
+    if (pApp->m_pGameLogic)
+    {
+        _ASSERTE(pApp->m_pGameLogic->View());
+        pApp->m_pGameLogic->View()->OnConstruct();
+    }
+
     g_EventMgr->Queue(EventPtr(eNEW DisplaySettingsChangedEvt(pApp->m_gameTime.TotalTime())));
 
     return S_OK;

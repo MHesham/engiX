@@ -3,20 +3,19 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include "engiXDefs.h"
-#include "Events.h"
-#include "Delegate.h"
+#include "ViewInterfaces.h"
 
 namespace engiX
 {
-    class SceneCamera
+    class SceneCameraNode : ISceneNode
     {
     public:
         const static real DefaultNearPlane;
         const static real DefaultFarPlane;
         const static real DefaultFovAngle;
 
-        SceneCamera();
-        virtual ~SceneCamera() {}
+        SceneCameraNode();
+        virtual ~SceneCameraNode() {}
 
         Mat4x4 ViewProjMatrix() const { return m_viewProjMat; }
 
@@ -27,9 +26,14 @@ namespace engiX
         // The method assumes the provided Theta and Phi are within the correct range
         // More on the spherical coordinates here: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
+
+        bool PreRender() { return true; }
+        void PostRender() {}
+        void OnRender() {}
+        void OnConstruct();
+        void OnUpdate(_In_ const Timer& time) {}
+
     protected:
-        void OnDisplaySettingsChanged(EventPtr evt);
-        void OnToggleCamera(EventPtr evt);
         void BuildViewProjMatrix();
 
         Mat4x4 m_viewProjMat;
@@ -37,8 +41,5 @@ namespace engiX
         real m_nearPlane;
         real m_farPlane;
         real m_fovAngle;
-        Delegate1P<SceneCamera, EventPtr> m_displayChangeHandler;
     };
-
-    typedef std::shared_ptr<SceneCamera> StrongSceneCameraPtr;
 }

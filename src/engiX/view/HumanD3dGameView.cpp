@@ -11,21 +11,14 @@ using namespace DirectX;
 
 bool HumanD3dGameView::Init()
 {
-    GameScene::CameraList cameras;
-
     m_pScene = StrongGameScenePtr(eNEW GameScene);
 
-    cameras.push_back(StrongSceneCameraPtr(eNEW SceneCamera));
-    cameras.push_back(StrongSceneCameraPtr(eNEW SceneCamera));
-
-    // A camera perpendicular to the scene
-    cameras[0]->PlaceOnSphere(500.0, 0.0, 0.5 * R_PI);
-    // A camera with a 45 degree to the scene
-    cameras[1]->PlaceOnSphere(500.0, 0.0, R_PI);
-
-    m_pScene->SetCameras(cameras);
-
     return true;
+}
+
+void HumanD3dGameView::OnConstruct()
+{
+    m_pScene->OnConstruct();
 }
 
 void HumanD3dGameView::OnUpdate(_In_ const Timer& time)
@@ -35,11 +28,6 @@ void HumanD3dGameView::OnUpdate(_In_ const Timer& time)
 
 void HumanD3dGameView::OnRender()
 {
-    ID3D11RenderTargetView* pRTV = DXUTGetD3D11RenderTargetView();
-    DXUTGetD3D11DeviceContext()->ClearRenderTargetView(pRTV, Colors::LightBlue);
-    ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
-    DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
-
     m_pScene->OnRender();
 }
 

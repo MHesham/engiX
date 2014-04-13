@@ -11,6 +11,7 @@ namespace engiX
     public:
         typedef std::unordered_map<ActorID, StrongActorPtr> ActorRegistry;
 
+        GameLogic() : m_pView(nullptr) {}
         virtual ~GameLogic() {}
         virtual void VOnUpdate(_In_ const Timer& time);
         virtual bool VInit();

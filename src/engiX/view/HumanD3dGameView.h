@@ -20,6 +20,7 @@ namespace engiX
         bool Init();
         void OnRender();
         void OnUpdate(_In_ const Timer& time);
+        void OnConstruct();
         bool OnMsgProc(_In_ const Timer& time, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
     private:

@@ -87,9 +87,6 @@
     <ClInclude Include="..\view\LightHelper.h">
       <Filter>Header Files\View\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\SceneCamera.h">
-      <Filter>Header Files\View\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\view\HumanD3dGameView.h">
       <Filter>Header Files\View</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>Header Files\View</Filter>
     </ClInclude>
     <ClInclude Include="..\view\SceneNode.h">
+      <Filter>Header Files\View\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\SceneCameraNode.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,9 +137,6 @@
     <ClCompile Include="..\view\D3dShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\view\SceneCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\view\HumanD3dGameView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\view\GeneratedMeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\SceneCameraNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

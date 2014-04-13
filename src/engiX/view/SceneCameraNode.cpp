@@ -1,4 +1,4 @@
-#include "SceneCamera.h"
+#include "SceneCameraNode.h"
 #include "MathHelper.h"
 #include "WinGameApp.h"
 #include "EventManager.h"
@@ -6,21 +6,25 @@
 using namespace engiX;
 using namespace DirectX;
 
-const real SceneCamera::DefaultNearPlane = 1.0f;
-const real SceneCamera::DefaultFarPlane = 1000.0f;
-const real SceneCamera::DefaultFovAngle = 0.25 * R_PI;
+const real SceneCameraNode::DefaultNearPlane = 1.0f;
+const real SceneCameraNode::DefaultFarPlane = 1000.0f;
+const real SceneCameraNode::DefaultFovAngle = 0.25 * R_PI;
 
-SceneCamera::SceneCamera() :
+SceneCameraNode::SceneCameraNode() :
     m_nearPlane(DefaultNearPlane),
     m_farPlane(DefaultFarPlane),
     m_fovAngle(DefaultFovAngle),
-    m_pos(0.0, 1.0, 0.0),
-    m_displayChangeHandler(this, &SceneCamera::OnDisplaySettingsChanged)
+    m_pos(0.0, 1.0, 0.0)
 {
-    g_EventMgr->Register(&m_displayChangeHandler, DisplaySettingsChangedEvt::TypeID);
 }
 
-void SceneCamera::BuildViewProjMatrix()
+void SceneCameraNode::OnConstruct()
+{
+    LogInfo("Display settings changed, updating camera");
+    BuildViewProjMatrix();
+}
+
+void SceneCameraNode::BuildViewProjMatrix()
 {
     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, g_pApp->AspectRatio(), m_nearPlane, m_farPlane);
     
@@ -33,15 +37,9 @@ void SceneCamera::BuildViewProjMatrix()
     XMStoreFloat4x4(&m_viewProjMat, V * P);
 }
 
-void SceneCamera::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
+void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
 {
     MathHelper::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
-    BuildViewProjMatrix();
-}
-
-void SceneCamera::OnDisplaySettingsChanged(EventPtr evt)
-{
-    LogInfo("Display settings changed, updating camera");
     BuildViewProjMatrix();
 }
 

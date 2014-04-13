@@ -28,7 +28,7 @@
     <ClInclude Include="..\view\D3dShader.h" />
     <ClInclude Include="..\view\GeneratedMeshComponent.h" />
     <ClInclude Include="..\view\Geometry.h" />
-    <ClInclude Include="..\view\SceneCamera.h" />
+    <ClInclude Include="..\view\SceneCameraNode.h" />
     <ClInclude Include="..\view\HumanD3dGameView.h" />
     <ClInclude Include="..\view\GeometryGenerator.h" />
     <ClInclude Include="..\view\LightHelper.h" />
@@ -53,7 +53,7 @@
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
     <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
-    <ClCompile Include="..\view\SceneCamera.cpp" />
+    <ClCompile Include="..\view\SceneCameraNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\view\fx\default.fx" />
