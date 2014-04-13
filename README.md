@@ -3,6 +3,8 @@ engiX
 
 Experimental Game Engine based on DirectX11 and the high performance SIMD DirectXMath library
 
+engiX design is inspired by the sample Game Engine that comes with Game Coding Complete 4 book, https://code.google.com/p/gamecode4/
+
 Features:
 - Organized in 3 layers: App and View layers which are platform dependant, Logic layer which is platform agnostic.
 - Leverages the DirectX DXUT11 framework to simplify the App and View layer implementation.
@@ -25,3 +27,7 @@ Future Work:
 - Support shadows.
 - Support Audio and sound effects.
 - Add support for XBOX One by implementing XBOX One specific App and View layers.
+ 
+References
+Game Coding Complete 4 by Mike McShaffry
+Introduction to 3D Game Programming with DirectX 11 by Frank Luna
