@@ -19,17 +19,28 @@ namespace engiX
     typedef std::shared_ptr<ActorComponent> StrongActorComponentPtr;
     typedef std::weak_ptr<ActorComponent> WeakActorComponentPtr;
 
+    const ActorID NullActorID = 0;
+    const ComponentID NullComponentID = 0;
+
     class ActorComponent
     {
     public:
-        ~ActorComponent() {}
-        ComponentID Id() const { return m_id; }
+        ActorComponent() : m_owner(NullActorID) {}
+        virtual ~ActorComponent() {}
+        virtual ComponentID VId() const = 0;
         virtual const wchar_t* VTypename() const = 0;
         virtual void VOnUpdate(_In_ const Timer& time) = 0;
+        virtual bool VInit() = 0;
+        virtual ActorID Owner() const { return m_owner; } 
+        virtual void Owner(ActorID owner) 
+        {
+            // We assume that that actor owner is set once in the component lifetime
+            // Later, the owner setting will be done by some XML Actor loading routine
+            _ASSERTE(m_owner == NullActorID); m_owner = owner; 
+        }
 
-    private:
-        ComponentID m_id;
-        static ActorID m_lastActorId;
+    protected:
+        ActorID m_owner;
     };
 
     class Actor
@@ -45,10 +56,11 @@ namespace engiX
         ActorID Id() const { return m_id; }
         const wchar_t* Typename() const { return m_typename.c_str(); }
         void OnUpdate(_In_ const Timer& time);
+        bool Init();
 
         // template function for retrieving components
         template <class ComponentType>
-        std::weak_ptr<ComponentType> GetComponent(ComponentID id)
+        std::weak_ptr<ComponentType> GetComponent(_In_ ComponentID id)
         {
             ActorComponentRegistry::iterator findIt = m_components.find(id);
             if (findIt != m_components.end())
@@ -65,7 +77,7 @@ namespace engiX
         }
 
         const ActorComponentRegistry& GetComponents() const { return m_components; }
-        void AddComponent(StrongActorComponentPtr pComponent) { m_components.insert(make_pair(pComponent->Id(), pComponent)); }
+        void AddComponent(_In_ StrongActorComponentPtr pComponent);
 
     private:
         ActorID m_id;

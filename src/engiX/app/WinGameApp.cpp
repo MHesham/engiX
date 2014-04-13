@@ -58,6 +58,17 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     g_EventMgr->Deinit();
     g_Logger->Deinit();
 
+    // Dump DirectX object life states to catch leaking ones
+    ID3D11Debug* m_d3dDebug = nullptr;
+    DXUTGetD3D11Device()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug));
+    m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    SAFE_RELEASE(m_d3dDebug);
+
+    // Don't call any DXUT* method after the sthudown.
+    // After shutting down DXUT, any call to DXUT* methods may yield an unexpected behaivor
+    // e.g DXUTGetD3D11Device() will return null
+    DXUTShutdown();
+
     _CrtDumpMemoryLeaks();
 
     return exitCode;
@@ -81,10 +92,9 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
 
     CHRR(DXUTInit(false, true));
     CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
-    CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_10_1, true, m_screenSize.cx, m_screenSize.cy));
+    CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
 
-    m_pGameLogic = shared_ptr<GameLogic>(VCreateLogic());
-    m_pGameView = shared_ptr<HumanD3dGameView>(VCreateStartView());
+    m_pGameLogic = shared_ptr<GameLogic>(VCreateLogicAndStartView());
 
     m_pGameLogic->VInit();
 }
@@ -105,7 +115,6 @@ void WinGameApp::Run()
     // dispatching render calls. The sample framework will call your FrameMove 
     // and FrameRender callback when there is idle time between handling window messages.
     CHRR(DXUTMainLoop());
-    DXUTShutdown();
 }
 
 //----------------------------------------------------------
@@ -142,8 +151,8 @@ LRESULT CALLBACK WinGameApp::OnMsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
         {
-            _ASSERTE(pApp->m_pGameView);
-            *pbNoFurtherProcessing = pApp->m_pGameView->OnMsgProc(pApp->m_gameTime, uMsg, wParam, lParam);
+            _ASSERTE(pApp->m_pGameLogic->View());
+            *pbNoFurtherProcessing = pApp->m_pGameLogic->View()->OnMsgProc(pApp->m_gameTime, uMsg, wParam, lParam);
             break;
         }
     }
@@ -174,10 +183,6 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
     // 2. Update game logic
     _ASSERTE(pApp->m_pGameLogic);
     pApp->m_pGameLogic->VOnUpdate(pApp->m_gameTime);
-
-    // 3. Redraw scene with updated logic
-    _ASSERTE(pApp->m_pGameView);
-    pApp->m_pGameView->OnUpdate(pApp->m_gameTime);
 }
 
 //--------------------------------------------------------------------------------------
@@ -206,6 +211,6 @@ void CALLBACK WinGameApp::OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11De
     WinGameApp* pApp = (WinGameApp*)pUserContext;
     _ASSERTE(pApp);
 
-    _ASSERTE(pApp->m_pGameView);
-    pApp->m_pGameView->OnRender(pApp->m_gameTime);
+    _ASSERTE(pApp->m_pGameLogic->View());
+    pApp->m_pGameLogic->View()->OnRender();
 }

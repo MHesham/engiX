@@ -26,11 +26,15 @@
     <ClInclude Include="..\system\Delegate.h" />
     <ClInclude Include="..\view\D3d11Renderer.h" />
     <ClInclude Include="..\view\D3dShader.h" />
+    <ClInclude Include="..\view\GeneratedMeshComponent.h" />
+    <ClInclude Include="..\view\Geometry.h" />
     <ClInclude Include="..\view\SceneCamera.h" />
     <ClInclude Include="..\view\HumanD3dGameView.h" />
     <ClInclude Include="..\view\GeometryGenerator.h" />
     <ClInclude Include="..\view\LightHelper.h" />
     <ClInclude Include="..\view\GameScene.h" />
+    <ClInclude Include="..\view\SceneNode.h" />
+    <ClInclude Include="..\view\ViewInterfaces.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp" />
@@ -45,6 +49,7 @@
     <ClCompile Include="..\logic\GameLogic.cpp" />
     <ClCompile Include="..\view\D3dShader.cpp" />
     <ClCompile Include="..\view\GameScene.cpp" />
+    <ClCompile Include="..\view\GeneratedMeshComponent.cpp" />
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
     <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
@@ -116,7 +121,7 @@
       <ShaderType>Effect</ShaderType>
     </FxCompile>
     <FxCompile>
-      <ShaderModel>4.0</ShaderModel>
+      <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>$(IntDir)\fx\%(Filename).fxo</ObjectFileOutput>
       <AdditionalOptions>/Fc"$(IntDir)\fx\%(Filename).fxasm" %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>

@@ -35,8 +35,7 @@ namespace engiX
     protected:
         virtual const wchar_t* VGameAppTitle() const = 0;
         HWND WindowHandle() const { return DXUTGetHWND(); }
-        virtual GameLogic* VCreateLogic() const = 0;
-        virtual HumanD3dGameView* VCreateStartView() const = 0;
+        virtual GameLogic* VCreateLogicAndStartView() const = 0;
 
     private:
         // DXUT General Handlers
@@ -56,7 +55,6 @@ namespace engiX
         Timer m_gameTime;
         bool m_firstUpdate;
         std::shared_ptr<GameLogic> m_pGameLogic;
-        std::shared_ptr<HumanD3dGameView> m_pGameView;
    };
 
 #define g_pApp engiX::WinGameApp::Inst() 

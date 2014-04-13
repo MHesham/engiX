@@ -14,12 +14,10 @@ SceneCamera::SceneCamera() :
     m_nearPlane(DefaultNearPlane),
     m_farPlane(DefaultFarPlane),
     m_fovAngle(DefaultFovAngle),
-    m_pos(1.0, 1.0, 1.0),
-    m_displayChangeHandler(this, &SceneCamera::OnDisplaySettingsChanged),
-    m_toggleCameraHandler(this, &SceneCamera::OnToggleCamera)
+    m_pos(0.0, 1.0, 0.0),
+    m_displayChangeHandler(this, &SceneCamera::OnDisplaySettingsChanged)
 {
     g_EventMgr->Register(&m_displayChangeHandler, DisplaySettingsChangedEvt::TypeID);
-    g_EventMgr->Register(&m_toggleCameraHandler, ToggleCameraEvt::TypeID);
 }
 
 void SceneCamera::BuildViewProjMatrix()
@@ -45,10 +43,5 @@ void SceneCamera::OnDisplaySettingsChanged(EventPtr evt)
 {
     LogInfo("Display settings changed, updating camera");
     BuildViewProjMatrix();
-}
-
-void SceneCamera::OnToggleCamera(EventPtr evt)
-{
-    LogInfo("Need to toggle camera, but don't know how !");
 }
 

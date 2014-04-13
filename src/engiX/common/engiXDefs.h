@@ -34,8 +34,8 @@
 #define CHRR(x) (x)
 #endif
 
-#ifndef CHRRE
-#define CHRRE(x)                                               \
+#ifndef CHRRHR
+#define CHRRHR(x)                                               \
     {                                                       \
     HRESULT hr = (x);                                       \
     if(FAILED(hr))                                          \
@@ -45,11 +45,25 @@
     }                                                       \
     }
 #else
-#define CHRRE(x) (x)
+#define CHRRHR(x) (x)
 #endif
 
-#ifndef CBRE
-#define CBRE(x, hr)                                               \
+#ifndef CHRRB
+#define CHRRB(x)                                               \
+    {                                                       \
+    HRESULT hr = (x);                                       \
+    if(FAILED(hr))                                          \
+    {                                                       \
+    LogError("'%s' failed, hr=%x", L#x, hr);                \
+    return (SUCCEEDED(hr) ? true : false);                                        \
+    }                                                       \
+    }
+#else
+#define CHRRHR(x) (x)
+#endif
+
+#ifndef CBRHR
+#define CBRHR(x, hr)                                               \
     {                                                       \
     if(!(x))                                         \
     {                                                       \
@@ -58,8 +72,9 @@
     }                                                       \
     }
 #else
-#define CBRE(x) (x)
+#define CBRHR(x) (x)
 #endif
+
 
 #define DISALLOW_COPY_AND_ASSIGN(C) \
     C(const C&); C& operator = (const C&);
@@ -77,9 +92,10 @@
 #define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
 #endif
 
-
 typedef DirectX::XMFLOAT4X4 Mat4x4;
 typedef DirectX::XMFLOAT3 Vec3;
 typedef DirectX::XMFLOAT4 Vec4;
+typedef DirectX::XMFLOAT2 Vec2;
+typedef DirectX::XMFLOAT3 Color3;
 
 #endif 

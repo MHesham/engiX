@@ -38,6 +38,7 @@ namespace engiX
         real m_farPlane;
         real m_fovAngle;
         Delegate1P<SceneCamera, EventPtr> m_displayChangeHandler;
-        Delegate1P<SceneCamera, EventPtr> m_toggleCameraHandler;
     };
+
+    typedef std::shared_ptr<SceneCamera> StrongSceneCameraPtr;
 }

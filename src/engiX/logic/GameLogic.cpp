@@ -10,6 +10,8 @@ void GameLogic::VOnUpdate(_In_ const Timer& time)
 
     for (auto actor : m_actors)
         actor.second->OnUpdate(time);
+
+    m_pView->OnUpdate(time);
 }
 
 WeakActorPtr GameLogic::GetActor(ActorID id)
@@ -22,9 +24,20 @@ WeakActorPtr GameLogic::GetActor(ActorID id)
         return WeakActorPtr();
 }
 
-void GameLogic::VInit()
+bool GameLogic::VInit()
 {
+    VLoadLevel();
 
+    for (auto actor : m_actors)
+    {
+        if (!actor.second->Init())
+        {
+            LogError("Actor %s[%d] initialization failed", actor.second->Typename(), actor.second->Id());
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void GameLogic::Deinit()
