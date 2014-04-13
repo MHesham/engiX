@@ -28,6 +28,6 @@ Future Work:
 - Support Audio and sound effects.
 - Add support for XBOX One by implementing XBOX One specific App and View layers.
  
-References
-Game Coding Complete 4 by Mike McShaffry
-Introduction to 3D Game Programming with DirectX 11 by Frank Luna
+References:
+- Game Coding Complete 4 by Mike McShaffry
+- Introduction to 3D Game Programming with DirectX 11 by Frank Luna
