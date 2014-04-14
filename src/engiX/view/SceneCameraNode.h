@@ -4,10 +4,11 @@
 #include <DirectXPackedVector.h>
 #include "engiXDefs.h"
 #include "ViewInterfaces.h"
+#include "SceneNode.h"
 
 namespace engiX
 {
-    class SceneCameraNode : ISceneNode
+    class SceneCameraNode : public SceneNode
     {
     public:
         const static real DefaultNearPlane;
@@ -17,7 +18,7 @@ namespace engiX
         SceneCameraNode();
         virtual ~SceneCameraNode() {}
 
-        Mat4x4 ViewProjMatrix() const { return m_viewProjMat; }
+        Mat4x4 ViewProjMatrix() const;
 
         // Place the camera in its own space using spherical coordinates (radius r, inclination Theta, azimuth Phi)
         // Radius r: The radius of the spherical coordinate system
@@ -26,17 +27,11 @@ namespace engiX
         // The method assumes the provided Theta and Phi are within the correct range
         // More on the spherical coordinates here: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
-
-        bool PreRender() { return true; }
-        void PostRender() {}
-        void OnRender() {}
-        void OnConstruct();
-        void OnUpdate(_In_ const Timer& time) {}
+        HRESULT OnConstruct();
 
     protected:
-        void BuildViewProjMatrix();
-
-        Mat4x4 m_viewProjMat;
+        Mat4x4 m_projMat;
+        Mat4x4 m_viewMat;
         Vec3 m_pos;
         real m_nearPlane;
         real m_farPlane;

@@ -23,13 +23,13 @@ GeneratedMeshComponent::~GeneratedMeshComponent()
     SAFE_RELEASE(m_pVertexBuffer);
 }
 
-bool GeneratedMeshComponent::VInit()
+bool GeneratedMeshComponent::Init()
 {
-    m_pShader = StrongD3dShaderPtr(D3dDefaultShader::FromCompiledShaderFile(L"data/fx/default.fxo"));
+    m_pShader = StrongD3dShaderPtr(eNEW D3dShader(L"data/fx/default.fxo"));
 
     if (m_pShader == nullptr)
     {
-        LogError("Failed to load the default shader for %s[%d]", VTypename(), VId());
+        LogError("Failed to load the default shader for %s[%d]", Typename(), TypeId());
         return false;
     }
 

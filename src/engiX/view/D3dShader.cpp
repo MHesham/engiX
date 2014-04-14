@@ -9,15 +9,17 @@
 using namespace engiX;
 using namespace std;
 
-D3dDefaultShader::D3dDefaultShader()
+D3dShader::D3dShader(_In_ const wchar_t* pFxFilename)
 {
     m_pVertexLayout = nullptr;
     m_pFX = nullptr;
     m_pFxTech = nullptr;
     m_pFxWvpMatrix = nullptr;
+
+    m_fxFilename = pFxFilename;
 }
 
-D3dDefaultShader::~D3dDefaultShader()
+D3dShader::~D3dShader()
 {
     // It is a good practice to destroy objects in the reverse order
     // of their creation one to avoid dangling pointers/deadlocks
@@ -26,17 +28,19 @@ D3dDefaultShader::~D3dDefaultShader()
     SAFE_RELEASE(m_pVertexLayout);
 }
 
-StrongD3dShaderPtr D3dDefaultShader::FromCompiledShaderFile(_In_ const wchar_t* pFxFilename)
+HRESULT D3dShader::OnConstruct()
 {
-    HRESULT hr = S_OK;
+    SAFE_RELEASE(m_pFX);
+    SAFE_RELEASE(m_pVertexLayout);
+
     ifstream fxFile;
 
-    fxFile.open(pFxFilename, ios::in | ios::binary);
+    fxFile.open(m_fxFilename, ios::in | ios::binary);
 
     if (!fxFile.is_open())
     {
-        LogError("Failed to open fx file %s", pFxFilename);
-        return nullptr;
+        LogError("Failed to open fx file %s", m_fxFilename.c_str());
+        return HRESULT_FROM_WIN32(ERROR_ACCESS_DENIED);
     }
 
     fxFile.seekg(0, ios::end);
@@ -47,51 +51,36 @@ StrongD3dShaderPtr D3dDefaultShader::FromCompiledShaderFile(_In_ const wchar_t* 
     fxFile.read(&fxBinary[0], fxBinarySize);
     fxFile.close();
 
-    shared_ptr<D3dDefaultShader> pTempShader(eNEW D3dDefaultShader);
+    CHRRHR(D3DX11CreateEffectFromMemory((const void*)&fxBinary[0], (SIZE_T)fxBinarySize, 
+        0, DXUTGetD3D11Device(), &m_pFX));
 
-    CHR(D3DX11CreateEffectFromMemory((const void*)&fxBinary[0], (SIZE_T)fxBinarySize, 
-        0, DXUTGetD3D11Device(), &pTempShader->m_pFX));
+    m_pFxTech = m_pFX->GetTechniqueByName("DefaultTech");
+    m_pFxWvpMatrix = m_pFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 
-    if (SUCCEEDED(hr))
-    {
-        pTempShader->m_pFxTech = pTempShader->m_pFX->GetTechniqueByName("DefaultTech");
-        pTempShader->m_pFxWvpMatrix = pTempShader->m_pFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+    // Create the input layout using the vertex format
+    // Pass the shader input signature to get it validated against the vertex format provided
+    // to ensure type consistency
+    D3DX11_PASS_DESC passDesc;
+    CHRRHR(m_pFxTech->GetPassByIndex(0)->GetDesc(&passDesc));
 
-        // Create the input layout using the vertex format
-        // Pass the shader input signature to get it validated against the vertex format provided
-        // to ensure type consistency
-        D3DX11_PASS_DESC passDesc;
-        CHR(pTempShader->m_pFxTech->GetPassByIndex(0)->GetDesc(&passDesc));
+    CHRRHR(DXUTGetD3D11Device()->CreateInputLayout(D3D11VertexLayout_PositionColored, 2, passDesc.pIAInputSignature, 
+        passDesc.IAInputSignatureSize, &m_pVertexLayout));
 
-        if (SUCCEEDED(hr))
-        {
-            CHR(DXUTGetD3D11Device()->CreateInputLayout(D3D11VertexLayout_PositionColored, 2, passDesc.pIAInputSignature, 
-                passDesc.IAInputSignatureSize, &pTempShader->m_pVertexLayout));
-
-            if (SUCCEEDED(hr))
-            {
-                return StrongD3dShaderPtr(pTempShader);
-            }
-        }
-    }
-
-    return nullptr;
+    return S_OK;
 }
 
-HRESULT D3dDefaultShader::VApply()
+HRESULT D3dShader::OnPreRender(ISceneNode* pNode)
 {
-    HRESULT hr;
-
     // Set the vertex shader and the vertex layout
     DXUTGetD3D11DeviceContext()->IASetInputLayout(m_pVertexLayout);
 
     // For now we use a shader with 1 Tech and 1 Pass
-    CHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
+    CHRRHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
 
-    return hr;
+    return S_OK;
 }
 
-HRESULT D3dDefaultShader::CreateVertexBufferFrom(_In_ const void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB) const
+HRESULT D3dShader::CreateVertexBufferFrom(_In_ const void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB)
 {
     D3D11_BUFFER_DESC vbd;
     vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -107,7 +96,7 @@ HRESULT D3dDefaultShader::CreateVertexBufferFrom(_In_ const void* pVertexMemSour
     return S_OK;
 }
 
-HRESULT D3dDefaultShader::CreateIndexBufferFrom(_In_ const void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB) const
+HRESULT D3dShader::CreateIndexBufferFrom(_In_ const void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB)
 {
     D3D11_BUFFER_DESC ibd;
     ibd.Usage = D3D11_USAGE_IMMUTABLE;

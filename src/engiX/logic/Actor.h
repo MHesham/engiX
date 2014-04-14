@@ -27,10 +27,10 @@ namespace engiX
     public:
         ActorComponent() : m_owner(NullActorID) {}
         virtual ~ActorComponent() {}
-        virtual ComponentID VId() const = 0;
-        virtual const wchar_t* VTypename() const = 0;
-        virtual void VOnUpdate(_In_ const Timer& time) = 0;
-        virtual bool VInit() = 0;
+        virtual ComponentID TypeId() const = 0;
+        virtual const wchar_t* Typename() const = 0;
+        virtual void OnUpdate(_In_ const Timer& time) = 0;
+        virtual bool Init() = 0;
         virtual ActorID Owner() const { return m_owner; } 
         virtual void Owner(ActorID owner) 
         {

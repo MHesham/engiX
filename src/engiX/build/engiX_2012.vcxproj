@@ -23,6 +23,7 @@
     <ClInclude Include="..\logic\Events.h" />
     <ClInclude Include="..\logic\Actor.h" />
     <ClInclude Include="..\logic\GameLogic.h" />
+    <ClInclude Include="..\logic\TransformComponent.h" />
     <ClInclude Include="..\system\Delegate.h" />
     <ClInclude Include="..\view\D3d11Renderer.h" />
     <ClInclude Include="..\view\D3dShader.h" />
@@ -54,6 +55,7 @@
     <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
     <ClCompile Include="..\view\SceneCameraNode.cpp" />
+    <ClCompile Include="..\view\SceneNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\view\fx\default.fx" />

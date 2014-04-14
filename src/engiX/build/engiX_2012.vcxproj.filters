@@ -108,6 +108,9 @@
     <ClInclude Include="..\view\SceneCameraNode.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="..\logic\TransformComponent.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp">
@@ -159,6 +162,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\view\SceneCameraNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\SceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

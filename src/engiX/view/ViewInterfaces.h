@@ -12,7 +12,7 @@ namespace engiX
         virtual bool Init() = 0;
         virtual void OnRender() = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
-        virtual void OnConstruct() = 0;
+        virtual HRESULT OnConstruct() = 0;
         virtual bool OnMsgProc(_In_ const Timer& time, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam) = 0;
     };
 
@@ -20,11 +20,20 @@ namespace engiX
     {
     public:
         virtual ~ISceneNode() {}
-        virtual bool PreRender() = 0;
-        virtual void PostRender() = 0;
+        virtual HRESULT OnPreRender() = 0;
+        virtual void OnPostRender() = 0;
         virtual void OnRender() = 0;
-        virtual void OnConstruct() = 0;
+        virtual HRESULT OnConstruct() = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
     };
+
+    class ID3dShader
+    {
+    public:
+        virtual ~ID3dShader() {}
+        virtual HRESULT OnPreRender(ISceneNode* pNode) = 0;
+        virtual HRESULT OnConstruct() = 0;
+    };
+
 
 }

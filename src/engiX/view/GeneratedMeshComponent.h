@@ -2,10 +2,9 @@
 
 #include "Actor.h"
 #include "GeometryGenerator.h"
-#include "D3dShader.h"
 #include <memory>
 #include "Geometry.h"
-#include <DirectXColors.h>
+#include "D3dShader.h"
 
 namespace engiX
 {
@@ -18,10 +17,10 @@ namespace engiX
         GeneratedMeshComponent(_In_ GeometryGenerator::MeshData mesh, _In_ Color3 color);
         ~GeneratedMeshComponent();
         static const ComponentID TypeID = 0x6211EC48;
-        ComponentID VId() const { return TypeID; }
-        const wchar_t* VTypename() const { return L"GeneratedMeshComponent"; }
-        void VOnUpdate(_In_ const Timer& time) {}
-        bool VInit();
+        ComponentID TypeId() const { return TypeID; }
+        const wchar_t* Typename() const { return L"GeneratedMeshComponent"; }
+        void OnUpdate(_In_ const Timer& time) {}
+        bool Init();
         
     protected:
         StrongD3dShaderPtr m_pShader;

@@ -7,6 +7,7 @@
 #include "Events.h"
 #include "SceneCameraNode.h"
 #include "ViewInterfaces.h"
+#include <stack>
 
 namespace engiX
 {
@@ -18,13 +19,18 @@ namespace engiX
         GameScene();
         void OnUpdate(_In_ const Timer& time);
         void OnRender();
-        void OnConstruct();
-        void OnToggleCamera(EventPtr pEvt);
+        HRESULT OnConstruct();
+        void OnToggleCamera(_In_ EventPtr pEvt);
         bool Init();
+
+        void PushTransformation(_In_ const Mat4x4& t);
+        void PopTransformation() { m_worldTransformationStack.pop(); }
 
     protected:
         std::shared_ptr<ISceneNode> m_pSceneRoot;
         std::shared_ptr<SceneCameraNode> m_pCameraNode;
+        std::stack<Mat4x4> m_worldTransformationStack;
+
     };
     
     typedef std::shared_ptr<GameScene> StrongGameScenePtr;

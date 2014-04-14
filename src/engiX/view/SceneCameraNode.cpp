@@ -18,28 +18,26 @@ SceneCameraNode::SceneCameraNode() :
 {
 }
 
-void SceneCameraNode::OnConstruct()
+HRESULT SceneCameraNode::OnConstruct()
 {
     LogInfo("Display settings changed, updating camera");
-    BuildViewProjMatrix();
+
+    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, g_pApp->AspectRatio(), m_nearPlane, m_farPlane);
+    XMStoreFloat4x4(&m_viewMat, P);
+
+
+    return S_OK;
 }
 
-void SceneCameraNode::BuildViewProjMatrix()
-{
-    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, g_pApp->AspectRatio(), m_nearPlane, m_farPlane);
-    
-    XMVECTOR pos    = XMVectorSet(m_pos.x, m_pos.y, m_pos.z, 1.0f);
-    XMVECTOR target = XMVectorZero();
-    XMVECTOR up     = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+Mat4x4 SceneCameraNode::ViewProjMatrix() const 
+{ 
+    //XMStoreFloat4x4(&m_viewProjMat, V * P);
 
-    XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
-
-    XMStoreFloat4x4(&m_viewProjMat, V * P);
+    return m_viewMat;
 }
 
 void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
 {
     MathHelper::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
-    BuildViewProjMatrix();
 }
 

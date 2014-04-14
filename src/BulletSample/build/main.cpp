@@ -6,9 +6,12 @@
 #include "Actor.h"
 #include "GeometryGenerator.h"
 #include "GeneratedMeshComponent.h"
+#include "TransformComponent.h"
+#include <DirectXColors.h>
 
 using namespace engiX;
 using namespace std;
+using namespace DirectX;
 
 class BulletGameLogic : public GameLogic
 {
@@ -38,6 +41,9 @@ public:
 
         StrongActorComponentPtr pHeroMeshCmpt(eNEW GeneratedMeshComponent(heroMesh, heroColor));
         pHeroActor->AddComponent(pHeroMeshCmpt);
+
+        StrongActorComponentPtr pHeroTsfmCmpt(eNEW TransformComponent);
+        pHeroActor->AddComponent(pHeroTsfmCmpt);
 
         return pHeroActor;
     }

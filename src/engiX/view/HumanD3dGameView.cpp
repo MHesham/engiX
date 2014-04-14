@@ -16,9 +16,9 @@ bool HumanD3dGameView::Init()
     return true;
 }
 
-void HumanD3dGameView::OnConstruct()
+HRESULT HumanD3dGameView::OnConstruct()
 {
-    m_pScene->OnConstruct();
+    return m_pScene->OnConstruct();
 }
 
 void HumanD3dGameView::OnUpdate(_In_ const Timer& time)
