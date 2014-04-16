@@ -31,6 +31,7 @@ namespace engiX
         const SIZE& ScreenSize() const { return m_screenSize; }
         const Timer& GameTime() const { return m_gameTime; }
         real AspectRatio() const { return (real)m_screenSize.cx / (real)m_screenSize.cy; }
+        GameLogic* Logic() const { return m_pGameLogic; }
 
     protected:
         virtual const wchar_t* VGameAppTitle() const = 0;
@@ -54,7 +55,7 @@ namespace engiX
         SIZE m_screenSize;
         Timer m_gameTime;
         bool m_firstUpdate;
-        std::shared_ptr<GameLogic> m_pGameLogic;
+        GameLogic *m_pGameLogic;
    };
 
 #define g_pApp engiX::WinGameApp::Inst() 

@@ -14,6 +14,7 @@ namespace engiX
         const wchar_t* Typename() const { return L"TransformComponent"; }
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() {  return true; }
+        Mat4x4 Transform() const { return m_transform; }
 
         Vec3 Position() const { return Vec3(m_transform.m[3][0], m_transform.m[3][1], m_transform.m[3][2]); }
         void Position(const Vec3& newPos)

@@ -25,7 +25,7 @@
     <ClInclude Include="..\logic\GameLogic.h" />
     <ClInclude Include="..\logic\TransformComponent.h" />
     <ClInclude Include="..\system\Delegate.h" />
-    <ClInclude Include="..\view\D3d11Renderer.h" />
+    <ClInclude Include="..\view\D3dGeneratedMeshNode.h" />
     <ClInclude Include="..\view\D3dShader.h" />
     <ClInclude Include="..\view\GeneratedMeshComponent.h" />
     <ClInclude Include="..\view\Geometry.h" />
@@ -48,6 +48,7 @@
     <ClCompile Include="..\logic\EventManager.cpp" />
     <ClCompile Include="..\logic\GameActor.cpp" />
     <ClCompile Include="..\logic\GameLogic.cpp" />
+    <ClCompile Include="..\view\D3dGeneratedMeshNode.cpp" />
     <ClCompile Include="..\view\D3dShader.cpp" />
     <ClCompile Include="..\view\GameScene.cpp" />
     <ClCompile Include="..\view\GeneratedMeshComponent.cpp" />

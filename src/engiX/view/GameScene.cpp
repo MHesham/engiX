@@ -8,9 +8,15 @@ using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
-GameScene::GameScene()
+GameScene::GameScene() :
+    m_pCameraNode(eNEW SceneCameraNode(this))
 {
-    m_pCameraNode = shared_ptr<SceneCameraNode>(eNEW SceneCameraNode);
+}
+
+GameScene::~GameScene()
+{
+    SAFE_DELETE(m_pSceneRoot);
+    SAFE_DELETE(m_pCameraNode);
 }
 
 bool GameScene::Init()
@@ -31,7 +37,7 @@ HRESULT GameScene::OnConstruct()
 
 void GameScene::OnUpdate(_In_ const Timer& time)
 {
-
+    m_pSceneRoot->OnUpdate(time);
 }
 
 void GameScene::OnRender()
@@ -40,6 +46,10 @@ void GameScene::OnRender()
     DXUTGetD3D11DeviceContext()->ClearRenderTargetView(pRTV, Colors::LightBlue);
     ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
     DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
+
+    // Make sure that the stack has only the identify transformation
+    _ASSERTE(m_worldTransformationStack.size() == 1);
+    m_pSceneRoot->OnRender();
 }
 
 void GameScene::OnToggleCamera(_In_ EventPtr pEvt)

@@ -19,12 +19,11 @@ namespace engiX
 
         void View(std::shared_ptr<IGameView> pView) { m_pView = pView; }
         std::shared_ptr<IGameView> View() { return m_pView; }
+        WeakActorPtr GetActor(ActorID id);
 
     protected:
         virtual void VLoadLevel() = 0;
         void AddActor(StrongActorPtr pActor) { m_actors.insert(std::make_pair(pActor->Id(), pActor)); }
-        WeakActorPtr GetActor(ActorID id);
-
 
     private:
         ActorRegistry m_actors;

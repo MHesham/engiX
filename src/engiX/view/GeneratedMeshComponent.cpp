@@ -2,9 +2,10 @@
 
 using namespace engiX;
 
-GeneratedMeshComponent::GeneratedMeshComponent(GeometryGenerator::MeshData mesh, Color3 color) :
+GeneratedMeshComponent::GeneratedMeshComponent(_In_ const GeometryGenerator::MeshData& mesh, _In_ Color3 color) :
     m_pIndexBuffer(nullptr),
-    m_pVertexBuffer(nullptr)
+    m_pVertexBuffer(nullptr),
+    m_color(color)
 {
     m_vertices.resize(mesh.Vertices.size());
 
@@ -21,20 +22,4 @@ GeneratedMeshComponent::~GeneratedMeshComponent()
 {
     SAFE_RELEASE(m_pIndexBuffer);
     SAFE_RELEASE(m_pVertexBuffer);
-}
-
-bool GeneratedMeshComponent::Init()
-{
-    m_pShader = StrongD3dShaderPtr(eNEW D3dShader(L"data/fx/default.fxo"));
-
-    if (m_pShader == nullptr)
-    {
-        LogError("Failed to load the default shader for %s[%d]", Typename(), TypeId());
-        return false;
-    }
-
-    //CHRRB(m_pShader->CreateVertexBufferFrom(&m_vertices[0], m_vertices.size(), m_pVertexBuffer));
-    //CHRRB(m_pShader->CreateIndexBufferFrom(&m_indices[0], m_indices.size(), m_pIndexBuffer));
-
-    return true;
 }

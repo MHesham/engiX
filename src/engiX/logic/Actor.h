@@ -60,9 +60,9 @@ namespace engiX
 
         // template function for retrieving components
         template <class ComponentType>
-        std::weak_ptr<ComponentType> GetComponent(_In_ ComponentID id)
+        std::weak_ptr<ComponentType> GetComponent()
         {
-            ActorComponentRegistry::iterator findIt = m_components.find(id);
+            ActorComponentRegistry::iterator findIt = m_components.find(ComponentType::TypeID);
             if (findIt != m_components.end())
             {
                 StrongActorComponentPtr pBase(findIt->second);

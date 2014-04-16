@@ -78,6 +78,7 @@ WinGameApp::WinGameApp()
 {
     g_pAppInst = this;
 
+    m_pGameLogic = nullptr;
     m_screenSize.cx = DEFAULT_SCREEN_WIDTH;
     m_screenSize.cy = DEFAULT_SCREEN_HEIGHT;
     m_firstUpdate = true;
@@ -94,7 +95,7 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
     CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
     CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
 
-    m_pGameLogic = shared_ptr<GameLogic>(VCreateLogicAndStartView());
+    m_pGameLogic = VCreateLogicAndStartView();
 
     m_pGameLogic->VInit();
 }
@@ -104,7 +105,7 @@ void WinGameApp::Deinit()
     LogInfo("Finalizing Game App");
 
     m_pGameLogic->Deinit();
-
+    SAFE_DELETE(m_pGameLogic);
     SAFE_DELETE(g_pAppInst);
 }
 

@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include "Timer.h"
+#include "Actor.h"
 
 namespace engiX
 {
@@ -23,8 +24,11 @@ namespace engiX
         virtual HRESULT OnPreRender() = 0;
         virtual void OnPostRender() = 0;
         virtual void OnRender() = 0;
-        virtual HRESULT OnConstruct() = 0;
+        virtual void RenderChildren() = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
+        virtual HRESULT OnConstruct() = 0;
+        virtual bool AddChild(_In_ std::shared_ptr<ISceneNode> pChild) = 0;
+        virtual bool RemoveChild(_In_ ActorID actor) = 0;
     };
 
     class ID3dShader

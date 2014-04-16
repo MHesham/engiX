@@ -8,6 +8,8 @@
 
 namespace engiX
 {
+    class GameScene;
+
     class SceneCameraNode : public SceneNode
     {
     public:
@@ -15,10 +17,10 @@ namespace engiX
         const static real DefaultFarPlane;
         const static real DefaultFovAngle;
 
-        SceneCameraNode();
+        SceneCameraNode(GameScene* pScene);
         virtual ~SceneCameraNode() {}
 
-        Mat4x4 ViewProjMatrix() const;
+        Mat4x4 WorldViewProjMatrix() const;
 
         // Place the camera in its own space using spherical coordinates (radius r, inclination Theta, azimuth Phi)
         // Radius r: The radius of the spherical coordinate system
@@ -28,6 +30,9 @@ namespace engiX
         // More on the spherical coordinates here: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
         void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
         HRESULT OnConstruct();
+        void OnRender() {}
+        HRESULT OnPreRender() { return S_OK; }
+        void OnPostRender() {}
 
     protected:
         Mat4x4 m_projMat;

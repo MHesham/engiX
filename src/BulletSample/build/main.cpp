@@ -26,6 +26,16 @@ public:
         m_heroActor = pHeroActor->Id();
     }
 
+    StrongActorPtr BuildCameraActor()
+    {
+        StrongActorPtr pCamActor(eNEW Actor(L"HeroCamera"));
+
+        StrongActorComponentPtr pCamTsfmCmpt(eNEW TransformComponent);
+        pCamActor->AddComponent(pCamTsfmCmpt);
+
+
+    }
+
     StrongActorPtr BuildHeroActor()
     {
         StrongActorPtr pHeroActor(eNEW Actor(L"HeroTanker"));

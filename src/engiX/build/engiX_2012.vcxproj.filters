@@ -34,6 +34,9 @@
     <Filter Include="Header Files\View\Graphics">
       <UniqueIdentifier>{9c18e606-b1a3-4fa9-b952-fb1fce4a3fe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\View\Components">
+      <UniqueIdentifier>{95a27ccd-ff69-4b61-89e9-ee696e0bf60e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -75,9 +78,6 @@
     <ClInclude Include="..\view\GameScene.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\D3d11Renderer.h">
-      <Filter>Header Files\View\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\view\D3dShader.h">
       <Filter>Header Files\View\Graphics</Filter>
     </ClInclude>
@@ -93,12 +93,6 @@
     <ClInclude Include="..\logic\Actor.h">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\GeneratedMeshComponent.h">
-      <Filter>Header Files\View\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\view\Geometry.h">
-      <Filter>Header Files\View\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\view\ViewInterfaces.h">
       <Filter>Header Files\View</Filter>
     </ClInclude>
@@ -110,6 +104,15 @@
     </ClInclude>
     <ClInclude Include="..\logic\TransformComponent.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\D3dGeneratedMeshNode.h">
+      <Filter>Header Files\View\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\Geometry.h">
+      <Filter>Header Files\View\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\GeneratedMeshComponent.h">
+      <Filter>Header Files\View\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,10 +164,13 @@
     <ClCompile Include="..\view\GeneratedMeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\view\SceneCameraNode.cpp">
+    <ClCompile Include="..\view\SceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\view\SceneNode.cpp">
+    <ClCompile Include="..\view\D3dGeneratedMeshNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\SceneCameraNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

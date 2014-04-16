@@ -10,7 +10,8 @@ const real SceneCameraNode::DefaultNearPlane = 1.0f;
 const real SceneCameraNode::DefaultFarPlane = 1000.0f;
 const real SceneCameraNode::DefaultFovAngle = 0.25 * R_PI;
 
-SceneCameraNode::SceneCameraNode() :
+SceneCameraNode::SceneCameraNode(GameScene* pScene) :
+    SceneNode(NullActorID, pScene),
     m_nearPlane(DefaultNearPlane),
     m_farPlane(DefaultFarPlane),
     m_fovAngle(DefaultFovAngle),
@@ -25,11 +26,10 @@ HRESULT SceneCameraNode::OnConstruct()
     XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, g_pApp->AspectRatio(), m_nearPlane, m_farPlane);
     XMStoreFloat4x4(&m_viewMat, P);
 
-
     return S_OK;
 }
 
-Mat4x4 SceneCameraNode::ViewProjMatrix() const 
+Mat4x4 SceneCameraNode::WorldViewProjMatrix() const 
 { 
     //XMStoreFloat4x4(&m_viewProjMat, V * P);
 

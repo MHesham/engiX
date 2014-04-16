@@ -74,6 +74,8 @@ HRESULT D3dShader::OnPreRender(ISceneNode* pNode)
     // Set the vertex shader and the vertex layout
     DXUTGetD3D11DeviceContext()->IASetInputLayout(m_pVertexLayout);
 
+    //Mat4x4 mWorldViewProjection = pNode->GetCamera()->GetWorldViewProjection(pScene);
+
     // For now we use a shader with 1 Tech and 1 Pass
     CHRRHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
 
