@@ -7,17 +7,19 @@
 
 using namespace engiX;
 using namespace std;
+using namespace DirectX;
+
+SceneNode::SceneNode(ActorID actorId, GameScene* pScene) :
+    m_pScene(pScene),
+    m_actorId(actorId),
+    m_pParent(nullptr)
+{
+    XMStoreFloat4x4(&m_toParentWorldTsfm, XMMatrixIdentity());
+}
 
 HRESULT SceneNode::OnPreRender()
 {
-    _ASSERTE(g_pApp->Logic());
-    StrongActorPtr pActor((g_pApp->Logic()->GetActor(m_actorId)));
-    _ASSERTE(pActor);
-
-    shared_ptr<TransformComponent> pTransformCmpt(pActor->GetComponent<TransformComponent>());
-    _ASSERTE(pTransformCmpt);
-
-    m_pScene->PushTransformation(pTransformCmpt->Transform());
+    m_pScene->PushTransformation(m_toParentWorldTsfm);
 
     return S_OK;
 }
@@ -32,11 +34,26 @@ void SceneNode::RenderChildren()
     for (auto pChild : m_children)
     {
         if (SUCCEEDED(pChild->OnPreRender()))
+        {
             pChild->OnRender();
-
-        pChild->OnPostRender();
+            pChild->OnPostRender();
+        }
 
         pChild->RenderChildren();
+    }
+}
+
+void SceneNode::OnUpdate(_In_ const Timer& time)
+{
+    if (m_actorId != NullActorID)
+    {
+        _ASSERTE(g_pApp->Logic());
+        StrongActorPtr pActor((g_pApp->Logic()->GetActor(m_actorId)));
+
+        shared_ptr<TransformComponent> pTransformCmpt(pActor->GetComponent<TransformComponent>());
+        _ASSERTE(pTransformCmpt);
+
+        m_toParentWorldTsfm = pTransformCmpt->Transform();
     }
 }
 

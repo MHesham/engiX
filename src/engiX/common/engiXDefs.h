@@ -75,6 +75,19 @@
 #define CBRHR(x) (x)
 #endif
 
+#ifndef CBRB
+#define CBRB(x)                                               \
+    {                                                       \
+    if(!(x))                                         \
+    {                                                       \
+    LogError("'%s' failed", L#x);                \
+    return false;                                        \
+    }                                                       \
+    }
+#else
+#define CBRB(x) (x)
+#endif
+
 
 #define DISALLOW_COPY_AND_ASSIGN(C) \
     C(const C&); C& operator = (const C&);

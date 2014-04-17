@@ -1,15 +1,16 @@
 #include "GameScene.h"
-#include "DXUT.h"
-#include <DirectXColors.h>
-#include "EventManager.h"
 #include <memory>
+#include <DirectXColors.h>
+#include "DXUT.h"
+#include "EventManager.h"
 
 using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
 GameScene::GameScene() :
-    m_pCameraNode(eNEW SceneCameraNode(this))
+    m_pCameraNode(eNEW SceneCameraNode(this)),
+    m_pSceneRoot(eNEW RootSceneNode(this))
 {
 }
 
@@ -23,20 +24,22 @@ bool GameScene::Init()
 {
     m_pCameraNode->PlaceOnSphere(500.0, 0, 0.5 * R_PI);
 
-    Mat4x4 i;
-    XMStoreFloat4x4(&i, XMMatrixIdentity());
-    m_worldTransformationStack.push(i);
+    Mat4x4 identity;
+    XMStoreFloat4x4(&identity, XMMatrixIdentity());
+    m_worldTransformationStack.push(identity);
 
     return true;
 }
 
 HRESULT GameScene::OnConstruct()
 {
+    _ASSERTE(m_pSceneRoot);
     return m_pSceneRoot->OnConstruct();
 }
 
 void GameScene::OnUpdate(_In_ const Timer& time)
 {
+    _ASSERTE(m_pSceneRoot);
     m_pSceneRoot->OnUpdate(time);
 }
 
@@ -47,9 +50,19 @@ void GameScene::OnRender()
     ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
     DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
-    // Make sure that the stack has only the identify transformation
-    _ASSERTE(m_worldTransformationStack.size() == 1);
-    m_pSceneRoot->OnRender();
+    if (m_pSceneRoot && m_pCameraNode)
+    {
+        // Make sure that the stack has only the identify transformation
+        _ASSERTE(m_worldTransformationStack.size() == 1);
+
+        _ASSERTE(m_pSceneRoot);
+        if (SUCCEEDED(m_pSceneRoot->OnPreRender()))
+        {
+            m_pSceneRoot->OnRender();
+            m_pSceneRoot->RenderChildren();
+            m_pSceneRoot->OnPostRender();
+        }
+    }
 }
 
 void GameScene::OnToggleCamera(_In_ EventPtr pEvt)
@@ -66,4 +79,12 @@ void GameScene::PushTransformation(_In_ const Mat4x4& t)
     m_worldTransformationStack.push(m_worldTransformationStack.top());
     // Replace the top matrix with the new transformation
     XMStoreFloat4x4(&m_worldTransformationStack.top(), newTransMat * topMat);
+}
+
+void GameScene::PopTransformation()
+{ 
+    // The identity transform should always be there and no one
+    // should ever pop it if the scene rendering logic is correct
+    _ASSERTE(m_worldTransformationStack.size() > 1);
+    m_worldTransformationStack.pop(); 
 }

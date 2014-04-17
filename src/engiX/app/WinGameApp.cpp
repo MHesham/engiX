@@ -97,7 +97,7 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
 
     m_pGameLogic = VCreateLogicAndStartView();
 
-    m_pGameLogic->VInit();
+    m_pGameLogic->Init();
 }
 
 void WinGameApp::Deinit()
@@ -183,7 +183,7 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
 
     // 2. Update game logic
     _ASSERTE(pApp->m_pGameLogic);
-    pApp->m_pGameLogic->VOnUpdate(pApp->m_gameTime);
+    pApp->m_pGameLogic->OnUpdate(pApp->m_gameTime);
 }
 
 //--------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 
 using namespace engiX;
 
-void GameLogic::VOnUpdate(_In_ const Timer& time)
+void GameLogic::OnUpdate(_In_ const Timer& time)
 {
     g_EventMgr->OnUpdate(time);
 
@@ -24,9 +24,9 @@ WeakActorPtr GameLogic::GetActor(ActorID id)
         return WeakActorPtr();
 }
 
-bool GameLogic::VInit()
+bool GameLogic::Init()
 {
-    VLoadLevel();
+    LoadLevel();
 
     for (auto actor : m_actors)
     {
@@ -36,6 +36,8 @@ bool GameLogic::VInit()
             return false;
         }
     }
+
+    CBRB(m_pView->Init());
 
     return true;
 }

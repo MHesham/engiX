@@ -12,6 +12,7 @@ using namespace DirectX;
 bool HumanD3dGameView::Init()
 {
     m_pScene = StrongGameScenePtr(eNEW GameScene);
+    CBRB(m_pScene->Init());
 
     return true;
 }

@@ -25,7 +25,7 @@ namespace engiX
         bool Init();
         SceneCameraNode* Camera() { return m_pCameraNode; }
         void PushTransformation(_In_ const Mat4x4& t);
-        void PopTransformation() { m_worldTransformationStack.pop(); }
+        void PopTransformation();
 
     protected:
         ISceneNode* m_pSceneRoot;

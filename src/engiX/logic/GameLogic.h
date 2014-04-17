@@ -13,8 +13,8 @@ namespace engiX
 
         GameLogic() : m_pView(nullptr) {}
         virtual ~GameLogic() {}
-        virtual void VOnUpdate(_In_ const Timer& time);
-        virtual bool VInit();
+        virtual void OnUpdate(_In_ const Timer& time);
+        virtual bool Init();
         virtual void Deinit();
 
         void View(std::shared_ptr<IGameView> pView) { m_pView = pView; }
@@ -22,7 +22,7 @@ namespace engiX
         WeakActorPtr GetActor(ActorID id);
 
     protected:
-        virtual void VLoadLevel() = 0;
+        virtual void LoadLevel() = 0;
         void AddActor(StrongActorPtr pActor) { m_actors.insert(std::make_pair(pActor->Id(), pActor)); }
 
     private:

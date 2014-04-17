@@ -18,7 +18,7 @@ class BulletGameLogic : public GameLogic
 public:
     BulletGameLogic() {}
 
-    void VLoadLevel()
+    void LoadLevel()
     {
         StrongActorPtr pHeroActor = BuildHeroActor();
         AddActor(pHeroActor);
@@ -32,8 +32,6 @@ public:
 
         StrongActorComponentPtr pCamTsfmCmpt(eNEW TransformComponent);
         pCamActor->AddComponent(pCamTsfmCmpt);
-
-
     }
 
     StrongActorPtr BuildHeroActor()
