@@ -14,7 +14,7 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
     m_pView->OnUpdate(time);
 }
 
-WeakActorPtr GameLogic::GetActor(ActorID id)
+WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
 {
     ActorRegistry::iterator itr = m_actors.find(id);
 
@@ -23,6 +23,15 @@ WeakActorPtr GameLogic::GetActor(ActorID id)
     else
         return WeakActorPtr();
 }
+
+bool GameLogic::AddActor(_In_ StrongActorPtr pActor) 
+{ 
+    CBRB(m_actors.insert(std::make_pair(pActor->Id(), pActor)).second);
+    g_EventMgr->Queue(EventPtr(eNEW ActorCreatedEvt(pActor->Id(), 0.0f)));
+
+    return true;
+}
+
 
 bool GameLogic::Init()
 {

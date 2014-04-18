@@ -111,7 +111,7 @@
     <ClInclude Include="..\view\Geometry.h">
       <Filter>Header Files\View\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\GeneratedMeshComponent.h">
+    <ClInclude Include="..\view\RenderComponent.h">
       <Filter>Header Files\View\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -161,9 +161,6 @@
     <ClCompile Include="..\logic\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\view\GeneratedMeshComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\view\SceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -171,6 +168,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\view\SceneCameraNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\RenderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -48,7 +48,7 @@ void SceneNode::OnUpdate(_In_ const Timer& time)
     if (m_actorId != NullActorID)
     {
         _ASSERTE(g_pApp->Logic());
-        StrongActorPtr pActor((g_pApp->Logic()->GetActor(m_actorId)));
+        StrongActorPtr pActor((g_pApp->Logic()->FindActor(m_actorId)));
 
         shared_ptr<TransformComponent> pTransformCmpt(pActor->GetComponent<TransformComponent>());
         _ASSERTE(pTransformCmpt);

@@ -27,7 +27,7 @@
     <ClInclude Include="..\system\Delegate.h" />
     <ClInclude Include="..\view\D3dGeneratedMeshNode.h" />
     <ClInclude Include="..\view\D3dShader.h" />
-    <ClInclude Include="..\view\GeneratedMeshComponent.h" />
+    <ClInclude Include="..\view\RenderComponent.h" />
     <ClInclude Include="..\view\Geometry.h" />
     <ClInclude Include="..\view\SceneCameraNode.h" />
     <ClInclude Include="..\view\HumanD3dGameView.h" />
@@ -51,7 +51,7 @@
     <ClCompile Include="..\view\D3dGeneratedMeshNode.cpp" />
     <ClCompile Include="..\view\D3dShader.cpp" />
     <ClCompile Include="..\view\GameScene.cpp" />
-    <ClCompile Include="..\view\GeneratedMeshComponent.cpp" />
+    <ClCompile Include="..\view\RenderComponent.cpp" />
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
     <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />
@@ -112,6 +112,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -3,6 +3,7 @@
 #include <DirectXColors.h>
 #include "DXUT.h"
 #include "EventManager.h"
+#include "WinGameApp.h"
 
 using namespace engiX;
 using namespace std;
@@ -10,7 +11,8 @@ using namespace DirectX;
 
 GameScene::GameScene() :
     m_pCameraNode(eNEW SceneCameraNode(this)),
-    m_pSceneRoot(eNEW RootSceneNode(this))
+    m_pSceneRoot(eNEW RootSceneNode(this)),
+    pActorCreatedHdlr(this, &GameScene::OnActorCreated)
 {
 }
 
@@ -27,6 +29,8 @@ bool GameScene::Init()
     Mat4x4 identity;
     XMStoreFloat4x4(&identity, XMMatrixIdentity());
     m_worldTransformationStack.push(identity);
+
+    g_EventMgr->Register(&pActorCreatedHdlr, ActorCreatedEvt::TypeID);
 
     return true;
 }
@@ -65,9 +69,20 @@ void GameScene::OnRender()
     }
 }
 
-void GameScene::OnToggleCamera(_In_ EventPtr pEvt)
+void GameScene::OnActorCreated(_In_ EventPtr pEvt)
 {
-    LogInfo("Scene needs to toggle camera, but doesn't know how!");
+    shared_ptr<ActorCreatedEvt> pActrEvt = static_pointer_cast<ActorCreatedEvt>(pEvt);
+
+    WeakActorPtr pWeakActor(g_pApp->Logic()->FindActor(pActrEvt->ActorId()));
+    if (pWeakActor.expired())
+    {
+        LogWarning("Actor[%x] no longe exist, failed to find it", pActrEvt->ActorId());
+        return;
+    }
+
+    StrongActorPtr pActor = pWeakActor.lock();
+
+    LogInfo("Actor Created, What to do!");
 }
 
 void GameScene::PushTransformation(_In_ const Mat4x4& t)

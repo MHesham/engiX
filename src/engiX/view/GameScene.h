@@ -21,7 +21,7 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time);
         void OnRender();
         HRESULT OnConstruct();
-        void OnToggleCamera(_In_ EventPtr pEvt);
+        void OnActorCreated(_In_ EventPtr pEvt);
         bool Init();
         SceneCameraNode* Camera() { return m_pCameraNode; }
         void PushTransformation(_In_ const Mat4x4& t);
@@ -31,7 +31,7 @@ namespace engiX
         ISceneNode* m_pSceneRoot;
         SceneCameraNode* m_pCameraNode;
         std::stack<Mat4x4> m_worldTransformationStack;
-
+        Delegate1P<GameScene, EventPtr> pActorCreatedHdlr;
     };
     
     typedef std::shared_ptr<GameScene> StrongGameScenePtr;

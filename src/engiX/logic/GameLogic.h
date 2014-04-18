@@ -17,13 +17,13 @@ namespace engiX
         virtual bool Init();
         virtual void Deinit();
 
-        void View(std::shared_ptr<IGameView> pView) { m_pView = pView; }
+        void View(_In_ std::shared_ptr<IGameView> pView) { m_pView = pView; }
         std::shared_ptr<IGameView> View() { return m_pView; }
-        WeakActorPtr GetActor(ActorID id);
+        WeakActorPtr FindActor(_In_ ActorID id);
 
     protected:
         virtual void LoadLevel() = 0;
-        void AddActor(StrongActorPtr pActor) { m_actors.insert(std::make_pair(pActor->Id(), pActor)); }
+        bool AddActor(_In_ StrongActorPtr pActor);
 
     private:
         ActorRegistry m_actors;

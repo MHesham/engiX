@@ -5,7 +5,7 @@
 #include "HumanD3dGameView.h"
 #include "Actor.h"
 #include "GeometryGenerator.h"
-#include "GeneratedMeshComponent.h"
+#include "RenderComponent.h"
 #include "TransformComponent.h"
 #include <DirectXColors.h>
 
@@ -39,18 +39,18 @@ public:
         StrongActorPtr pHeroActor(eNEW Actor(L"HeroTanker"));
         
         // 1. Build hero visuals
-        GeometryGenerator::MeshData heroMesh;
-        m_meshGenerator.CreateBox(50.0, 50.0, 50.0, heroMesh);
+        BoxMeshComponent::Properties props;
+        props.Color.x = DirectX::Colors::Green.f[0];
+        props.Color.y = DirectX::Colors::Green.f[1];
+        props.Color.z = DirectX::Colors::Green.f[2];
 
-        Color3 heroColor;
-        heroColor.x = DirectX::Colors::Green.f[0];
-        heroColor.y = DirectX::Colors::Green.f[1];
-        heroColor.z = DirectX::Colors::Green.f[2];
+        props.Width = props.Height = props.Depth = 50.0;
 
-        StrongActorComponentPtr pHeroMeshCmpt(eNEW GeneratedMeshComponent(heroMesh, heroColor));
+        shared_ptr<BoxMeshComponent> pHeroMeshCmpt(eNEW BoxMeshComponent(props));
         pHeroActor->AddComponent(pHeroMeshCmpt);
 
-        StrongActorComponentPtr pHeroTsfmCmpt(eNEW TransformComponent);
+        shared_ptr<TransformComponent> pHeroTsfmCmpt(eNEW TransformComponent);
+        pHeroTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
         pHeroActor->AddComponent(pHeroTsfmCmpt);
 
         return pHeroActor;
