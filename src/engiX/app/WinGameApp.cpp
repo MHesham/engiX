@@ -1,8 +1,9 @@
 #include "WinGameApp.h"
 #include <memory>
+#include <sstream>
 #include "Logger.h"
 #include "EventManager.h"
-
+#
 using namespace engiX;
 using namespace std;
 
@@ -82,6 +83,8 @@ WinGameApp::WinGameApp()
     m_screenSize.cx = DEFAULT_SCREEN_WIDTH;
     m_screenSize.cy = DEFAULT_SCREEN_HEIGHT;
     m_firstUpdate = true;
+    m_oneSecFrameCnt = 0;
+    m_timeElapsedSinceLastFrame = 0.0f;
 }
 
 void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
@@ -91,13 +94,12 @@ void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
     // Show the cursor and clip it when in full screen
     DXUTSetCursorSettings(true, true);
 
+    m_pGameLogic = VCreateLogicAndStartView();
+    m_pGameLogic->Init();
+
     CHRR(DXUTInit(false, true));
     CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
     CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
-
-    m_pGameLogic = VCreateLogicAndStartView();
-
-    m_pGameLogic->Init();
 }
 
 void WinGameApp::Deinit()
@@ -176,7 +178,10 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
         return;
 
     if (pApp->m_firstUpdate)
-        pApp->m_gameTime.Start();
+    {
+        pApp->m_gameTime.Reset();
+        pApp->m_firstUpdate = false;
+    }
 
     // 1. Dispatch engine events
     g_EventMgr->OnUpdate(pApp->m_gameTime);
@@ -217,7 +222,39 @@ void CALLBACK WinGameApp::OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11De
 {
     WinGameApp* pApp = (WinGameApp*)pUserContext;
     _ASSERTE(pApp);
+    
+    pApp->m_gameTime.Tick();
+    pApp->SetFrameStatistics();
 
     _ASSERTE(pApp->m_pGameLogic->View());
     pApp->m_pGameLogic->View()->OnRender();
+}
+
+void WinGameApp::SetFrameStatistics()
+{
+    // Code computes the average frames per second, and also the 
+    // average time it takes to render one frame.  These stats 
+    // are appended to the window caption bar.
+
+    m_oneSecFrameCnt++;
+
+    real totalTime = m_gameTime.TotalTime();
+    
+    // Compute averages over one second period.
+    if ((totalTime - m_timeElapsedSinceLastFrame) >= 1.0f )
+    {
+        float fps = (float)m_oneSecFrameCnt; // fps = frameCnt / 1
+        float mspf = 1000.0f / fps;
+
+        std::wostringstream outs;   
+        outs.precision(6);
+        outs << VGameAppTitle() << L"    "
+            << L"FPS: " << fps << L"    " 
+            << L"Frame Time: " << mspf << L" (ms)";
+        SetWindowText(DXUTGetHWND(), outs.str().c_str());
+
+        // Reset for next average.
+        m_oneSecFrameCnt = 0;
+        m_timeElapsedSinceLastFrame += 1.0f;
+    }
 }

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Timer.h"
 #include <memory>
 #include <vector>
+#include <stack>
+#include <d3d11.h>
+#include "Timer.h"
 #include "Delegate.h"
 #include "Events.h"
 #include "SceneCameraNode.h"
 #include "ViewInterfaces.h"
-#include <stack>
 
 namespace engiX
 {
@@ -22,16 +23,21 @@ namespace engiX
         void OnRender();
         HRESULT OnConstruct();
         void OnActorCreated(_In_ EventPtr pEvt);
+        void OnToggleCamera(_In_ EventPtr pEvt);
         bool Init();
-        SceneCameraNode* Camera() { return m_pCameraNode; }
+        std::shared_ptr<SceneCameraNode> Camera() { return m_pCameraNodes[m_currCameraIdx]; }
         void PushTransformation(_In_ const Mat4x4& t);
         void PopTransformation();
+        const Mat4x4 TopTransformation() const { return m_worldTransformationStack.top(); }
 
     protected:
         ISceneNode* m_pSceneRoot;
-        SceneCameraNode* m_pCameraNode;
+        std::vector<std::shared_ptr<SceneCameraNode>> m_pCameraNodes;
         std::stack<Mat4x4> m_worldTransformationStack;
-        Delegate1P<GameScene, EventPtr> pActorCreatedHdlr;
+        Delegate1P<GameScene, EventPtr> m_actorCreatedHdlr;
+        Delegate1P<GameScene, EventPtr> m_toggleCameraHdlr;
+        ID3D11RasterizerState* m_pWireframeRS;
+        size_t m_currCameraIdx;
     };
     
     typedef std::shared_ptr<GameScene> StrongGameScenePtr;

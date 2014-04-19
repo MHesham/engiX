@@ -4,39 +4,64 @@
 #include "DXUT.h"
 #include "EventManager.h"
 #include "WinGameApp.h"
+#include "RenderComponent.h"
 
 using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
 GameScene::GameScene() :
-    m_pCameraNode(eNEW SceneCameraNode(this)),
     m_pSceneRoot(eNEW RootSceneNode(this)),
-    pActorCreatedHdlr(this, &GameScene::OnActorCreated)
+    m_pWireframeRS(nullptr),
+    m_actorCreatedHdlr(this, &GameScene::OnActorCreated),
+    m_toggleCameraHdlr(this, &GameScene::OnToggleCamera)
 {
+    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
+    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
+    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
+    m_currCameraIdx = 0;
 }
 
 GameScene::~GameScene()
 {
     SAFE_DELETE(m_pSceneRoot);
-    SAFE_DELETE(m_pCameraNode);
+    SAFE_RELEASE(m_pWireframeRS);
 }
 
 bool GameScene::Init()
 {
-    m_pCameraNode->PlaceOnSphere(500.0, 0, 0.5 * R_PI);
+    m_pCameraNodes[0]->PlaceOnSphere(600.0, 0.5f * R_PI, 0.25f * R_PI);
+    m_pSceneRoot->AddChild(m_pCameraNodes[0]);
+
+    m_pCameraNodes[1]->PlaceOnSphere(600.0, 0.25f * R_PI, 0.25f * R_PI);
+    m_pSceneRoot->AddChild(m_pCameraNodes[1]);
+
+    m_pCameraNodes[2]->PlaceOnSphere(800.0, 0.5f * R_PI, 0.01f * R_PI);
+    m_pSceneRoot->AddChild(m_pCameraNodes[2]);
 
     Mat4x4 identity;
     XMStoreFloat4x4(&identity, XMMatrixIdentity());
     m_worldTransformationStack.push(identity);
 
-    g_EventMgr->Register(&pActorCreatedHdlr, ActorCreatedEvt::TypeID);
+    g_EventMgr->Register(&m_actorCreatedHdlr, ActorCreatedEvt::TypeID);
+    g_EventMgr->Register(&m_toggleCameraHdlr, ToggleCameraEvt::TypeID);
 
     return true;
 }
 
 HRESULT GameScene::OnConstruct()
 {
+    SAFE_RELEASE(m_pWireframeRS);
+
+    D3D11_RASTERIZER_DESC wireframeDesc;
+    ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+    wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+    wireframeDesc.CullMode = D3D11_CULL_BACK;
+    wireframeDesc.FrontCounterClockwise = false;
+    wireframeDesc.DepthClipEnable = true;
+
+    CHRRHR(DXUTGetD3D11Device()->CreateRasterizerState(&wireframeDesc, &m_pWireframeRS));
+
     _ASSERTE(m_pSceneRoot);
     return m_pSceneRoot->OnConstruct();
 }
@@ -50,11 +75,13 @@ void GameScene::OnUpdate(_In_ const Timer& time)
 void GameScene::OnRender()
 {
     ID3D11RenderTargetView* pRTV = DXUTGetD3D11RenderTargetView();
-    DXUTGetD3D11DeviceContext()->ClearRenderTargetView(pRTV, Colors::LightBlue);
+    DXUTGetD3D11DeviceContext()->ClearRenderTargetView(pRTV, DirectX::Colors::LightBlue);
     ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
     DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
-    if (m_pSceneRoot && m_pCameraNode)
+    DXUTGetD3D11DeviceContext()->RSSetState(m_pWireframeRS);
+
+    if (m_pSceneRoot && m_pCameraNodes[m_currCameraIdx])
     {
         // Make sure that the stack has only the identify transformation
         _ASSERTE(m_worldTransformationStack.size() == 1);
@@ -74,15 +101,27 @@ void GameScene::OnActorCreated(_In_ EventPtr pEvt)
     shared_ptr<ActorCreatedEvt> pActrEvt = static_pointer_cast<ActorCreatedEvt>(pEvt);
 
     WeakActorPtr pWeakActor(g_pApp->Logic()->FindActor(pActrEvt->ActorId()));
-    if (pWeakActor.expired())
-    {
-        LogWarning("Actor[%x] no longe exist, failed to find it", pActrEvt->ActorId());
-        return;
-    }
+    _ASSERTE(!pWeakActor.expired());
 
     StrongActorPtr pActor = pWeakActor.lock();
 
-    LogInfo("Actor Created, What to do!");
+    WeakActorComponentPtr pWeakRenderer(pActor->GetComponent<RenderComponent>());
+    _ASSERTE(!pWeakRenderer.expired());
+
+    shared_ptr<RenderComponent> pRenderer = static_pointer_cast<RenderComponent>(pWeakRenderer.lock());
+
+    auto pSceneNode = pRenderer->CreateSceneNode(this);
+    CHRR(pSceneNode->OnConstruct());
+
+    m_pSceneRoot->AddChild(pSceneNode);
+
+    LogInfo("Actor %s[%x] ScenNode created and added to scene root node children", pActor->Typename(), pActor->Id());
+}
+
+void GameScene::OnToggleCamera(_In_ EventPtr pEvt)
+{
+    LogInfo("Game scene is toggle its camera");
+    m_currCameraIdx = (m_currCameraIdx + 1) % m_pCameraNodes.size();
 }
 
 void GameScene::PushTransformation(_In_ const Mat4x4& t)

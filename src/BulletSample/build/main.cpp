@@ -20,31 +20,51 @@ public:
 
     void LoadLevel()
     {
-        StrongActorPtr pHeroActor = BuildHeroActor();
+        StrongActorPtr pHeroActor = BuildHero();
         AddActor(pHeroActor);
+
+        StrongActorPtr pTerrainActor = BuildTerrain();
+        AddActor(pTerrainActor);
 
         m_heroActor = pHeroActor->Id();
     }
 
-    StrongActorPtr BuildCameraActor()
+    StrongActorPtr BuildTerrain()
     {
-        StrongActorPtr pCamActor(eNEW Actor(L"HeroCamera"));
+        StrongActorPtr pTrnActor(eNEW Actor(L"Terrain"));
 
-        StrongActorComponentPtr pCamTsfmCmpt(eNEW TransformComponent);
-        pCamActor->AddComponent(pCamTsfmCmpt);
+        // 1. Build grid visuals
+        GridMeshComponent::Properties props;
+        props.Color.x = DirectX::Colors::Brown.f[0];
+        props.Color.y = DirectX::Colors::Brown.f[1];
+        props.Color.z = DirectX::Colors::Brown.f[2];
+
+        props.Width = 500.0;
+        props.Depth = 500.0;
+
+        shared_ptr<RenderComponent> pTrnMeshCmpt(eNEW GridMeshComponent(props));
+        pTrnActor->AddComponent(pTrnMeshCmpt);
+
+        shared_ptr<TransformComponent> pTrnTsfmCmpt(eNEW TransformComponent);
+        pTrnTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
+        pTrnActor->AddComponent(pTrnTsfmCmpt);
+
+        return pTrnActor;
     }
 
-    StrongActorPtr BuildHeroActor()
+    StrongActorPtr BuildHero()
     {
-        StrongActorPtr pHeroActor(eNEW Actor(L"HeroTanker"));
+        StrongActorPtr pHeroActor(eNEW Actor(L"Hero"));
         
         // 1. Build hero visuals
         BoxMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Green.f[0];
-        props.Color.y = DirectX::Colors::Green.f[1];
-        props.Color.z = DirectX::Colors::Green.f[2];
+        props.Color.x = DirectX::Colors::Red.f[0];
+        props.Color.y = DirectX::Colors::Red.f[1];
+        props.Color.z = DirectX::Colors::Red.f[2];
 
-        props.Width = props.Height = props.Depth = 50.0;
+        props.Width = 25.0;
+        props.Depth = 50.0;
+        props.Height = 25.0;
 
         shared_ptr<BoxMeshComponent> pHeroMeshCmpt(eNEW BoxMeshComponent(props));
         pHeroActor->AddComponent(pHeroMeshCmpt);

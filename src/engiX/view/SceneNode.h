@@ -15,21 +15,25 @@ namespace engiX
     class SceneNode : public ISceneNode
     {
     public:
-        SceneNode(ActorID actorId, GameScene* pScene);
+        SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene);
         HRESULT OnPreRender();
         void OnPostRender();
-        HRESULT OnConstruct() { return S_OK; }
+        HRESULT OnConstruct();
         void OnUpdate(_In_ const Timer& time);
         bool AddChild(_In_ std::shared_ptr<ISceneNode> pChild);
         bool RemoveChild(_In_ ActorID actor);
         void RenderChildren();
+        GameScene* Scene() { return m_pScene; }
+        ISceneNode* Parent() const { return m_pParent; }
+        void Parent(ISceneNode* pParent) { m_pParent = pParent; }
 
     protected:
         ActorID m_actorId;
         GameScene *m_pScene;
         NodeList m_children;
-        SceneNode* m_pParent;
+        ISceneNode* m_pParent;
         Mat4x4 m_toParentWorldTsfm;
+        Mat4x4 m_frmParentWorldTsfm;
     };
 
     class RootSceneNode : public SceneNode

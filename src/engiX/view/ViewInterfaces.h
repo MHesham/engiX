@@ -6,6 +6,8 @@
 
 namespace engiX
 {
+    class GameScene;
+
     class IGameView
     {
     public:
@@ -29,6 +31,9 @@ namespace engiX
         virtual HRESULT OnConstruct() = 0;
         virtual bool AddChild(_In_ std::shared_ptr<ISceneNode> pChild) = 0;
         virtual bool RemoveChild(_In_ ActorID actor) = 0;
+        virtual GameScene* Scene() = 0;
+        virtual ISceneNode* Parent() const = 0;
+        virtual void Parent(ISceneNode* pParent) = 0;
     };
 
     class ID3dShader

@@ -9,12 +9,13 @@ using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
-SceneNode::SceneNode(ActorID actorId, GameScene* pScene) :
+SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
     m_pScene(pScene),
     m_actorId(actorId),
     m_pParent(nullptr)
 {
     XMStoreFloat4x4(&m_toParentWorldTsfm, XMMatrixIdentity());
+    XMStoreFloat4x4(&m_frmParentWorldTsfm, XMMatrixIdentity());
 }
 
 HRESULT SceneNode::OnPreRender()
@@ -55,11 +56,28 @@ void SceneNode::OnUpdate(_In_ const Timer& time)
 
         m_toParentWorldTsfm = pTransformCmpt->Transform();
     }
+
+    for (auto pChild : m_children)
+        pChild->OnUpdate(time);
+}
+
+HRESULT SceneNode::OnConstruct()
+{
+    for (auto pChild : m_children)
+        CHRRHR(pChild->OnConstruct());
+
+    return S_OK;
 }
 
 bool SceneNode::AddChild(_In_ shared_ptr<ISceneNode> pChild)
 {
-    return m_children.insert(static_pointer_cast<SceneNode>(pChild)).second;
+    if (m_children.insert(static_pointer_cast<SceneNode>(pChild)).second)
+    {
+        pChild->Parent(this);
+        return true;
+    }
+
+    return false;
 }
 
 bool SceneNode::RemoveChild(_In_ ActorID actor)

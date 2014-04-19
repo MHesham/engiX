@@ -33,6 +33,8 @@ HRESULT D3dGeneratedMeshNode::OnConstruct()
 {
     CHRRHR(SceneNode::OnConstruct());
     CHRRHR(m_shader.OnConstruct());
+    CHRRHR(D3dShader::CreateVertexBufferFrom(&m_vertices[0], m_vertices.size(), m_pVertexBuffer));
+    CHRRHR(D3dShader::CreateIndexBufferFrom(&m_indices[0], m_indices.size(), m_pIndexBuffer));
 
     return S_OK;
 }
@@ -51,11 +53,14 @@ void D3dGeneratedMeshNode::OnRender()
     StrongActorPtr pActor((g_pApp->Logic()->FindActor(m_actorId)));
     _ASSERTE(pActor);
 
-    shared_ptr<BoxMeshComponent> pMeshCmpt(pActor->GetComponent<BoxMeshComponent>());
+    shared_ptr<RenderComponent> pMeshCmpt(pActor->GetComponent<RenderComponent>());
     _ASSERTE(pMeshCmpt);
 
     UINT stride = sizeof(D3D11Vertex_PositionColored);
     UINT offset = 0;
+
+    _ASSERTE(m_pVertexBuffer);
+    _ASSERTE(m_pIndexBuffer);
 
     DXUTGetD3D11DeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     DXUTGetD3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);

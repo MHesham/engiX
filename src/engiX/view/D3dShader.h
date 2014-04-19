@@ -20,8 +20,8 @@ namespace engiX
         HRESULT OnPreRender(ISceneNode* pNode);
         HRESULT OnConstruct();
 
-        static HRESULT CreateVertexBufferFrom(_In_ const void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB);
-        static HRESULT CreateIndexBufferFrom(_In_ const void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB);
+        static HRESULT CreateVertexBufferFrom(_In_ void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB);
+        static HRESULT CreateIndexBufferFrom(_In_ void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB);
 
     protected:
         DISALLOW_COPY_AND_ASSIGN(D3dShader);

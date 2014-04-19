@@ -37,6 +37,7 @@ namespace engiX
         virtual const wchar_t* VGameAppTitle() const = 0;
         HWND WindowHandle() const { return DXUTGetHWND(); }
         virtual GameLogic* VCreateLogicAndStartView() const = 0;
+        void SetFrameStatistics();
 
     private:
         // DXUT General Handlers
@@ -56,6 +57,8 @@ namespace engiX
         Timer m_gameTime;
         bool m_firstUpdate;
         GameLogic *m_pGameLogic;
+        int m_oneSecFrameCnt;
+        real m_timeElapsedSinceLastFrame;
    };
 
 #define g_pApp engiX::WinGameApp::Inst() 

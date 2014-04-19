@@ -14,30 +14,47 @@ SceneCameraNode::SceneCameraNode(GameScene* pScene) :
     SceneNode(NullActorID, pScene),
     m_nearPlane(DefaultNearPlane),
     m_farPlane(DefaultFarPlane),
-    m_fovAngle(DefaultFovAngle),
-    m_pos(0.0, 1.0, 0.0)
+    m_fovAngle(DefaultFovAngle)
 {
+    XMStoreFloat4x4(&m_projMat, XMMatrixIdentity());
 }
 
 HRESULT SceneCameraNode::OnConstruct()
 {
     LogInfo("Display settings changed, updating camera");
 
-    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, g_pApp->AspectRatio(), m_nearPlane, m_farPlane);
-    XMStoreFloat4x4(&m_viewMat, P);
+    real aspectRatio = g_pApp->AspectRatio();
+    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * R_PI, aspectRatio, m_nearPlane, m_farPlane);
+    XMStoreFloat4x4(&m_projMat, P);
 
     return S_OK;
 }
 
-Mat4x4 SceneCameraNode::WorldViewProjMatrix() const 
+Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const 
 { 
-    //XMStoreFloat4x4(&m_viewProjMat, V * P);
+    const Mat4x4 sceneWorldTsfm = m_pScene->TopTransformation();
 
-    return m_viewMat;
+    XMMATRIX world = XMLoadFloat4x4(&sceneWorldTsfm);
+    XMMATRIX view = XMLoadFloat4x4(&m_frmParentWorldTsfm);
+    XMMATRIX proj = XMLoadFloat4x4(&m_projMat);
+
+    XMMATRIX xWvp = world * view * proj;
+
+    Mat4x4 wvp;
+    XMStoreFloat4x4(&wvp, xWvp);
+
+    return wvp;
 }
+
 
 void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
 {
-    MathHelper::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
+    Vec3 pos;
+    MathHelper::ConvertSphericalToCartesian(radius, theta, phi, pos);
+    FXMVECTOR xPos = XMLoadFloat3(&pos);
+
+    XMMATRIX lookat = XMMatrixLookAtLH(xPos, g_XMZero, g_XMIdentityR1);
+
+    XMStoreFloat4x4(&m_frmParentWorldTsfm, lookat);
 }
 

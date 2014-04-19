@@ -5,9 +5,11 @@
 #include "Logger.h"
 #include "DXUT.h"
 #include "Geometry.h"
+#include "GameScene.h"
 
 using namespace engiX;
 using namespace std;
+using namespace DirectX;
 
 D3dShader::D3dShader(_In_ const wchar_t* pFxFilename)
 {
@@ -74,15 +76,24 @@ HRESULT D3dShader::OnPreRender(ISceneNode* pNode)
     // Set the vertex shader and the vertex layout
     DXUTGetD3D11DeviceContext()->IASetInputLayout(m_pVertexLayout);
 
-    //Mat4x4 mWorldViewProjection = pNode->GetCamera()->GetWorldViewProjection(pScene);
+    _ASSERTE(pNode);
+    _ASSERTE(pNode->Scene());
+    _ASSERTE(pNode->Scene()->Camera());
+    Mat4x4 wvpMat = pNode->Scene()->Camera()->SceneWorldViewProjMatrix();
+
+    XMMATRIX wvpXMat;
+    wvpXMat = XMLoadFloat4x4(&wvpMat);
+
+    m_pFxWvpMatrix->SetMatrix(reinterpret_cast<float*>(&wvpXMat));
 
     // For now we use a shader with 1 Tech and 1 Pass
+    _ASSERTE(m_pFxTech);
     CHRRHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
 
     return S_OK;
 }
 
-HRESULT D3dShader::CreateVertexBufferFrom(_In_ const void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB)
+HRESULT D3dShader::CreateVertexBufferFrom(_In_ void* pVertexMemSource, _In_ size_t vertexCount, _Out_ ID3D11Buffer*& pVB)
 {
     D3D11_BUFFER_DESC vbd;
     vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -91,14 +102,14 @@ HRESULT D3dShader::CreateVertexBufferFrom(_In_ const void* pVertexMemSource, _In
     vbd.CPUAccessFlags = 0;
     vbd.MiscFlags = 0;
     D3D11_SUBRESOURCE_DATA vinitData;
-    vinitData.pSysMem = &pVertexMemSource;
+    vinitData.pSysMem = pVertexMemSource;
 
     CHRRHR(DXUTGetD3D11Device()->CreateBuffer(&vbd, &vinitData, &pVB));
 
     return S_OK;
 }
 
-HRESULT D3dShader::CreateIndexBufferFrom(_In_ const void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB)
+HRESULT D3dShader::CreateIndexBufferFrom(_In_ void* pIndexMemSource, _In_ size_t indexCount, _Out_ ID3D11Buffer*& pIB)
 {
     D3D11_BUFFER_DESC ibd;
     ibd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -107,7 +118,7 @@ HRESULT D3dShader::CreateIndexBufferFrom(_In_ const void* pIndexMemSource, _In_ 
     ibd.CPUAccessFlags = 0;
     ibd.MiscFlags = 0;
     D3D11_SUBRESOURCE_DATA iinitData;
-    iinitData.pSysMem = &pIndexMemSource;
+    iinitData.pSysMem = pIndexMemSource;
 
     CHRRHR(DXUTGetD3D11Device()->CreateBuffer(&ibd, &iinitData, &pIB));
 

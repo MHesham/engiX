@@ -20,7 +20,7 @@ namespace engiX
         SceneCameraNode(GameScene* pScene);
         virtual ~SceneCameraNode() {}
 
-        Mat4x4 WorldViewProjMatrix() const;
+        Mat4x4 SceneWorldViewProjMatrix() const;
 
         // Place the camera in its own space using spherical coordinates (radius r, inclination Theta, azimuth Phi)
         // Radius r: The radius of the spherical coordinate system
@@ -36,8 +36,6 @@ namespace engiX
 
     protected:
         Mat4x4 m_projMat;
-        Mat4x4 m_viewMat;
-        Vec3 m_pos;
         real m_nearPlane;
         real m_farPlane;
         real m_fovAngle;
