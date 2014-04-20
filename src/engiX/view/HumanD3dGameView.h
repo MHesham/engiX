@@ -29,5 +29,6 @@ namespace engiX
 
     protected:
         StrongGameScenePtr m_pScene;
+        bool m_downKeys[256];
     };
 }

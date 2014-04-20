@@ -1,5 +1,6 @@
 #include "HumanD3dGameView.h"
 #include <DirectXColors.h>
+#include <algorithm>
 #include "DXUT.h"
 #include "Logger.h"
 #include "EventManager.h"
@@ -7,13 +8,13 @@
 
 using namespace engiX;
 using namespace DirectX;
-
+using namespace std;
 
 bool HumanD3dGameView::Init()
 {
     m_pScene = StrongGameScenePtr(eNEW GameScene);
     CBRB(m_pScene->Init());
-
+    fill(begin(m_downKeys), end(m_downKeys), false);
     return true;
 }
 
@@ -50,7 +51,29 @@ bool HumanD3dGameView::OnMsgProc(_In_ const Timer& time, _In_ UINT uMsg, _In_ WP
 
 void HumanD3dGameView::OnKeyDown(_In_ const Timer& time, _In_ const BYTE c)
 {
+    if (m_downKeys[c])
+        return;
+
     LogInfo("KeyDown=%c", c);
+
+    if (c == 'A')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW StartTurnLeftEvt(time.TotalTime())));
+    }
+    else if (c == 'D')
+    {
+        g_EventMgr->Queue(EventPtr((eNEW StartTurnRightEvt(time.TotalTime()))));
+    }
+    else if (c == 'W')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW StartForwardThrustEvt(time.TotalTime())));
+    }
+    else if (c == 'D')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW StartBackwardThrustEvt(time.TotalTime())));
+    }
+
+    m_downKeys[c] = true;
 }
 
 void HumanD3dGameView::OnKeyUp(_In_ const Timer& time, _In_ const BYTE c) 
@@ -59,10 +82,26 @@ void HumanD3dGameView::OnKeyUp(_In_ const Timer& time, _In_ const BYTE c)
 
     if (c == 'C')
     {
-        LogInfo("Toggle Camera");
-        EventPtr toggleCamera(eNEW ToggleCameraEvt(time.TotalTime()));
-        g_EventMgr->Queue(toggleCamera);
+        g_EventMgr->Queue(EventPtr(eNEW ToggleCameraEvt(time.TotalTime())));
     }
+    else if (c == 'A')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW EndTurnLeftEvt(time.TotalTime())));
+    }
+    else if (c == 'D')
+    {
+        g_EventMgr->Queue(EventPtr((eNEW EndTurnRightEvt(time.TotalTime()))));
+    }
+    else if (c == 'W')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW EndForwardThrustEvt(time.TotalTime())));
+    }
+    else if (c == 'D')
+    {
+        g_EventMgr->Queue(EventPtr(eNEW EndBackwardThrustEvt(time.TotalTime())));
+    }
+
+    m_downKeys[c] = false;
 }
 
 
