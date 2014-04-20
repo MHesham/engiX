@@ -34,8 +34,6 @@ namespace engiX
         ISceneNode* m_pSceneRoot;
         std::vector<std::shared_ptr<SceneCameraNode>> m_pCameraNodes;
         std::stack<Mat4x4> m_worldTransformationStack;
-        Delegate1P<GameScene, EventPtr> m_actorCreatedHdlr;
-        Delegate1P<GameScene, EventPtr> m_toggleCameraHdlr;
         ID3D11RasterizerState* m_pWireframeRS;
         size_t m_currCameraIdx;
     };

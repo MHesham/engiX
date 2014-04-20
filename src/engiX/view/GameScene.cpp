@@ -12,9 +12,7 @@ using namespace DirectX;
 
 GameScene::GameScene() :
     m_pSceneRoot(eNEW RootSceneNode(this)),
-    m_pWireframeRS(nullptr),
-    m_actorCreatedHdlr(this, &GameScene::OnActorCreated),
-    m_toggleCameraHdlr(this, &GameScene::OnToggleCamera)
+    m_pWireframeRS(nullptr)
 {
     m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
     m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
@@ -43,8 +41,8 @@ bool GameScene::Init()
     XMStoreFloat4x4(&identity, XMMatrixIdentity());
     m_worldTransformationStack.push(identity);
 
-    g_EventMgr->Register(&m_actorCreatedHdlr, ActorCreatedEvt::TypeID);
-    g_EventMgr->Register(&m_toggleCameraHdlr, ToggleCameraEvt::TypeID);
+    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &GameScene::OnActorCreated), ActorCreatedEvt::TypeID);
+    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &GameScene::OnToggleCamera), ToggleCameraEvt::TypeID);
 
     return true;
 }

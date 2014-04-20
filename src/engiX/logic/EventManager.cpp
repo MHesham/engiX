@@ -21,12 +21,12 @@ void EventManager::Deinit()
     SAFE_DELETE(g_pEventMgrInst);
 }
 
-void EventManager::Register(_In_ EventHandler* pHandler, _In_ const EventTypeID& type)
+void EventManager::Register(_In_ EventHandlerPtr pHandler, _In_ const EventTypeID& type)
 {
     m_eventRegistry[type].Register(pHandler);
 }
 //////////////////////////////////////////////////////////////////////////
-void EventManager::Unregister(_In_ EventHandler* pHandler, _In_ const EventTypeID& type)
+void EventManager::Unregister(_In_ EventHandlerPtr pHandler, _In_ const EventTypeID& type)
 {
     m_eventRegistry[type].Unregister(pHandler);
 }

@@ -19,6 +19,7 @@ namespace engiX
     };
 
     typedef IDelegate1P<EventPtr> EventHandler;
+    typedef std::shared_ptr<IDelegate1P<EventPtr>> EventHandlerPtr;
     typedef MulticastDelegate1P<EventPtr> EventHandlerList;
 
     class IEventManager
@@ -26,7 +27,7 @@ namespace engiX
     public:
         virtual void OnUpdate(_In_ const Timer& time) = 0;
         virtual void Queue(_In_ EventPtr evt) = 0;
-        virtual void Register(_In_ EventHandler* pHandler, _In_ const EventTypeID& type) = 0;
-        virtual void Unregister(_In_ EventHandler* pHandler, _In_ const EventTypeID& type) = 0;
+        virtual void Register(_In_ EventHandlerPtr pHandler, _In_ const EventTypeID& type) = 0;
+        virtual void Unregister(_In_ EventHandlerPtr pHandler, _In_ const EventTypeID& type) = 0;
     };
 }

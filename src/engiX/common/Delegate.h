@@ -134,6 +134,12 @@ namespace engiX
         TReciever *m_pObj;
     };
 
+    template<class TParam, class TReceiver>
+    std::shared_ptr<IDelegate1P<TParam>> MakeDelegateP1(TReceiver* pR, typename Delegate1P<TReceiver, TParam>::Callback pFunc)
+    {
+        return std::shared_ptr<IDelegate1P<TParam>>(eNEW Delegate1P<TReceiver, TParam>(pR, pFunc));
+    }
+
     /// <summary>
     /// This generic base class encapsulates the basic functionalities for MulticastDelegates
     /// A concrete MulticastDelegate class should be inheriting from MulticastDelegateBase and pass to its class template parameter the appropriate delegate class to use
@@ -143,7 +149,7 @@ namespace engiX
     class MulticastDelegateBase
     {
     public:
-        typedef std::set<TDelegate*> ObserverList;
+        typedef std::set<std::shared_ptr<TDelegate>> ObserverList;
 
         virtual MulticastDelegateBase::~MulticastDelegateBase()
         {
@@ -154,22 +160,22 @@ namespace engiX
         /// <param name="pCallback">The delegate to register</param>
         /// <returns>true on successful register, false otherwise</returns>
         ///
-        bool operator += (TDelegate* pCallback) { return Register(pCallback); }
+        bool operator += (std::shared_ptr<TDelegate> pCallback) { return Register(pCallback); }
 
         /// <summary>Unregister a delegate</summary>
         /// <param name="pCallback">The delegate to unregister</param>
         /// <returns>true on successful unregister, false otherwise</returns>
         ///
-        bool operator -= (TDelegate* callpCallbackback) { return Unregister(pCallback); }
+        bool operator -= (std::shared_ptr<TDelegate> callpCallbackback) { return Unregister(pCallback); }
 
         /// <summary>Fire the MulticastDelegate by calling all registered delegates</summary>
 
-        bool Register(TDelegate* pCallback)
+        bool Register(std::shared_ptr<TDelegate> pCallback)
         {
             return m_observers.insert(pCallback).second;
         }
 
-        bool Unregister(TDelegate* pCallback)
+        bool Unregister(std::shared_ptr<TDelegate> pCallback)
         {
             return m_observers.erase(pCallback) == 1;
         }
