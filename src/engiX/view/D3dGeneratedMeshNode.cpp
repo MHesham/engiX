@@ -31,6 +31,9 @@ D3dGeneratedMeshNode::~D3dGeneratedMeshNode()
 
 HRESULT D3dGeneratedMeshNode::OnConstruct()
 {
+    SAFE_RELEASE(m_pIndexBuffer);
+    SAFE_RELEASE(m_pVertexBuffer);
+
     CHRRHR(SceneNode::OnConstruct());
     CHRRHR(m_shader.OnConstruct());
     CHRRHR(D3dShader::CreateVertexBufferFrom(&m_vertices[0], m_vertices.size(), m_pVertexBuffer));

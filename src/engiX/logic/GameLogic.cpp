@@ -4,6 +4,11 @@
 
 using namespace engiX;
 
+GameLogic::~GameLogic()
+{
+    SAFE_DELETE(m_pView);
+}
+
 void GameLogic::OnUpdate(_In_ const Timer& time)
 {
     g_EventMgr->OnUpdate(time);
@@ -49,9 +54,4 @@ bool GameLogic::Init()
     CBRB(m_pView->Init());
 
     return true;
-}
-
-void GameLogic::Deinit()
-{
-
 }

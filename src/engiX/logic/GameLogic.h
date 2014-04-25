@@ -12,13 +12,12 @@ namespace engiX
         typedef std::unordered_map<ActorID, StrongActorPtr> ActorRegistry;
 
         GameLogic() : m_pView(nullptr) {}
-        virtual ~GameLogic() {}
+        virtual ~GameLogic();
         virtual void OnUpdate(_In_ const Timer& time);
         virtual bool Init();
-        virtual void Deinit();
 
-        void View(_In_ std::shared_ptr<IGameView> pView) { m_pView = pView; }
-        std::shared_ptr<IGameView> View() { return m_pView; }
+        void View(_In_ IGameView* pView) { m_pView = pView; }
+        IGameView* View() { return m_pView; }
         WeakActorPtr FindActor(_In_ ActorID id);
 
     protected:
@@ -27,6 +26,6 @@ namespace engiX
 
     private:
         ActorRegistry m_actors;
-        std::shared_ptr<IGameView> m_pView;
+        IGameView* m_pView;
     };
 }

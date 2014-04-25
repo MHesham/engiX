@@ -84,11 +84,14 @@ HRESULT D3dShader::OnPreRender(ISceneNode* pNode)
     XMMATRIX wvpXMat;
     wvpXMat = XMLoadFloat4x4(&wvpMat);
 
-    m_pFxWvpMatrix->SetMatrix(reinterpret_cast<float*>(&wvpXMat));
+    if (m_pFxWvpMatrix && m_pFxTech)
+    {
+        m_pFxWvpMatrix->SetMatrix(reinterpret_cast<float*>(&wvpXMat));
 
-    // For now we use a shader with 1 Tech and 1 Pass
-    _ASSERTE(m_pFxTech);
-    CHRRHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
+        // For now we use a shader with 1 Tech and 1 Pass
+        _ASSERTE(m_pFxTech);
+        CHRRHR(m_pFxTech->GetPassByIndex(0)->Apply(0, DXUTGetD3D11DeviceContext()));
+    }
 
     return S_OK;
 }
@@ -105,6 +108,8 @@ HRESULT D3dShader::CreateVertexBufferFrom(_In_ void* pVertexMemSource, _In_ size
     vinitData.pSysMem = pVertexMemSource;
 
     CHRRHR(DXUTGetD3D11Device()->CreateBuffer(&vbd, &vinitData, &pVB));
+    const char vbName[] = "D3dShaderVertexBuffer";
+    pVB->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(vbName), vbName);
 
     return S_OK;
 }
@@ -121,6 +126,8 @@ HRESULT D3dShader::CreateIndexBufferFrom(_In_ void* pIndexMemSource, _In_ size_t
     iinitData.pSysMem = pIndexMemSource;
 
     CHRRHR(DXUTGetD3D11Device()->CreateBuffer(&ibd, &iinitData, &pIB));
+    const char ibName[] = "D3dShaderIndexBuffer";
+    pIB->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(ibName), ibName);
 
     return S_OK;
 }
