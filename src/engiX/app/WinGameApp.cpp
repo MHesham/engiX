@@ -35,6 +35,7 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;					
 
     _CrtSetDbgFlag(tmpDbgFlag);
+    _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
 
     g_Logger->Init();
     LogInfo("engiX is initializing ...");
@@ -49,9 +50,9 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     DXUTSetCallbackD3D11SwapChainReleasing( WinGameApp::OnD3D11ReleasingSwapChain, (void*)g_pApp);
     DXUTSetCallbackD3D11DeviceDestroyed( WinGameApp::OnD3D11DestroyDevice, (void*)g_pApp);
     DXUTSetCallbackD3D11FrameRender( WinGameApp::OnD3D11FrameRender, (void*)g_pApp);	
-    g_pApp->Init(hInstance, lpCmdLine);
 
-    g_pApp->Run();
+    if (g_pApp->Init(hInstance, lpCmdLine))
+        g_pApp->Run();
 
     LogInfo("engiX is finalizing ...");
     int exitCode = g_pApp->ExitCode();
@@ -60,10 +61,13 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     g_Logger->Deinit();
 
     // Dump DirectX object life states to catch leaking ones
-    ID3D11Debug* m_d3dDebug = nullptr;
-    DXUTGetD3D11Device()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug));
-    m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-    SAFE_RELEASE(m_d3dDebug);
+    if (DXUTGetD3D11Device())
+    {
+        ID3D11Debug* m_d3dDebug = nullptr;
+        DXUTGetD3D11Device()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug));
+        m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+        SAFE_RELEASE(m_d3dDebug);
+    }
 
     // Don't call any DXUT* method after the sthudown.
     // After shutting down DXUT, any call to DXUT* methods may yield an unexpected behaivor
@@ -83,30 +87,29 @@ WinGameApp::WinGameApp()
     m_screenSize.cx = DEFAULT_SCREEN_WIDTH;
     m_screenSize.cy = DEFAULT_SCREEN_HEIGHT;
     m_firstUpdate = true;
-    m_oneSecFrameCnt = 0;
-    m_timeElapsedSinceLastFrame = 0.0f;
 }
 
-void WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
+bool WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
 {
     LogInfo("Initializing Game App");
 
     // Show the cursor and clip it when in full screen
     DXUTSetCursorSettings(true, true);
 
-    m_pGameLogic = VCreateLogicAndStartView();
-    m_pGameLogic->Init();
+    m_pGameLogic = CreateLogicAndStartView();
+    CBRB(m_pGameLogic->Init());
 
-    CHRR(DXUTInit(false, true));
-    CHRR(DXUTCreateWindow(VGameAppTitle(), hInstance));
-    CHRR(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
+    CHRRB(DXUTInit(false, true));
+    CHRRB(DXUTCreateWindow(GameAppTitle(), hInstance));
+    CHRRB(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
+
+    return true;
 }
 
 void WinGameApp::Deinit()
 {
     LogInfo("Finalizing Game App");
 
-    m_pGameLogic->Deinit();
     SAFE_DELETE(m_pGameLogic);
     SAFE_DELETE(g_pAppInst);
 }
@@ -183,6 +186,8 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
         pApp->m_firstUpdate = false;
     }
 
+    pApp->m_gameTime.Tick();
+
     // 1. Dispatch engine events
     g_EventMgr->OnUpdate(pApp->m_gameTime);
 
@@ -222,39 +227,18 @@ void CALLBACK WinGameApp::OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11De
 {
     WinGameApp* pApp = (WinGameApp*)pUserContext;
     _ASSERTE(pApp);
-    
-    pApp->m_gameTime.Tick();
-    pApp->SetFrameStatistics();
+
+    pApp->CalcAndDisplayFrameStatistics();
 
     _ASSERTE(pApp->m_pGameLogic->View());
     pApp->m_pGameLogic->View()->OnRender();
 }
 
-void WinGameApp::SetFrameStatistics()
+void WinGameApp::CalcAndDisplayFrameStatistics()
 {
-    // Code computes the average frames per second, and also the 
-    // average time it takes to render one frame.  These stats 
-    // are appended to the window caption bar.
-
-    m_oneSecFrameCnt++;
-
-    real totalTime = m_gameTime.TotalTime();
-    
-    // Compute averages over one second period.
-    if ((totalTime - m_timeElapsedSinceLastFrame) >= 1.0f )
-    {
-        float fps = (float)m_oneSecFrameCnt; // fps = frameCnt / 1
-        float mspf = 1000.0f / fps;
-
-        std::wostringstream outs;   
-        outs.precision(6);
-        outs << VGameAppTitle() << L"    "
-            << L"FPS: " << fps << L"    " 
-            << L"Frame Time: " << mspf << L" (ms)";
-        SetWindowText(DXUTGetHWND(), outs.str().c_str());
-
-        // Reset for next average.
-        m_oneSecFrameCnt = 0;
-        m_timeElapsedSinceLastFrame += 1.0f;
-    }
+    std::wostringstream outs;   
+    outs.precision(6);
+    outs << GameAppTitle() << L"    "
+        << DXUTGetFrameStats(true);
+    SetWindowText(DXUTGetHWND(), outs.str().c_str());
 }

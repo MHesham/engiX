@@ -17,6 +17,7 @@ GameScene::GameScene() :
     m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
     m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
     m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
+    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
     m_currCameraIdx = 0;
 }
 
@@ -28,14 +29,17 @@ GameScene::~GameScene()
 
 bool GameScene::Init()
 {
-    m_pCameraNodes[0]->PlaceOnSphere(600.0, 0.5f * R_PI, 0.25f * R_PI);
+    m_pCameraNodes[0]->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
     m_pSceneRoot->AddChild(m_pCameraNodes[0]);
 
-    m_pCameraNodes[1]->PlaceOnSphere(600.0, 0.25f * R_PI, 0.25f * R_PI);
+    m_pCameraNodes[1]->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
     m_pSceneRoot->AddChild(m_pCameraNodes[1]);
 
-    m_pCameraNodes[2]->PlaceOnSphere(800.0, 0.5f * R_PI, 0.01f * R_PI);
+    m_pCameraNodes[2]->PlaceOnSphere(25.0, 0.5f * R_PI, 0.01f * R_PI);
     m_pSceneRoot->AddChild(m_pCameraNodes[2]);
+
+    m_pCameraNodes[3]->PlaceOnSphere(25.0, 0.0f, 0.48f * R_PI);
+    m_pSceneRoot->AddChild(m_pCameraNodes[3]);
 
     Mat4x4 identity;
     XMStoreFloat4x4(&identity, XMMatrixIdentity());

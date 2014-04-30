@@ -88,14 +88,29 @@
 #define CBRB(x) (x)
 #endif
 
+#ifndef CBR
+#define CBR(x)                                               \
+    {                                                       \
+    if(!(x))                                         \
+    {                                                       \
+    LogError("'%s' failed", L#x);                \
+    return;                                        \
+    }                                                       \
+    }
+#else
+#define CBR(x) (x)
+#endif
 
 #define DISALLOW_COPY_AND_ASSIGN(C) \
     C(const C&); C& operator = (const C&);
 
 #if defined(_DEBUG)
-#	define eNEW new(_NORMAL_BLOCK,__FILE__, __LINE__)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#define eNEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #else
-#	define eNEW new
+#define eNEW new
 #endif
 
 #ifndef SAFE_DELETE

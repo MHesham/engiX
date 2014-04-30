@@ -7,6 +7,7 @@
 #include "GeometryGenerator.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
+#include "ParticlePhysicsComponent.h"
 #include <DirectXColors.h>
 
 using namespace engiX;
@@ -23,8 +24,7 @@ public:
         StrongActorPtr pHeroActor = BuildHero();
         AddActor(pHeroActor);
 
-        StrongActorPtr pTerrainActor = BuildTerrain();
-        AddActor(pTerrainActor);
+        AddActor(BuildTerrain());
 
         m_heroActor = pHeroActor->Id();
     }
@@ -39,8 +39,8 @@ public:
         props.Color.y = DirectX::Colors::Brown.f[1];
         props.Color.z = DirectX::Colors::Brown.f[2];
 
-        props.Width = 500.0;
-        props.Depth = 500.0;
+        props.Width = 50.0;
+        props.Depth = 50.0;
 
         shared_ptr<RenderComponent> pTrnMeshCmpt(eNEW GridMeshComponent(props));
         pTrnActor->AddComponent(pTrnMeshCmpt);
@@ -62,9 +62,9 @@ public:
         props.Color.y = DirectX::Colors::Red.f[1];
         props.Color.z = DirectX::Colors::Red.f[2];
 
-        props.Width = 25.0;
-        props.Depth = 50.0;
-        props.Height = 25.0;
+        props.Width = 1.0;
+        props.Depth = 1.0;
+        props.Height = 1.0;
 
         shared_ptr<BoxMeshComponent> pHeroMeshCmpt(eNEW BoxMeshComponent(props));
         pHeroActor->AddComponent(pHeroMeshCmpt);
@@ -72,6 +72,13 @@ public:
         shared_ptr<TransformComponent> pHeroTsfmCmpt(eNEW TransformComponent);
         pHeroTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
         pHeroActor->AddComponent(pHeroTsfmCmpt);
+
+        shared_ptr<ParticlePhysicsComponent> pHeroPhyCmpt(eNEW ParticlePhysicsComponent);
+        pHeroActor->AddComponent(pHeroPhyCmpt);
+
+        pHeroPhyCmpt->InverseMass(1.0/200.0f);
+        pHeroPhyCmpt->Velocity(Vec3(0.0f, 30.0f, 40.0f));
+        pHeroPhyCmpt->BaseAcceleraiton(Vec3(0.0, -20.0f, 0.0f));
 
         return pHeroActor;
     }
@@ -85,13 +92,13 @@ class BulletGameApp : public WinGameApp
 {
 public:
     BulletGameApp() {}
-    const wchar_t* VGameAppTitle() const { return L"Bullet Game"; }
+    const wchar_t* GameAppTitle() const { return L"Bullet Game"; }
 
 protected:
-    GameLogic* VCreateLogicAndStartView() const 
+    GameLogic* CreateLogicAndStartView() const 
     {
         GameLogic* pLogic = eNEW BulletGameLogic; 
-        pLogic->View(shared_ptr<IGameView>(eNEW HumanD3dGameView));
+        pLogic->View(eNEW HumanD3dGameView);
 
         return pLogic;
     }

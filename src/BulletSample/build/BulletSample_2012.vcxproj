@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\engiX\common;..\..\engiX\app;..\..\engiX\view;..\..\engiX\logic;..\..\3rdParty\DXUT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>

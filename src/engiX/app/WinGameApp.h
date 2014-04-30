@@ -24,7 +24,7 @@ namespace engiX
             int       nCmdShow);
 
         WinGameApp();
-        void Init(HINSTANCE hInstance, LPWSTR lpCmdLine);
+        bool Init(HINSTANCE hInstance, LPWSTR lpCmdLine);
         void Deinit();
         void Run();
         int ExitCode() const { return DXUTGetExitCode(); }
@@ -34,10 +34,10 @@ namespace engiX
         GameLogic* Logic() const { return m_pGameLogic; }
 
     protected:
-        virtual const wchar_t* VGameAppTitle() const = 0;
+        virtual const wchar_t* GameAppTitle() const = 0;
         HWND WindowHandle() const { return DXUTGetHWND(); }
-        virtual GameLogic* VCreateLogicAndStartView() const = 0;
-        void SetFrameStatistics();
+        virtual GameLogic* CreateLogicAndStartView() const = 0;
+        void CalcAndDisplayFrameStatistics();
 
     private:
         // DXUT General Handlers
@@ -57,8 +57,6 @@ namespace engiX
         Timer m_gameTime;
         bool m_firstUpdate;
         GameLogic *m_pGameLogic;
-        int m_oneSecFrameCnt;
-        real m_timeElapsedSinceLastFrame;
    };
 
 #define g_pApp engiX::WinGameApp::Inst() 

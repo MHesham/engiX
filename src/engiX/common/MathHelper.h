@@ -74,6 +74,11 @@ namespace engiX
         // Azimuth Phi: Rotation angle in radians around the axis between the sphere center and the rotate point around the Y axis, Phi = [0, Pi]
         // The method assumes the provided Theta and Phi are within the correct range
         // Conversion formulas: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
+        //
+        // In a LH coordinate system like DX, the rotation angle is counter clock wise and the reference angle for
+        // rotating around the Y axis in the XZ plane is the counter clock wise angle with the vector (1.0, 0.0, 0.0)
+        //
+        //
         static void ConvertSphericalToCartesian(_In_ const real& sphericalRadius, _In_ const real& sphericalTheta, _In_ const real& sphericalPhi, _Out_ DirectX::XMFLOAT3& cartesianXyz)
         {
             _ASSERTE(sphericalRadius >= 0.0f);
