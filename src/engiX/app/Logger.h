@@ -31,7 +31,8 @@ namespace engiX
             m_logToDebugWindow(false),
             m_isLogFileInitialized(false),
             m_isConsoleInitialized(false),
-            m_isInitialized(false)
+            m_isInitialized(false),
+            m_logToFile(false)
         {}
         
         std::wfstream m_pen;
@@ -40,6 +41,7 @@ namespace engiX
         bool m_isLogFileInitialized;
         bool m_isConsoleInitialized;
         bool m_isInitialized;
+        bool m_logToFile;
     };
 }
 

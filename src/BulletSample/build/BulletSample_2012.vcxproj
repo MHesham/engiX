@@ -74,6 +74,7 @@
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
       <MapExports>true</MapExports>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib\$(PlatformName)$(Configuration)\</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

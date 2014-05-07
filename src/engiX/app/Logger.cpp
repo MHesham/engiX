@@ -37,19 +37,21 @@ void Logger::Init()
         SetConsoleTitleW(L"engiX Log");
         _ASSERTE(m_isConsoleInitialized);
 
-        _ASSERTE(!m_isLogFileInitialized);
-        m_pen.open(LOG_FILENAME, ios::out);
-        if (m_pen.is_open())
-            m_isLogFileInitialized = true;
-        _ASSERTE(m_isLogFileInitialized);
-
+        if (m_logToFile)
+        {
+            _ASSERTE(!m_isLogFileInitialized);
+            m_pen.open(LOG_FILENAME, ios::out);
+            if (m_pen.is_open())
+                m_isLogFileInitialized = true;
+            _ASSERTE(m_isLogFileInitialized);
+        }
         m_isInitialized = true;
     }
 }
 //////////////////////////////////////////////////////////////////////////
 void Logger::Deinit()
 {
-    if (m_isLogFileInitialized)
+    if (m_logToFile && m_isLogFileInitialized)
     {
         m_pen.flush();
         m_pen.close();
@@ -85,6 +87,6 @@ void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtForm
     if (m_logToDebugWindow && (IsDebuggerPresent() == TRUE))
         OutputDebugStringW(buffer2);
 
-    if (m_isLogFileInitialized)
+    if (m_logToFile && m_isLogFileInitialized)
         m_pen << buffer2;
 }

@@ -29,9 +29,17 @@ WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
         return WeakActorPtr();
 }
 
-bool GameLogic::AddActor(_In_ StrongActorPtr pActor) 
+bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor) 
 { 
     CBRB(m_actors.insert(std::make_pair(pActor->Id(), pActor)).second);
+
+    if (!pActor->Init())
+    {
+        LogError("Actor %s[%d] initialization failed", pActor->Typename(), pActor->Id());
+        m_actors.erase(pActor->Id());
+        return false;
+    }
+    
     g_EventMgr->Queue(EventPtr(eNEW ActorCreatedEvt(pActor->Id(), 0.0f)));
 
     return true;
@@ -41,15 +49,6 @@ bool GameLogic::AddActor(_In_ StrongActorPtr pActor)
 bool GameLogic::Init()
 {
     LoadLevel();
-
-    for (auto actor : m_actors)
-    {
-        if (!actor.second->Init())
-        {
-            LogError("Actor %s[%d] initialization failed", actor.second->Typename(), actor.second->Id());
-            return false;
-        }
-    }
 
     CBRB(m_pView->Init());
 

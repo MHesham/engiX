@@ -57,21 +57,13 @@ void HumanD3dGameView::OnKeyDown(_In_ const Timer& time, _In_ const BYTE c)
     LogInfo("KeyDown=%c", c);
 
     if (c == 'A')
-    {
         g_EventMgr->Queue(EventPtr(eNEW StartTurnLeftEvt(time.TotalTime())));
-    }
     else if (c == 'D')
-    {
         g_EventMgr->Queue(EventPtr((eNEW StartTurnRightEvt(time.TotalTime()))));
-    }
     else if (c == 'W')
-    {
         g_EventMgr->Queue(EventPtr(eNEW StartForwardThrustEvt(time.TotalTime())));
-    }
     else if (c == 'D')
-    {
         g_EventMgr->Queue(EventPtr(eNEW StartBackwardThrustEvt(time.TotalTime())));
-    }
 
     m_downKeys[c] = true;
 }
@@ -81,25 +73,19 @@ void HumanD3dGameView::OnKeyUp(_In_ const Timer& time, _In_ const BYTE c)
     LogInfo("KeyUp=%c", c);
 
     if (c == 'C')
-    {
         g_EventMgr->Queue(EventPtr(eNEW ToggleCameraEvt(time.TotalTime())));
-    }
     else if (c == 'A')
-    {
         g_EventMgr->Queue(EventPtr(eNEW EndTurnLeftEvt(time.TotalTime())));
-    }
     else if (c == 'D')
-    {
         g_EventMgr->Queue(EventPtr((eNEW EndTurnRightEvt(time.TotalTime()))));
-    }
     else if (c == 'W')
-    {
         g_EventMgr->Queue(EventPtr(eNEW EndForwardThrustEvt(time.TotalTime())));
-    }
     else if (c == 'D')
-    {
         g_EventMgr->Queue(EventPtr(eNEW EndBackwardThrustEvt(time.TotalTime())));
-    }
+    else if (c == ' ')
+        g_EventMgr->Queue(EventPtr(eNEW FireWeaponEvt(time.TotalTime())));
+    else if (c == 'Q')
+        g_EventMgr->Queue(EventPtr(eNEW ChangeWeaponEvt(time.TotalTime())));
 
     m_downKeys[c] = false;
 }

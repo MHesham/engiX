@@ -152,4 +152,24 @@ namespace engiX
         EventTypeID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"EndBackwardThrustEvt"; }
     };
+
+    class FireWeaponEvt : public Event
+    {
+    public:
+        static const EventTypeID TypeID = 0xD6F9B4D6;
+
+        FireWeaponEvt(real timestamp) : Event(timestamp) {}
+        EventTypeID TypeId() const { return TypeID; }
+        const wchar_t* Typename() const { return L"FireWeaponEvt"; }
+    };
+
+    class ChangeWeaponEvt : public Event
+    {
+    public:
+        static const EventTypeID TypeID = 0x799A130A;
+
+        ChangeWeaponEvt(real timestamp) : Event(timestamp) {}
+        EventTypeID TypeId() const { return TypeID; }
+        const wchar_t* Typename() const { return L"ChangeWeaponEvt"; }
+    };
 }

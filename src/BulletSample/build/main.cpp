@@ -9,6 +9,7 @@
 #include "TransformComponent.h"
 #include "ParticlePhysicsComponent.h"
 #include <DirectXColors.h>
+#include "EventManager.h"
 
 using namespace engiX;
 using namespace std;
@@ -19,14 +20,23 @@ class BulletGameLogic : public GameLogic
 public:
     BulletGameLogic() {}
 
+    bool Init()
+    {
+        CBRB(GameLogic::Init());
+
+        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnFireWeapon), FireWeaponEvt::TypeID);
+
+        return true;
+    }
+
     void LoadLevel()
     {
-        StrongActorPtr pHeroActor = BuildHero();
-        AddActor(pHeroActor);
+        StrongActorPtr pHeroTank = BuildHero();
+        CBR(AddInitActor(pHeroTank));
 
-        AddActor(BuildTerrain());
+        CBR(AddInitActor(BuildTerrain()));
 
-        m_heroActor = pHeroActor->Id();
+        m_heroActor = pHeroTank->Id();
     }
 
     StrongActorPtr BuildTerrain()
@@ -54,7 +64,7 @@ public:
 
     StrongActorPtr BuildHero()
     {
-        StrongActorPtr pHeroActor(eNEW Actor(L"Hero"));
+        StrongActorPtr pTank(eNEW Actor(L"HeroTank"));
         
         // 1. Build hero visuals
         BoxMeshComponent::Properties props;
@@ -63,24 +73,58 @@ public:
         props.Color.z = DirectX::Colors::Red.f[2];
 
         props.Width = 1.0;
+        props.Depth = 4.0;
+        props.Height = 1.0;
+
+        shared_ptr<BoxMeshComponent> pTankMesh(eNEW BoxMeshComponent(props));
+        pTank->AddComponent(pTankMesh);
+
+        shared_ptr<TransformComponent> pTankTsfm(eNEW TransformComponent);
+        pTankTsfm->Position(Vec3(0.0, 0.0, 0.0));
+        pTank->AddComponent(pTankTsfm);
+
+        return pTank;
+    }
+
+    void OnUpdate(_In_ const Timer& time)
+    {
+        GameLogic::OnUpdate(time);
+    }
+
+    void OnFireWeapon(EventPtr evt)
+    {
+        StrongActorPtr pBullet = CreateBullet();
+        CBR(AddInitActor(pBullet));
+    }
+
+    StrongActorPtr CreateBullet()
+    {
+        StrongActorPtr pBullet(eNEW Actor(L"Bullet"));
+
+        BoxMeshComponent::Properties props;
+        props.Color.x = DirectX::Colors::Brown.f[0];
+        props.Color.y = DirectX::Colors::Brown.f[1];
+        props.Color.z = DirectX::Colors::Brown.f[2];
+
+        props.Width = 1.0;
         props.Depth = 1.0;
         props.Height = 1.0;
 
-        shared_ptr<BoxMeshComponent> pHeroMeshCmpt(eNEW BoxMeshComponent(props));
-        pHeroActor->AddComponent(pHeroMeshCmpt);
+        shared_ptr<BoxMeshComponent> pBulletMesh(eNEW BoxMeshComponent(props));
+        pBullet->AddComponent(pBulletMesh);
 
-        shared_ptr<TransformComponent> pHeroTsfmCmpt(eNEW TransformComponent);
-        pHeroTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
-        pHeroActor->AddComponent(pHeroTsfmCmpt);
+        shared_ptr<TransformComponent> pBulletTsfm(eNEW TransformComponent);
+        pBulletTsfm->Position(Vec3(0.0, 0.0, 0.0));
+        pBullet->AddComponent(pBulletTsfm);
 
-        shared_ptr<ParticlePhysicsComponent> pHeroPhyCmpt(eNEW ParticlePhysicsComponent);
-        pHeroActor->AddComponent(pHeroPhyCmpt);
+        shared_ptr<ParticlePhysicsComponent> pBulletPhy(eNEW ParticlePhysicsComponent);
+        pBullet->AddComponent(pBulletPhy);
 
-        pHeroPhyCmpt->InverseMass(1.0/200.0f);
-        pHeroPhyCmpt->Velocity(Vec3(0.0f, 30.0f, 40.0f));
-        pHeroPhyCmpt->BaseAcceleraiton(Vec3(0.0, -20.0f, 0.0f));
+        pBulletPhy->InverseMass(1.0/200.0f);
+        pBulletPhy->Velocity(Vec3(0.0, 20.0, 30.0));
+        pBulletPhy->BaseAcceleraiton(Vec3(0.0, -20.0f, 0.0f));
 
-        return pHeroActor;
+        return pBullet;
     }
 
 private:
