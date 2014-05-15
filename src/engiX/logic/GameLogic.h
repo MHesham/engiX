@@ -23,6 +23,7 @@ namespace engiX
     protected:
         virtual void LoadLevel() = 0;
         bool AddInitActor(_In_ StrongActorPtr pActor);
+        bool RemoveActor(_In_ ActorID);
 
     private:
         ActorRegistry m_actors;

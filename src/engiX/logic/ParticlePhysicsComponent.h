@@ -18,14 +18,15 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time) { Integrate(time); }
         bool Init();
         Vec3 Velocity() const { return m_velocity; }
-        void Velocity(Vec3 val) { m_velocity = val; }
+        void Velocity(_In_ Vec3 val) { m_velocity = val; }
         Vec3 BaseAcceleraiton() const { return m_baseAcceleraiton; }
-        void BaseAcceleraiton(Vec3 val) { m_baseAcceleraiton = val; }
+        void BaseAcceleraiton(_In_ Vec3 val) { m_baseAcceleraiton = val; }
         real Mass() const { return real((m_inverseMass > 0.0) ? 1.0 / m_inverseMass : REAL_MAX); }
-        void InverseMass(real val) { m_inverseMass = val; }
+        void InverseMass(_In_ real val) { m_inverseMass = val; }
         real Damping() const { return m_damping; }
-        void Damping(real val) { m_damping = val; }
-        
+        void Damping(_In_ real val) { m_damping = val; }
+        void ScaleVelocity(_In_ real scale);
+
         // res = res + vec * scale
         static void AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res);
         // res = res + a^b

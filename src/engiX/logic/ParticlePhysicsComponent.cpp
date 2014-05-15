@@ -54,6 +54,12 @@ void ParticlePhysicsComponent::Integrate(_In_ const Timer& time)
     m_accumulatedForce.x = m_accumulatedForce.y = m_accumulatedForce.z = 0.0;
 }
 
+void ParticlePhysicsComponent::ScaleVelocity(_In_ real scale)
+{
+    XMStoreFloat3(&m_velocity,
+        XMVectorScale(XMLoadFloat3(&m_velocity), scale));
+}
+
 void ParticlePhysicsComponent::AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res)
 {
     // res = res + vec * scale

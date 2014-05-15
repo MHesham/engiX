@@ -64,6 +64,8 @@ void HumanD3dGameView::OnKeyDown(_In_ const Timer& time, _In_ const BYTE c)
         g_EventMgr->Queue(EventPtr(eNEW StartForwardThrustEvt(time.TotalTime())));
     else if (c == 'D')
         g_EventMgr->Queue(EventPtr(eNEW StartBackwardThrustEvt(time.TotalTime())));
+    else if (c == ' ')
+        g_EventMgr->Queue(EventPtr(eNEW StartFireWeaponEvt(time.TotalTime())));
 
     m_downKeys[c] = true;
 }
@@ -83,7 +85,7 @@ void HumanD3dGameView::OnKeyUp(_In_ const Timer& time, _In_ const BYTE c)
     else if (c == 'D')
         g_EventMgr->Queue(EventPtr(eNEW EndBackwardThrustEvt(time.TotalTime())));
     else if (c == ' ')
-        g_EventMgr->Queue(EventPtr(eNEW FireWeaponEvt(time.TotalTime())));
+        g_EventMgr->Queue(EventPtr(eNEW EndFireWeaponEvt(time.TotalTime())));
     else if (c == 'Q')
         g_EventMgr->Queue(EventPtr(eNEW ChangeWeaponEvt(time.TotalTime())));
 

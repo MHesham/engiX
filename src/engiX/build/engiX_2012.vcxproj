@@ -19,6 +19,7 @@
     <ClInclude Include="..\common\MathHelper.h" />
     <ClInclude Include="..\common\Precision.h" />
     <ClInclude Include="..\common\Vector.h" />
+    <ClInclude Include="..\logic\CollisionDetection.h" />
     <ClInclude Include="..\logic\EventManager.h" />
     <ClInclude Include="..\logic\Events.h" />
     <ClInclude Include="..\logic\Actor.h" />
@@ -46,6 +47,7 @@
     <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\Vector.cpp" />
     <ClCompile Include="..\logic\Actor.cpp" />
+    <ClCompile Include="..\logic\CollisionDetection.cpp" />
     <ClCompile Include="..\logic\EventManager.cpp" />
     <ClCompile Include="..\logic\GameActor.cpp" />
     <ClCompile Include="..\logic\GameLogic.cpp" />

@@ -97,7 +97,7 @@ namespace engiX
 
         static const real Infinity;
         static const real Pi;
-
-
     };
+
+#define POW2(X) ((X) * (X))
 }

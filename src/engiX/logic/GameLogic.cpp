@@ -29,6 +29,14 @@ WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
         return WeakActorPtr();
 }
 
+bool GameLogic::RemoveActor(_In_ ActorID id)
+{
+    CBRB(m_actors.erase(id) > 0);
+    g_EventMgr->Queue(EventPtr(eNEW ActorDestroyedEvt(id, 0)));
+
+    return true;
+}
+
 bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor) 
 { 
     CBRB(m_actors.insert(std::make_pair(pActor->Id(), pActor)).second);

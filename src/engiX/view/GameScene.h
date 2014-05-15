@@ -23,6 +23,7 @@ namespace engiX
         void OnRender();
         HRESULT OnConstruct();
         void OnActorCreated(_In_ EventPtr pEvt);
+        void OnActorDestroyed(_In_ EventPtr pEvt);
         void OnToggleCamera(_In_ EventPtr pEvt);
         bool Init();
         std::shared_ptr<SceneCameraNode> Camera() { return m_pCameraNodes[m_currCameraIdx]; }

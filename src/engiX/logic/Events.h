@@ -58,7 +58,7 @@ namespace engiX
         EventTypeID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"ActorCreatedEvt"; }
         ActorID ActorId() const { return m_actorId; }
-        
+
     protected:
         ActorID m_actorId;
     };
@@ -68,9 +68,14 @@ namespace engiX
     public:
         static const EventTypeID TypeID = 0x697EC9B1;
 
-        ActorDestroyedEvt(real timestamp) : Event(timestamp) {}
-        EventTypeID TypeId() const { return TypeID; }
+        ActorDestroyedEvt(ActorID actorId, real timestamp) :
+            Event(timestamp),
+            m_actorId(actorId) {}        EventTypeID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"ActorDestroyedEvt"; }
+        ActorID ActorId() const { return m_actorId; }
+
+    protected:
+        ActorID m_actorId;
     };
 
     class StartTurnRightEvt : public Event
@@ -153,14 +158,24 @@ namespace engiX
         const wchar_t* Typename() const { return L"EndBackwardThrustEvt"; }
     };
 
-    class FireWeaponEvt : public Event
+    class StartFireWeaponEvt : public Event
     {
     public:
         static const EventTypeID TypeID = 0xD6F9B4D6;
 
-        FireWeaponEvt(real timestamp) : Event(timestamp) {}
+        StartFireWeaponEvt(real timestamp) : Event(timestamp) {}
         EventTypeID TypeId() const { return TypeID; }
-        const wchar_t* Typename() const { return L"FireWeaponEvt"; }
+        const wchar_t* Typename() const { return L"StartFireWeaponEvt"; }
+    };
+
+    class EndFireWeaponEvt : public Event
+    {
+    public:
+        static const EventTypeID TypeID = 0x6EC099A1;
+
+        EndFireWeaponEvt(real timestamp) : Event(timestamp) {}
+        EventTypeID TypeId() const { return TypeID; }
+        const wchar_t* Typename() const { return L"EndFireWeaponEvt"; }
     };
 
     class ChangeWeaponEvt : public Event
