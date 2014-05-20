@@ -30,9 +30,11 @@ public:
 
     BulletGameLogic() :
         m_isTurningRight(false),
+        m_isTurningLeft(false),
         m_isChargingFirePower(false),
-        m_firePowerScaleVelocity(1.0f),
-        m_currentWeapon(WPN_Pistol)
+        m_firePowerScaleVelocity(2.0f),
+        m_currentWeapon(WPN_Pistol),
+        m_turnVelocity(1.5)
     {}
 
     bool Init()
@@ -44,6 +46,8 @@ public:
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnChangeWeapon), ChangeWeaponEvt::TypeID);
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnStartTurnRight), StartTurnRightEvt::TypeID);
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnEndTurnRight), EndTurnRightEvt::TypeID);
+        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnStartTurnLeft), StartTurnLeftEvt::TypeID);
+        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnEndTurnLeft), EndTurnLeftEvt::TypeID);
 
         return true;
     }
@@ -88,18 +92,20 @@ public:
         StrongActorPtr pTank(eNEW Actor(L"HeroTank"));
 
         // 1. Build hero visuals
-        SphereMeshComponent::Properties props;
+        BoxMeshComponent::Properties props;
         props.Color.x = DirectX::Colors::Blue.f[0];
         props.Color.y = DirectX::Colors::Blue.f[1];
         props.Color.z = DirectX::Colors::Blue.f[2];
 
-        props.Radius = 2.0;
+        props.Width = 1.0f;
+        props.Height = 1.0f;
+        props.Depth = 3.0f;
 
-        shared_ptr<SphereMeshComponent> pTankMesh(eNEW SphereMeshComponent(props));
+        shared_ptr<BoxMeshComponent> pTankMesh(eNEW BoxMeshComponent(props));
         pTank->AddComponent(pTankMesh);
 
         shared_ptr<TransformComponent> pTankTsfm(eNEW TransformComponent);
-        pTankTsfm->Position(Vec3(0.0, 0.0, 0.0));
+        pTankTsfm->Position(Vec3(-10.0f, 2.0f, -10.0));
         pTank->AddComponent(pTankTsfm);
 
         return pTank;
@@ -117,9 +123,21 @@ public:
             m_lastTargetGenerationTime = time.TotalTime();
         }
 
-        if (m_isChargingFirePower)
+        if (m_isChargingFirePower && m_firePowerScale < 5.0f)
         {
             m_firePowerScale += m_firePowerScaleVelocity * time.DeltaTime();
+        }
+
+        if (m_isTurningRight)
+        {
+            shared_ptr<TransformComponent> pTsfm(m_pHero.lock()->GetComponent<TransformComponent>());
+            pTsfm->RotationY(pTsfm->RotationY() + (m_turnVelocity * time.DeltaTime()));
+        }
+
+        if (m_isTurningLeft)
+        {
+            shared_ptr<TransformComponent> pTsfm(m_pHero.lock()->GetComponent<TransformComponent>());
+            pTsfm->RotationY(pTsfm->RotationY() - (m_turnVelocity * time.DeltaTime()));
         }
     }
 
@@ -154,7 +172,7 @@ public:
         LogInfo("Generating Target");
 
         StrongActorPtr pTarget(CreateTarget());
-         CBR(AddInitActor(pTarget));
+        CBR(AddInitActor(pTarget));
         m_aliveActors.insert(pTarget->Id());
     }
 
@@ -173,14 +191,17 @@ public:
     void OnEndFirePowerCharge(EventPtr evt)
     {
         StrongActorPtr pBullet;
-        
+
         if (m_currentWeapon == WPN_Pistol)
             pBullet = CreatePistolBullet();
         else if (m_currentWeapon == WPN_Shell)
             pBullet = CreateShellBullet();
 
         LogInfo("Firing a bullet with fire power scale %f", m_firePowerScale);
+
         pBullet->GetComponent<ParticlePhysicsComponent>().lock()->ScaleVelocity(m_firePowerScale);
+        pBullet->GetComponent<TransformComponent>().lock()->FrameTransform(
+            *m_pHero.lock()->GetComponent<TransformComponent>().lock());
 
         CBR(AddInitActor(pBullet));
         m_aliveActors.insert(pBullet->Id());
@@ -189,7 +210,7 @@ public:
 
     void OnStartTurnRight(EventPtr evt)
     {
-        if (m_pHeroTsfm.expired())
+        if (m_pHero.expired())
             return;
 
         _ASSERTE(!m_isTurningRight);
@@ -198,11 +219,29 @@ public:
 
     void OnEndTurnRight(EventPtr evt)
     {
-        if (m_pHeroTsfm.expired())
+        if (m_pHero.expired())
             return;
 
         _ASSERTE(m_isTurningRight);
         m_isTurningRight = false;
+    }
+
+    void OnStartTurnLeft(EventPtr evt)
+    {
+        if (m_pHero.expired())
+            return;
+
+        _ASSERTE(!m_isTurningLeft);
+        m_isTurningLeft = true;
+    }
+
+    void OnEndTurnLeft(EventPtr evt)
+    {
+        if (m_pHero.expired())
+            return;
+
+        _ASSERTE(m_isTurningLeft);
+        m_isTurningLeft = false;
     }
 
     StrongActorPtr CreateShellBullet()
@@ -302,11 +341,13 @@ private:
     std::set<ActorID> m_aliveActors;
     std::set<ActorID> m_deadActors;
     bool m_isTurningRight;
+    bool m_isTurningLeft;
     bool m_isChargingFirePower;
     WeaponType m_currentWeapon;
     real m_lastTargetGenerationTime;
     real m_firePowerScale;
     real m_firePowerScaleVelocity;
+    real m_turnVelocity;
 };
 
 class BulletGameApp : public WinGameApp

@@ -52,6 +52,7 @@
     <ClCompile Include="..\logic\GameActor.cpp" />
     <ClCompile Include="..\logic\GameLogic.cpp" />
     <ClCompile Include="..\logic\ParticlePhysicsComponent.cpp" />
+    <ClCompile Include="..\logic\TransformComponent.cpp" />
     <ClCompile Include="..\view\D3dGeneratedMeshNode.cpp" />
     <ClCompile Include="..\view\D3dShader.cpp" />
     <ClCompile Include="..\view\GameScene.cpp" />
