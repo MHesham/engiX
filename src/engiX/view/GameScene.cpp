@@ -108,7 +108,7 @@ void GameScene::OnActorCreated(_In_ EventPtr pEvt)
 
     StrongActorPtr pActor = pWeakActor.lock();
 
-    WeakActorComponentPtr pWeakRenderer(pActor->GetComponent<RenderComponent>());
+    WeakActorComponentPtr pWeakRenderer(pActor->Get<RenderComponent>());
     _ASSERTE(!pWeakRenderer.expired());
 
     shared_ptr<RenderComponent> pRenderer = static_pointer_cast<RenderComponent>(pWeakRenderer.lock());

@@ -1,8 +1,11 @@
 #include "GameLogic.h"
 #include "Logger.h"
 #include "EventManager.h"
+#include "TransformCmpt.h"
+#include "ParticlePhysicsCmpt.h"
 
 using namespace engiX;
+using namespace std;
 
 GameLogic::~GameLogic()
 {
@@ -13,8 +16,19 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
 {
     g_EventMgr->OnUpdate(time);
 
+    m_deadActors.clear();
     for (auto actor : m_actors)
+    {
+        if (actor.second->IsMarkedForRemove())
+        {
+            m_deadActors.insert(actor.first);
+            continue;
+        }
         actor.second->OnUpdate(time);
+    }
+
+    for (auto deadActor : m_deadActors)
+        RemoveActor(deadActor);
 
     m_pView->OnUpdate(time);
 }
@@ -47,7 +61,7 @@ bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor)
         m_actors.erase(pActor->Id());
         return false;
     }
-    
+
     g_EventMgr->Queue(EventPtr(eNEW ActorCreatedEvt(pActor->Id(), 0.0f)));
 
     return true;

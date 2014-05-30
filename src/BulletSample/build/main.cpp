@@ -1,18 +1,18 @@
 #include <Windows.h>
+#include <DirectXColors.h>
 #include <memory>
+#include <algorithm>
+#include <set>
 #include "GameLogic.h"
 #include "WinGameApp.h"
 #include "HumanD3dGameView.h"
 #include "Actor.h"
 #include "GeometryGenerator.h"
 #include "RenderComponent.h"
-#include "TransformComponent.h"
-#include "ParticlePhysicsComponent.h"
-#include <DirectXColors.h>
+#include "TransformCmpt.h"
+#include "ParticlePhysicsCmpt.h"
+#include "TurnController.h"
 #include "EventManager.h"
-#include "CollisionDetection.h"
-#include <algorithm>
-#include <set>
 
 using namespace engiX;
 using namespace std;
@@ -29,12 +29,9 @@ public:
     };
 
     BulletGameLogic() :
-        m_isTurningRight(false),
-        m_isTurningLeft(false),
         m_isChargingFirePower(false),
         m_firePowerScaleVelocity(2.0f),
-        m_currentWeapon(WPN_Pistol),
-        m_turnVelocity(1.5)
+        m_currentWeapon(WPN_Pistol)
     {}
 
     bool Init()
@@ -44,10 +41,8 @@ public:
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnStartFirePowerCharge), StartFireWeaponEvt::TypeID);
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnEndFirePowerCharge), EndFireWeaponEvt::TypeID);
         g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnChangeWeapon), ChangeWeaponEvt::TypeID);
-        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnStartTurnRight), StartTurnRightEvt::TypeID);
-        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnEndTurnRight), EndTurnRightEvt::TypeID);
-        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnStartTurnLeft), StartTurnLeftEvt::TypeID);
-        g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &BulletGameLogic::OnEndTurnLeft), EndTurnLeftEvt::TypeID);
+
+        CBRB(m_controller.Init());
 
         return true;
     }
@@ -56,6 +51,8 @@ public:
     {
         StrongActorPtr pHeroTank = CreateHero();
         CBR(AddInitActor(pHeroTank));
+
+        m_controller.Control(pHeroTank->Get<TransformCmpt>());
 
         CBR(AddInitActor(CreateTerrain()));
 
@@ -78,11 +75,11 @@ public:
         shared_ptr<RenderComponent> pTrnMeshCmpt(eNEW GridMeshComponent(props));
         pTrnActor->AddComponent(pTrnMeshCmpt);
 
-        shared_ptr<TransformComponent> pTrnTsfmCmpt(eNEW TransformComponent);
+        shared_ptr<TransformCmpt> pTrnTsfmCmpt(eNEW TransformCmpt);
         pTrnTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
         pTrnActor->AddComponent(pTrnTsfmCmpt);
 
-        m_worldBounds.Radius(50.0);
+        m_worldBounds.Radius(50.0f);
 
         return pTrnActor;
     }
@@ -104,7 +101,7 @@ public:
         shared_ptr<BoxMeshComponent> pTankMesh(eNEW BoxMeshComponent(props));
         pTank->AddComponent(pTankMesh);
 
-        shared_ptr<TransformComponent> pTankTsfm(eNEW TransformComponent);
+        shared_ptr<TransformCmpt> pTankTsfm(eNEW TransformCmpt);
         pTankTsfm->Position(Vec3(-10.0f, 2.0f, -10.0));
         pTank->AddComponent(pTankTsfm);
 
@@ -115,7 +112,7 @@ public:
     {
         GameLogic::OnUpdate(time);
 
-        CheckActorsLifetime();
+        m_controller.Update(time);
 
         if (time.TotalTime() - m_lastTargetGenerationTime > 2)
         {
@@ -127,53 +124,15 @@ public:
         {
             m_firePowerScale += m_firePowerScaleVelocity * time.DeltaTime();
         }
-
-        if (m_isTurningRight)
-        {
-            shared_ptr<TransformComponent> pTsfm(m_pHero.lock()->GetComponent<TransformComponent>());
-            pTsfm->RotationY(pTsfm->RotationY() + (m_turnVelocity * time.DeltaTime()));
-        }
-
-        if (m_isTurningLeft)
-        {
-            shared_ptr<TransformComponent> pTsfm(m_pHero.lock()->GetComponent<TransformComponent>());
-            pTsfm->RotationY(pTsfm->RotationY() - (m_turnVelocity * time.DeltaTime()));
-        }
     }
 
-    void CheckActorsLifetime()
-    {
-        m_deadActors.clear();
-
-        for (auto actorID : m_aliveActors)
-        {
-            WeakActorPtr pActor = FindActor(actorID);
-            if (!pActor.expired())
-            {
-                shared_ptr<TransformComponent> pTsfm = pActor.lock()->GetComponent<TransformComponent>().lock();
-
-                if (!m_worldBounds.IsPointInside(pTsfm->Position()))
-                {
-                    RemoveActor(actorID);
-                    m_deadActors.insert(actorID);
-                }
-            }
-        }
-
-        if (!m_deadActors.empty())
-        {
-            for (auto deadActorID : m_deadActors)
-                m_aliveActors.erase(deadActorID);
-        }
-    }
-
+    
     void GenerateTarget()
     {
         LogInfo("Generating Target");
 
         StrongActorPtr pTarget(CreateTarget());
         CBR(AddInitActor(pTarget));
-        m_aliveActors.insert(pTarget->Id());
     }
 
     void OnChangeWeapon(EventPtr evt)
@@ -193,58 +152,22 @@ public:
         StrongActorPtr pBullet;
 
         if (m_currentWeapon == WPN_Pistol)
-            pBullet = CreatePistolBullet();
+            pBullet = CreatePistolBullet(*m_pHero.lock()->Get<TransformCmpt>().lock());
         else if (m_currentWeapon == WPN_Shell)
-            pBullet = CreateShellBullet();
+            pBullet = CreateShellBullet(*m_pHero.lock()->Get<TransformCmpt>().lock());
 
         LogInfo("Firing a bullet with fire power scale %f", m_firePowerScale);
 
-        pBullet->GetComponent<ParticlePhysicsComponent>().lock()->ScaleVelocity(m_firePowerScale);
-        pBullet->GetComponent<TransformComponent>().lock()->FrameTransform(
-            *m_pHero.lock()->GetComponent<TransformComponent>().lock());
+        pBullet->Get<ParticlePhysicsCmpt>().lock()->ScaleVelocity(m_firePowerScale);
+        pBullet->Get<TransformCmpt>().lock()->SetTransform(
+            *m_pHero.lock()->Get<TransformCmpt>().lock());
 
         CBR(AddInitActor(pBullet));
-        m_aliveActors.insert(pBullet->Id());
         m_isChargingFirePower = false;
     }
 
-    void OnStartTurnRight(EventPtr evt)
-    {
-        if (m_pHero.expired())
-            return;
-
-        _ASSERTE(!m_isTurningRight);
-        m_isTurningRight = true;
-    }
-
-    void OnEndTurnRight(EventPtr evt)
-    {
-        if (m_pHero.expired())
-            return;
-
-        _ASSERTE(m_isTurningRight);
-        m_isTurningRight = false;
-    }
-
-    void OnStartTurnLeft(EventPtr evt)
-    {
-        if (m_pHero.expired())
-            return;
-
-        _ASSERTE(!m_isTurningLeft);
-        m_isTurningLeft = true;
-    }
-
-    void OnEndTurnLeft(EventPtr evt)
-    {
-        if (m_pHero.expired())
-            return;
-
-        _ASSERTE(m_isTurningLeft);
-        m_isTurningLeft = false;
-    }
-
-    StrongActorPtr CreateShellBullet()
+    
+    StrongActorPtr CreateShellBullet(const TransformCmpt& nozzleTsfm)
     {
         StrongActorPtr pBullet(eNEW Actor(L"ShellBullet"));
 
@@ -260,21 +183,21 @@ public:
         shared_ptr<BoxMeshComponent> pBulletMesh(eNEW BoxMeshComponent(props));
         pBullet->AddComponent(pBulletMesh);
 
-        shared_ptr<TransformComponent> pBulletTsfm(eNEW TransformComponent);
-        pBulletTsfm->Position(Vec3(0.0, 0.0, 0.0));
+        shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
+        pBulletTsfm->SetTransform(nozzleTsfm);
         pBullet->AddComponent(pBulletTsfm);
 
-        shared_ptr<ParticlePhysicsComponent> pBulletPhy(eNEW ParticlePhysicsComponent);
-        pBullet->AddComponent(pBulletPhy);
-
+        shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
         pBulletPhy->InverseMass(1.0);
-        pBulletPhy->Velocity(Vec3(0.0, 10.0, 20.0));
-        pBulletPhy->BaseAcceleraiton(Vec3(0.0, -20.0f, 0.0f));
+        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
+        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy->LifetimeBound(m_worldBounds);
+        pBullet->AddComponent(pBulletPhy);
 
         return pBullet;
     }
 
-    StrongActorPtr CreatePistolBullet()
+    StrongActorPtr CreatePistolBullet(const TransformCmpt& nozzleTsfm)
     {
         StrongActorPtr pBullet(eNEW Actor(L"PistolBullet"));
 
@@ -288,16 +211,16 @@ public:
         shared_ptr<SphereMeshComponent> pBulletMesh(eNEW SphereMeshComponent(props));
         pBullet->AddComponent(pBulletMesh);
 
-        shared_ptr<TransformComponent> pBulletTsfm(eNEW TransformComponent);
-        pBulletTsfm->Position(Vec3(0.0, 0.0, 0.0));
+        shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
+        pBulletTsfm->SetTransform(nozzleTsfm);
         pBullet->AddComponent(pBulletTsfm);
 
-        shared_ptr<ParticlePhysicsComponent> pBulletPhy(eNEW ParticlePhysicsComponent);
-        pBullet->AddComponent(pBulletPhy);
-
+        shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
         pBulletPhy->InverseMass(1.0);
-        pBulletPhy->Velocity(Vec3(0.0, 5.0, 30.0));
-        pBulletPhy->BaseAcceleraiton(Vec3(0.0, -5.0f, 0.0f));
+        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
+        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy->LifetimeBound(m_worldBounds);
+        pBullet->AddComponent(pBulletPhy);
 
         return pBullet;
     }
@@ -318,13 +241,13 @@ public:
         shared_ptr<BoxMeshComponent> pTargetMesh(eNEW BoxMeshComponent(props));
         pTarget->AddComponent(pTargetMesh);
 
-        shared_ptr<TransformComponent> pTargetTsfm(eNEW TransformComponent);
+        shared_ptr<TransformCmpt> pTargetTsfm(eNEW TransformCmpt);
 
-        real randZ = MathHelper::RandF(15, 45);
+        real randZ = Math::RandF(15, 45);
         pTargetTsfm->Position(Vec3(0.0, 0.0, randZ));
         pTarget->AddComponent(pTargetTsfm);
 
-        shared_ptr<ParticlePhysicsComponent> pTargetPhy(eNEW ParticlePhysicsComponent);
+        shared_ptr<ParticlePhysicsCmpt> pTargetPhy(eNEW ParticlePhysicsCmpt);
         pTarget->AddComponent(pTargetPhy);
 
         pTargetPhy->InverseMass(1.0);
@@ -337,17 +260,13 @@ private:
     WeakActorPtr m_pHero;
     WeakActorComponentPtr m_pHeroTsfm;
     GeometryGenerator m_meshGenerator;
-    BoundingSphere m_worldBounds;
-    std::set<ActorID> m_aliveActors;
-    std::set<ActorID> m_deadActors;
-    bool m_isTurningRight;
-    bool m_isTurningLeft;
     bool m_isChargingFirePower;
     WeaponType m_currentWeapon;
     real m_lastTargetGenerationTime;
     real m_firePowerScale;
     real m_firePowerScaleVelocity;
-    real m_turnVelocity;
+    TurnController m_controller;
+    BoundingSphere m_worldBounds;
 };
 
 class BulletGameApp : public WinGameApp

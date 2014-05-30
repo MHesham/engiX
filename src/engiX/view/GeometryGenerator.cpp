@@ -283,7 +283,7 @@ void GeometryGenerator::Subdivide(MeshData& meshData)
 void GeometryGenerator::CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData)
 {
 	// Put a cap on the number of subdivisions.
-	numSubdivisions = MathHelper::Min(numSubdivisions, 5u);
+	numSubdivisions = Math::Min(numSubdivisions, 5u);
 
 	// Approximate a sphere by tessellating an icosahedron.
 
@@ -333,7 +333,7 @@ void GeometryGenerator::CreateGeosphere(float radius, UINT numSubdivisions, Mesh
 		XMStoreFloat3(&meshData.Vertices[i].Normal, n);
 
 		// Derive texture coordinates from spherical coordinates.
-		float theta = MathHelper::AngleFromXY(
+		float theta = Math::AngleFromXY(
 			meshData.Vertices[i].Position.x, 
 			meshData.Vertices[i].Position.z);
 

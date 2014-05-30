@@ -37,15 +37,15 @@
     <Filter Include="Header Files\View\Components">
       <UniqueIdentifier>{95a27ccd-ff69-4b61-89e9-ee696e0bf60e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\Component">
+      <UniqueIdentifier>{3be74d42-0ed5-4d7e-82cf-ac5898ee02d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Vector.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\MathHelper.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Timer.h">
@@ -102,9 +102,6 @@
     <ClInclude Include="..\view\SceneCameraNode.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\logic\TransformComponent.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\view\D3dGeneratedMeshNode.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
@@ -114,11 +111,20 @@
     <ClInclude Include="..\view\RenderComponent.h">
       <Filter>Header Files\View\Components</Filter>
     </ClInclude>
-    <ClInclude Include="..\logic\ParticlePhysicsComponent.h">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\CollisionDetection.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\TurnController.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\MathHelper.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\ParticlePhysicsCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\TransformCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,13 +185,16 @@
     <ClCompile Include="..\view\RenderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\logic\ParticlePhysicsComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\logic\CollisionDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\logic\TransformComponent.cpp">
+    <ClCompile Include="..\logic\TurnController.cpp">
+      <Filter>Header Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\ParticlePhysicsCmpt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\TransformCmpt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

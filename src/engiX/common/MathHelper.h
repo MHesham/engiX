@@ -9,12 +9,12 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
-#include "Precision.h"
 #include <crtdbg.h>
+#include "engiXDefs.h"
 
 namespace engiX
 {
-    class MathHelper
+    class Math
     {
     public:
         // Returns random real in [0, 1).
@@ -90,6 +90,32 @@ namespace engiX
             cartesianXyz.x = sphericalRadius * real_sin(sphericalPhi) * real_cos(sphericalTheta);
             cartesianXyz.z = sphericalRadius * real_sin(sphericalPhi) * real_sin(sphericalTheta);
 	        cartesianXyz.y = sphericalRadius * real_cos(sphericalPhi);
+        }
+
+        static Vec3 Vec3RotTransform(_In_ const Vec3& v0, _In_ const Mat4x4& tsfm)
+        {
+            Mat4x4 rotTsfm = tsfm;
+            Math::TransformZeroPosition(rotTsfm);
+
+            Vec3 v;
+            XMStoreFloat3(&v,
+                XMVector3Transform(
+                XMLoadFloat3(&v0),
+                XMLoadFloat4x4(&rotTsfm)));
+
+            return v;
+        }
+
+        static void TransformSetPosition(_Inout_ Mat4x4& m, _In_ const Vec3& p)
+        {
+            m._41 = p.x;
+            m._42 = p.y;
+            m._43 = p.z;
+        }
+
+        static void TransformZeroPosition(_Inout_ Mat4x4& m)
+        {
+            TransformSetPosition(m, Vec3(0.0f, 0.0f, 0.0f));
         }
 
         static DirectX::XMVECTOR RandUnitVec3();

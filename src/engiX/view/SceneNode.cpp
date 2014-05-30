@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "GameScene.h"
 #include "WinGameApp.h"
-#include "TransformComponent.h"
+#include "TransformCmpt.h"
 
 using namespace engiX;
 using namespace std;
@@ -46,12 +46,16 @@ void SceneNode::RenderChildren()
 
 void SceneNode::OnUpdate(_In_ const Timer& time)
 {
+    _ASSERTE(g_pApp->Logic());
+   
     if (m_actorId != NullActorID)
     {
-        _ASSERTE(g_pApp->Logic());
+        if (g_pApp->Logic()->FindActor(m_actorId).expired())
+            return;
+
         StrongActorPtr pActor((g_pApp->Logic()->FindActor(m_actorId)));
 
-        shared_ptr<TransformComponent> pTransformCmpt(pActor->GetComponent<TransformComponent>());
+        shared_ptr<TransformCmpt> pTransformCmpt(pActor->Get<TransformCmpt>());
         _ASSERTE(pTransformCmpt);
 
         m_toParentWorldTsfm = pTransformCmpt->Transform();

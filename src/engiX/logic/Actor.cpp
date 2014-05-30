@@ -1,14 +1,14 @@
 #include "Actor.h"
 #include "Logger.h"
+#include "WinGameApp.h"
 
 using namespace engiX;
 
 void Actor::AddComponent(_In_ StrongActorComponentPtr pComponent)
 {
     _ASSERTE(m_components.count(pComponent->TypeId()) == 0);
-    _ASSERTE(pComponent->Owner() == NullActorID);
 
-    pComponent->Owner(m_id);
+    pComponent->Owner(this);
     m_components.insert(make_pair(pComponent->TypeId(), pComponent));
     LogInfo("%s[%x] has been added to Actor %s[%x]", pComponent->Typename(), pComponent->TypeId(), Typename(), Id());
 }

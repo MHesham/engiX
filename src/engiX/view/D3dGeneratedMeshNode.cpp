@@ -62,7 +62,7 @@ void D3dGeneratedMeshNode::OnRender()
     StrongActorPtr pActor(pWeakActor);
     _ASSERTE(pActor);
 
-    shared_ptr<RenderComponent> pMeshCmpt(pActor->GetComponent<RenderComponent>());
+    shared_ptr<RenderComponent> pMeshCmpt(pActor->Get<RenderComponent>());
     _ASSERTE(pMeshCmpt);
 
     UINT stride = sizeof(D3D11Vertex_PositionColored);

@@ -2,19 +2,20 @@
 
 #include "Actor.h"
 #include "engiXDefs.h"
-#include "TransformComponent.h"
+#include "TransformCmpt.h"
+#include "CollisionDetection.h"
 
 namespace engiX
 {
-    class ParticlePhysicsComponent : public ActorComponent
+    class ParticlePhysicsCmpt : public ActorComponent
     {
     public:
         static const real DefaultDamping;
         static const ComponentID TypeID = 0x37C19534;
 
-        ParticlePhysicsComponent();
+        ParticlePhysicsCmpt();
         ComponentID TypeId() const { return TypeID; }
-        const wchar_t* Typename() const { return L"ParticlePhysicsComponent"; }
+        const wchar_t* Typename() const { return L"ParticlePhysicsCmpt"; }
         void OnUpdate(_In_ const Timer& time) { Integrate(time); }
         bool Init();
         Vec3 Velocity() const { return m_velocity; }
@@ -26,6 +27,7 @@ namespace engiX
         real Damping() const { return m_damping; }
         void Damping(_In_ real val) { m_damping = val; }
         void ScaleVelocity(_In_ real scale);
+        void LifetimeBound(_In_ const BoundingSphere& lifetimeBound) { m_lifetimeBound = lifetimeBound; }
 
         // res = res + vec * scale
         static void AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res);
@@ -39,6 +41,7 @@ namespace engiX
         Vec3 m_accumulatedForce;
         real m_inverseMass;
         real m_damping;
-        std::weak_ptr<TransformComponent> m_pObjTsfm;
+        std::weak_ptr<TransformCmpt> m_pObjTsfm;
+        BoundingSphere m_lifetimeBound;
     };
 }

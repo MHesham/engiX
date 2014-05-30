@@ -25,22 +25,18 @@ namespace engiX
     class ActorComponent
     {
     public:
-        ActorComponent() : m_owner(NullActorID) {}
+        ActorComponent() : m_pOwner(nullptr) {}
         virtual ~ActorComponent() {}
         virtual ComponentID TypeId() const = 0;
         virtual const wchar_t* Typename() const = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
         virtual bool Init() = 0;
-        virtual ActorID Owner() const { return m_owner; } 
-        virtual void Owner(ActorID owner) 
-        {
-            // We assume that that actor owner is set once in the component lifetime
-            // Later, the owner setting will be done by some XML Actor loading routine
-            _ASSERTE(m_owner == NullActorID); m_owner = owner; 
-        }
+        Actor* Owner() const { return m_pOwner; } 
+        void Owner(Actor* pOwner) { m_pOwner = pOwner; } 
 
     protected:
-        ActorID m_owner;
+
+        Actor *m_pOwner;
     };
 
     class Actor
@@ -50,7 +46,8 @@ namespace engiX
 
         Actor(const wchar_t* actorTypename) :
             m_id(++m_lastActorId),
-            m_typename(actorTypename)
+            m_typename(actorTypename),
+            m_markedForRemove(false)
         { }
 
         ActorID Id() const { return m_id; }
@@ -60,7 +57,7 @@ namespace engiX
 
         // template function for retrieving components
         template <class ComponentType>
-        std::weak_ptr<ComponentType> GetComponent()
+        std::weak_ptr<ComponentType> Get()
         {
             ActorComponentRegistry::iterator findIt = m_components.find(ComponentType::TypeID);
             if (findIt != m_components.end())
@@ -78,11 +75,14 @@ namespace engiX
 
         const ActorComponentRegistry& GetComponents() const { return m_components; }
         void AddComponent(_In_ StrongActorComponentPtr pComponent);
+        bool IsMarkedForRemove() const { return m_markedForRemove; }
+        void MarkForRemove() { m_markedForRemove = true; }
 
     private:
         ActorID m_id;
         std::wstring m_typename;
         ActorComponentRegistry m_components;
+        bool m_markedForRemove;
 
         static ActorID m_lastActorId;
     };

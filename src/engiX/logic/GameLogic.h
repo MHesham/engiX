@@ -3,6 +3,8 @@
 #include "Timer.h"
 #include "Actor.h"
 #include "ViewInterfaces.h"
+#include "CollisionDetection.h"
+#include <set>
 
 namespace engiX
 {
@@ -28,5 +30,6 @@ namespace engiX
     private:
         ActorRegistry m_actors;
         IGameView* m_pView;
+        std::set<ActorID> m_deadActors;
     };
 }

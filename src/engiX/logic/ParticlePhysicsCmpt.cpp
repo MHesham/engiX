@@ -1,13 +1,13 @@
-#include "ParticlePhysicsComponent.h"
+#include "ParticlePhysicsCmpt.h"
 #include "WinGameApp.h"
 
 using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
-const real ParticlePhysicsComponent::DefaultDamping = 0.9f;
+const real ParticlePhysicsCmpt::DefaultDamping = 0.9f;
 
-ParticlePhysicsComponent::ParticlePhysicsComponent() :
+ParticlePhysicsCmpt::ParticlePhysicsCmpt() :
     m_velocity(g_XMZero),
     m_baseAcceleraiton(g_XMZero),
     m_accumulatedForce(g_XMZero),
@@ -17,24 +17,21 @@ ParticlePhysicsComponent::ParticlePhysicsComponent() :
 
 }
 
-bool ParticlePhysicsComponent::Init()
+bool ParticlePhysicsCmpt::Init()
 {
-    WeakActorPtr pActor = g_pApp->Logic()->FindActor(Owner());
-    CBRB(!pActor.expired());
-
-    m_pObjTsfm = pActor.lock()->GetComponent<TransformComponent>();
-
+    m_pObjTsfm = m_pOwner->Get<TransformCmpt>();
     return true;
 }
 
-void ParticlePhysicsComponent::Integrate(_In_ const Timer& time)
+void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)
 {
     if (m_inverseMass <= 0.0) return;
 
     _ASSERTE(!m_pObjTsfm.expired());
-    shared_ptr<TransformComponent> pTsfmCmpt = m_pObjTsfm.lock();
+    shared_ptr<TransformCmpt> pTsfmCmpt = m_pObjTsfm.lock();
 
     Vec3 newPos = pTsfmCmpt->Position();
+
     // Work out new position p, where p = p0 + vt
     AddScaledVector(m_velocity, time.DeltaTime(), newPos);
     pTsfmCmpt->Position(newPos);
@@ -52,22 +49,29 @@ void ParticlePhysicsComponent::Integrate(_In_ const Timer& time)
 
     // 4. Clear accumulated force during this update cycle
     m_accumulatedForce.x = m_accumulatedForce.y = m_accumulatedForce.z = 0.0;
+
+    // 5. Check for particle lifetime in case a bound was set
+    if (!m_lifetimeBound.IsNull() &&
+        !m_lifetimeBound.IsPointInside(pTsfmCmpt->Position()))
+    {
+        m_pOwner->MarkForRemove();
+    }
 }
 
-void ParticlePhysicsComponent::ScaleVelocity(_In_ real scale)
+void ParticlePhysicsCmpt::ScaleVelocity(_In_ real scale)
 {
     XMStoreFloat3(&m_velocity,
         XMVectorScale(XMLoadFloat3(&m_velocity), scale));
 }
 
-void ParticlePhysicsComponent::AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res)
+void ParticlePhysicsCmpt::AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res)
 {
     // res = res + vec * scale
     XMStoreFloat3(&res,
         XMVectorMultiplyAdd(XMLoadFloat3(&vec), XMVectorReplicate(scale), XMLoadFloat3(&res)));
 }
 
-void ParticlePhysicsComponent::AddPowVector(_In_ const real& a, _In_ real b, _Inout_ Vec3& res)
+void ParticlePhysicsCmpt::AddPowVector(_In_ const real& a, _In_ real b, _Inout_ Vec3& res)
 {
     // res = res + a^b
     XMStoreFloat3(&res,

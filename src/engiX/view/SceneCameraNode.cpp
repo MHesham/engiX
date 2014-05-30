@@ -50,7 +50,7 @@ Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const
 void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
 {
     Vec3 pos;
-    MathHelper::ConvertSphericalToCartesian(radius, theta, phi, pos);
+    Math::ConvertSphericalToCartesian(radius, theta, phi, pos);
     FXMVECTOR xPos = XMLoadFloat3(&pos);
 
     XMMATRIX lookat = XMMatrixLookAtLH(xPos, g_XMZero, g_XMIdentityR1);
