@@ -23,6 +23,7 @@ namespace engiX
         Vec3 BaseAcceleraiton() const { return m_baseAcceleraiton; }
         void BaseAcceleraiton(_In_ Vec3 val) { m_baseAcceleraiton = val; }
         real Mass() const { return real((m_inverseMass > 0.0) ? 1.0 / m_inverseMass : REAL_MAX); }
+        void Mass(_In_ real val) { m_inverseMass = 1.0f / val; }
         void InverseMass(_In_ real val) { m_inverseMass = val; }
         real Damping() const { return m_damping; }
         void Damping(_In_ real val) { m_damping = val; }

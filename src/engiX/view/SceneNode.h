@@ -4,6 +4,8 @@
 #include "ViewInterfaces.h"
 #include "Actor.h"
 #include "engiXDefs.h"
+#include "Actor.h"
+#include "TransformCmpt.h"
 
 namespace engiX
 {
@@ -32,8 +34,10 @@ namespace engiX
         GameScene *m_pScene;
         NodeList m_children;
         ISceneNode* m_pParent;
-        Mat4x4 m_toParentWorldTsfm;
+        Mat4x4 m_localTsfm;
         Mat4x4 m_frmParentWorldTsfm;
+        std::weak_ptr<TransformCmpt> m_actorTsfm;
+        WeakActorPtr m_actor;
     };
 
     class RootSceneNode : public SceneNode

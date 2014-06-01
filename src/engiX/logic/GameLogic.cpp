@@ -35,6 +35,9 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
 
 WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
 {
+    if (id == NullActorID)
+        return WeakActorPtr();
+
     ActorRegistry::iterator itr = m_actors.find(id);
 
     if (itr != m_actors.end())

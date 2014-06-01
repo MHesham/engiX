@@ -159,7 +159,7 @@ public:
         LogInfo("Firing a bullet with fire power scale %f", m_firePowerScale);
 
         pBullet->Get<ParticlePhysicsCmpt>().lock()->ScaleVelocity(m_firePowerScale);
-        pBullet->Get<TransformCmpt>().lock()->SetTransform(
+        pBullet->Get<TransformCmpt>().lock()->LocalTransform(
             *m_pHero.lock()->Get<TransformCmpt>().lock());
 
         CBR(AddInitActor(pBullet));
@@ -184,13 +184,13 @@ public:
         pBullet->AddComponent(pBulletMesh);
 
         shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
-        pBulletTsfm->SetTransform(nozzleTsfm);
+        pBulletTsfm->LocalTransform(nozzleTsfm);
         pBullet->AddComponent(pBulletTsfm);
 
         shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
-        pBulletPhy->InverseMass(1.0);
-        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
-        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy->Mass(1.0);
+        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.LocalTransform()));
+        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.LocalTransform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
         pBullet->AddComponent(pBulletPhy);
 
@@ -212,13 +212,13 @@ public:
         pBullet->AddComponent(pBulletMesh);
 
         shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
-        pBulletTsfm->SetTransform(nozzleTsfm);
+        pBulletTsfm->LocalTransform(nozzleTsfm);
         pBullet->AddComponent(pBulletTsfm);
 
         shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
-        pBulletPhy->InverseMass(1.0);
-        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
-        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy->Mass(1.0);
+        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.LocalTransform()));
+        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.LocalTransform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
         pBullet->AddComponent(pBulletPhy);
 
@@ -250,7 +250,7 @@ public:
         shared_ptr<ParticlePhysicsCmpt> pTargetPhy(eNEW ParticlePhysicsCmpt);
         pTarget->AddComponent(pTargetPhy);
 
-        pTargetPhy->InverseMass(1.0);
+        pTargetPhy->Mass(1.0);
         pTargetPhy->Velocity(Vec3(0.0, 5.0, 0.0));
 
         return pTarget;

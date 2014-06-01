@@ -15,7 +15,6 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() {  return true; }
 
-        const Mat4x4& Transform() const { return m_transform; }
         real RotationY() const { return m_rotationXYZ.y; }
         Mat4x4 InverseTransform() const;
         Vec3 Position() const { return Vec3(m_transform._41, m_transform._42, m_transform._43); }
@@ -23,7 +22,10 @@ namespace engiX
         void RotationY(_In_ real theta);
         
         void Position(_In_ const Vec3& newPos);
-        void SetTransform(_In_ const TransformCmpt& tsfm);
+        void LocalTransform(_In_ const TransformCmpt& tsfm);
+        const Mat4x4& LocalTransform() const { return m_transform; }
+        void ToWorldTransform(_In_ const Mat4x4& toWorld) { m_toWorldTransform = toWorld; }
+        const Mat4x4& ToWorldTransform() const { return m_toWorldTransform; }
 
     protected:
         void CalcTransform();
@@ -31,5 +33,6 @@ namespace engiX
 
         Vec3 m_rotationXYZ;
         Mat4x4 m_transform;
+        Mat4x4 m_toWorldTransform;
     };
 }

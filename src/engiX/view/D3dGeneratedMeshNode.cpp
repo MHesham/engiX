@@ -52,14 +52,10 @@ HRESULT D3dGeneratedMeshNode::OnPreRender()
 
 void D3dGeneratedMeshNode::OnRender()
 {
-    _ASSERTE(g_pApp->Logic());
-
-    WeakActorPtr pWeakActor = g_pApp->Logic()->FindActor(m_actorId);
-
-    if (pWeakActor.expired())
+    if (m_actor.expired())
         return;
 
-    StrongActorPtr pActor(pWeakActor);
+    StrongActorPtr pActor(m_actor);
     _ASSERTE(pActor);
 
     shared_ptr<RenderComponent> pMeshCmpt(pActor->Get<RenderComponent>());

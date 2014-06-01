@@ -11,16 +11,29 @@ using namespace DirectX;
 
 SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
     m_pScene(pScene),
-    m_actorId(actorId),
-    m_pParent(nullptr)
+    m_pParent(nullptr),
+    m_actorId(actorId)
 {
-    XMStoreFloat4x4(&m_toParentWorldTsfm, XMMatrixIdentity());
+    XMStoreFloat4x4(&m_localTsfm, XMMatrixIdentity());
     XMStoreFloat4x4(&m_frmParentWorldTsfm, XMMatrixIdentity());
+
+    m_actor = g_pApp->Logic()->FindActor(actorId);
+
+    if (!m_actor.expired())
+    {
+        m_actorTsfm = m_actor.lock()->Get<TransformCmpt>();
+        _ASSERTE(!m_actorTsfm.expired());
+    }
 }
 
 HRESULT SceneNode::OnPreRender()
 {
-    m_pScene->PushTransformation(m_toParentWorldTsfm);
+    m_pScene->PushTransformation(m_localTsfm);
+    
+    if (!m_actorTsfm.expired())
+    {
+        m_actorTsfm.lock()->ToWorldTransform(m_pScene->TopTransformation());
+    }
 
     return S_OK;
 }
@@ -46,19 +59,9 @@ void SceneNode::RenderChildren()
 
 void SceneNode::OnUpdate(_In_ const Timer& time)
 {
-    _ASSERTE(g_pApp->Logic());
-   
-    if (m_actorId != NullActorID)
+    if (!m_actorTsfm.expired())
     {
-        if (g_pApp->Logic()->FindActor(m_actorId).expired())
-            return;
-
-        StrongActorPtr pActor((g_pApp->Logic()->FindActor(m_actorId)));
-
-        shared_ptr<TransformCmpt> pTransformCmpt(pActor->Get<TransformCmpt>());
-        _ASSERTE(pTransformCmpt);
-
-        m_toParentWorldTsfm = pTransformCmpt->Transform();
+        m_localTsfm = m_actorTsfm.lock()->LocalTransform();
     }
 
     for (auto pChild : m_children)
