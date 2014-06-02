@@ -65,19 +65,12 @@ public:
 
         // 1. Build grid visuals
         GridMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Green.f[0];
-        props.Color.y = DirectX::Colors::Green.f[1];
-        props.Color.z = DirectX::Colors::Green.f[2];
-
+        props.Color = Color3(DirectX::Colors::Green);
         props.Width = 100.0;
         props.Depth = 100.0;
 
-        shared_ptr<RenderComponent> pTrnMeshCmpt(eNEW GridMeshComponent(props));
-        pTrnActor->AddComponent(pTrnMeshCmpt);
-
-        shared_ptr<TransformCmpt> pTrnTsfmCmpt(eNEW TransformCmpt);
-        pTrnTsfmCmpt->Position(Vec3(0.0, 0.0, 0.0));
-        pTrnActor->AddComponent(pTrnTsfmCmpt);
+        pTrnActor->Add<GridMeshComponent>(props);
+        pTrnActor->Add<TransformCmpt>();
 
         m_worldBounds.Radius(50.0f);
 
@@ -90,20 +83,16 @@ public:
 
         // 1. Build hero visuals
         BoxMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Blue.f[0];
-        props.Color.y = DirectX::Colors::Blue.f[1];
-        props.Color.z = DirectX::Colors::Blue.f[2];
+        props.Color = Color3(DirectX::Colors::Blue.f);
 
         props.Width = 1.0f;
         props.Height = 1.0f;
         props.Depth = 3.0f;
 
-        shared_ptr<BoxMeshComponent> pTankMesh(eNEW BoxMeshComponent(props));
-        pTank->AddComponent(pTankMesh);
+        pTank->Add<BoxMeshComponent>(props);
 
-        shared_ptr<TransformCmpt> pTankTsfm(eNEW TransformCmpt);
+        shared_ptr<TransformCmpt> pTankTsfm = pTank->Add<TransformCmpt>();
         pTankTsfm->Position(Vec3(-10.0f, 2.0f, -10.0));
-        pTank->AddComponent(pTankTsfm);
 
         return pTank;
     }
@@ -172,27 +161,20 @@ public:
         StrongActorPtr pBullet(eNEW Actor(L"ShellBullet"));
 
         BoxMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Brown.f[0];
-        props.Color.y = DirectX::Colors::Brown.f[1];
-        props.Color.z = DirectX::Colors::Brown.f[2];
+        props.Color = Color3(DirectX::Colors::Brown);
 
         props.Width = 0.5;
         props.Height = 0.5;
         props.Depth = 1.0;
 
-        shared_ptr<BoxMeshComponent> pBulletMesh(eNEW BoxMeshComponent(props));
-        pBullet->AddComponent(pBulletMesh);
+        pBullet->Add<BoxMeshComponent>(props);
+        pBullet->Add<TransformCmpt>()->Transform(nozzleTsfm);
 
-        shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
-        pBulletTsfm->Transform(nozzleTsfm);
-        pBullet->AddComponent(pBulletTsfm);
-
-        shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
+        shared_ptr<ParticlePhysicsCmpt> pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
         pBulletPhy->Mass(1.0);
         pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
         pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
-        pBullet->AddComponent(pBulletPhy);
 
         return pBullet;
     }
@@ -202,25 +184,18 @@ public:
         StrongActorPtr pBullet(eNEW Actor(L"PistolBullet"));
 
         SphereMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Black.f[0];
-        props.Color.y = DirectX::Colors::Black.f[1];
-        props.Color.z = DirectX::Colors::Black.f[2];
-
+        props.Color = Color3(DirectX::Colors::Black);
         props.Radius = 0.25;
 
-        shared_ptr<SphereMeshComponent> pBulletMesh(eNEW SphereMeshComponent(props));
-        pBullet->AddComponent(pBulletMesh);
+        pBullet->Add<SphereMeshComponent>(props);
 
-        shared_ptr<TransformCmpt> pBulletTsfm(eNEW TransformCmpt);
-        pBulletTsfm->Transform(nozzleTsfm);
-        pBullet->AddComponent(pBulletTsfm);
+        pBullet->Add<TransformCmpt>()->Transform(nozzleTsfm);
 
-        shared_ptr<ParticlePhysicsCmpt> pBulletPhy(eNEW ParticlePhysicsCmpt);
+        shared_ptr<ParticlePhysicsCmpt> pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
         pBulletPhy->Mass(1.0);
         pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
         pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
-        pBullet->AddComponent(pBulletPhy);
 
         return pBullet;
     }
@@ -230,25 +205,17 @@ public:
         StrongActorPtr pTarget(eNEW Actor(L"HitTarget"));
 
         BoxMeshComponent::Properties props;
-        props.Color.x = DirectX::Colors::Red.f[0];
-        props.Color.y = DirectX::Colors::Red.f[1];
-        props.Color.z = DirectX::Colors::Red.f[2];
-
+        props.Color = Color3(DirectX::Colors::Red);
         props.Width = 2.0;
         props.Height = 2.0;
         props.Depth = 0.5;
 
-        shared_ptr<BoxMeshComponent> pTargetMesh(eNEW BoxMeshComponent(props));
-        pTarget->AddComponent(pTargetMesh);
-
-        shared_ptr<TransformCmpt> pTargetTsfm(eNEW TransformCmpt);
+        pTarget->Add<BoxMeshComponent>(props);
 
         real randZ = Math::RandF(15, 45);
-        pTargetTsfm->Position(Vec3(0.0, 0.0, randZ));
-        pTarget->AddComponent(pTargetTsfm);
+        pTarget->Add<TransformCmpt>()->Position(Vec3(0.0, 0.0, randZ));
 
-        shared_ptr<ParticlePhysicsCmpt> pTargetPhy(eNEW ParticlePhysicsCmpt);
-        pTarget->AddComponent(pTargetPhy);
+        shared_ptr<ParticlePhysicsCmpt> pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
 
         pTargetPhy->Mass(1.0);
         pTargetPhy->Velocity(Vec3(0.0, 5.0, 0.0));

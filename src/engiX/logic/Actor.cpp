@@ -4,7 +4,7 @@
 
 using namespace engiX;
 
-void Actor::AddComponent(_In_ StrongActorComponentPtr pComponent)
+void Actor::Add(_In_ StrongActorComponentPtr pComponent)
 {
     _ASSERTE(m_components.count(pComponent->TypeId()) == 0);
 

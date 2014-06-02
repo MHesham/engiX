@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include "Timer.h"
+#include "engiXDefs.h"
 
 namespace engiX
 {
@@ -74,7 +75,16 @@ namespace engiX
         }
 
         const ActorComponentRegistry& GetComponents() const { return m_components; }
-        void AddComponent(_In_ StrongActorComponentPtr pComponent);
+        void Add(_In_ StrongActorComponentPtr pComponent);
+
+        template<class T, class... Args>
+        std::shared_ptr<T> Add(const Args&... args)
+        {
+            std::shared_ptr<T> pCmpt(eNEW T(args...));
+            Add(pCmpt);
+            return pCmpt;
+        }
+
         bool IsMarkedForRemove() const { return m_markedForRemove; }
         void MarkForRemove() { m_markedForRemove = true; }
 
