@@ -22,9 +22,9 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time);
         void OnRender();
         HRESULT OnConstruct();
-        void OnActorCreated(_In_ EventPtr pEvt);
-        void OnActorDestroyed(_In_ EventPtr pEvt);
-        void OnToggleCamera(_In_ EventPtr pEvt);
+        void OnActorCreatedEvt(_In_ EventPtr pEvt);
+        void OnActorDestroyedEvt(_In_ EventPtr pEvt);
+        void OnToggleCameraEvt(_In_ EventPtr pEvt);
         bool Init();
         std::shared_ptr<SceneCameraNode> Camera() { return m_pCameraNodes[m_currCameraIdx]; }
         void PushTransformation(_In_ const Mat4x4& t);

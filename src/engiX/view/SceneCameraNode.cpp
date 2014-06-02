@@ -35,7 +35,7 @@ Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const
     const Mat4x4 sceneWorldTsfm = m_pScene->TopTransformation();
 
     XMMATRIX world = XMLoadFloat4x4(&sceneWorldTsfm);
-    XMMATRIX view = XMLoadFloat4x4(&m_frmParentWorldTsfm);
+    XMMATRIX view = XMLoadFloat4x4(&m_worldTsfm);
     XMMATRIX proj = XMLoadFloat4x4(&m_projMat);
 
     XMMATRIX xWvp = world * view * proj;
@@ -46,7 +46,6 @@ Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const
     return wvp;
 }
 
-
 void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
 {
     Vec3 pos;
@@ -55,6 +54,6 @@ void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real
 
     XMMATRIX lookat = XMMatrixLookAtLH(xPos, g_XMZero, g_XMIdentityR1);
 
-    XMStoreFloat4x4(&m_frmParentWorldTsfm, lookat);
+    XMStoreFloat4x4(&m_worldTsfm, lookat);
 }
 

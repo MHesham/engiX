@@ -45,9 +45,9 @@ bool GameScene::Init()
     XMStoreFloat4x4(&identity, XMMatrixIdentity());
     m_worldTransformationStack.push(identity);
 
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &GameScene::OnActorCreated), ActorCreatedEvt::TypeID);
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &GameScene::OnActorDestroyed), ActorDestroyedEvt::TypeID);
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &GameScene::OnToggleCamera), ToggleCameraEvt::TypeID);
+    REGISTER_EVT(GameScene, ActorCreatedEvt);
+    REGISTER_EVT(GameScene, ActorDestroyedEvt);
+    REGISTER_EVT(GameScene, ToggleCameraEvt);
 
     return true;
 }
@@ -93,13 +93,14 @@ void GameScene::OnRender()
         if (SUCCEEDED(m_pSceneRoot->OnPreRender()))
         {
             m_pSceneRoot->OnRender();
-            m_pSceneRoot->RenderChildren();
             m_pSceneRoot->OnPostRender();
         }
+
+        m_pSceneRoot->RenderChildren();
     }
 }
 
-void GameScene::OnActorCreated(_In_ EventPtr pEvt)
+void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
 {
     shared_ptr<ActorCreatedEvt> pActrEvt = static_pointer_cast<ActorCreatedEvt>(pEvt);
 
@@ -121,14 +122,14 @@ void GameScene::OnActorCreated(_In_ EventPtr pEvt)
     LogInfo("Actor %s[%x] ScenNode created and added to scene root node children", pActor->Typename(), pActor->Id());
 }
 
-void GameScene::OnActorDestroyed(_In_ EventPtr pEvt)
+void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)
 {
     shared_ptr<ActorDestroyedEvt> pActrEvt = static_pointer_cast<ActorDestroyedEvt>(pEvt);
 
     m_pSceneRoot->RemoveChild(pActrEvt->ActorId());
 }
 
-void GameScene::OnToggleCamera(_In_ EventPtr pEvt)
+void GameScene::OnToggleCameraEvt(_In_ EventPtr pEvt)
 {
     LogInfo("Game scene is toggle its camera");
     m_currCameraIdx = (m_currCameraIdx + 1) % m_pCameraNodes.size();

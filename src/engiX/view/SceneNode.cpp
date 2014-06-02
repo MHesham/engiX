@@ -14,8 +14,7 @@ SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
     m_pParent(nullptr),
     m_actorId(actorId)
 {
-    XMStoreFloat4x4(&m_localTsfm, XMMatrixIdentity());
-    XMStoreFloat4x4(&m_frmParentWorldTsfm, XMMatrixIdentity());
+    XMStoreFloat4x4(&m_worldTsfm, XMMatrixIdentity());
 
     m_actor = g_pApp->Logic()->FindActor(actorId);
 
@@ -28,13 +27,7 @@ SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
 
 HRESULT SceneNode::OnPreRender()
 {
-    m_pScene->PushTransformation(m_localTsfm);
-    
-    if (!m_actorTsfm.expired())
-    {
-        m_actorTsfm.lock()->ToWorldTransform(m_pScene->TopTransformation());
-    }
-
+    m_pScene->PushTransformation(m_worldTsfm);
     return S_OK;
 }
 
@@ -61,7 +54,7 @@ void SceneNode::OnUpdate(_In_ const Timer& time)
 {
     if (!m_actorTsfm.expired())
     {
-        m_localTsfm = m_actorTsfm.lock()->LocalTransform();
+        m_worldTsfm = m_actorTsfm.lock()->Transform();
     }
 
     for (auto pChild : m_children)

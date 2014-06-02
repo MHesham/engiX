@@ -7,7 +7,6 @@ TransformCmpt::TransformCmpt() :
     m_rotationXYZ(DirectX::g_XMZero)
 {
     XMStoreFloat4x4(&m_transform, XMMatrixIdentity());
-    XMStoreFloat4x4(&m_toWorldTransform, XMMatrixIdentity());
 }
 
 Mat4x4 TransformCmpt::InverseTransform() const
@@ -49,7 +48,7 @@ Vec3 TransformCmpt::Direction() const
     return dir;
 }
 
-void TransformCmpt::LocalTransform(_In_ const TransformCmpt& tsfm)
+void TransformCmpt::Transform(_In_ const TransformCmpt& tsfm)
 {
     m_rotationXYZ = tsfm.m_rotationXYZ;
     m_transform = tsfm.m_transform;

@@ -34,8 +34,7 @@ namespace engiX
         GameScene *m_pScene;
         NodeList m_children;
         ISceneNode* m_pParent;
-        Mat4x4 m_localTsfm;
-        Mat4x4 m_frmParentWorldTsfm;
+        Mat4x4 m_worldTsfm;
         std::weak_ptr<TransformCmpt> m_actorTsfm;
         WeakActorPtr m_actor;
     };

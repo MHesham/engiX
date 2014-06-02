@@ -8,7 +8,7 @@ namespace engiX
     class TransformCmpt : public ActorComponent
     {
     public:
-        static const ComponentID TypeID = 0x76EE7B4E; 
+        static const ComponentID TypeID = 0x76EE7B4E;
         TransformCmpt();
         ComponentID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"TransformCmpt"; }
@@ -22,10 +22,8 @@ namespace engiX
         void RotationY(_In_ real theta);
         
         void Position(_In_ const Vec3& newPos);
-        void LocalTransform(_In_ const TransformCmpt& tsfm);
-        const Mat4x4& LocalTransform() const { return m_transform; }
-        void ToWorldTransform(_In_ const Mat4x4& toWorld) { m_toWorldTransform = toWorld; }
-        const Mat4x4& ToWorldTransform() const { return m_toWorldTransform; }
+        void Transform(_In_ const TransformCmpt& tsfm);
+        const Mat4x4& Transform() const { return m_transform; }
 
     protected:
         void CalcTransform();
@@ -33,6 +31,5 @@ namespace engiX
 
         Vec3 m_rotationXYZ;
         Mat4x4 m_transform;
-        Mat4x4 m_toWorldTransform;
     };
 }

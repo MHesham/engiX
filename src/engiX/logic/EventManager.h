@@ -28,4 +28,8 @@ namespace engiX
     };
 
 #define g_EventMgr EventManager::Inst()
+
+#define REGISTER_EVT(CALLEE, EVT) \
+    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &##CALLEE##::##On##EVT), EVT##::TypeID);
+
 }
