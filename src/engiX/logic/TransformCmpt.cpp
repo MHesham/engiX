@@ -29,7 +29,9 @@ Mat4x4 TransformCmpt::CalcRotationMat() const
     Mat4x4 rotMat;
 
     XMStoreFloat4x4(&rotMat,
-        XMMatrixRotationY(m_rotationXYZ.y));
+        XMMatrixMultiply(
+        XMMatrixRotationX(m_rotationXYZ.x),
+        XMMatrixRotationY(m_rotationXYZ.y)));
 
     return rotMat;
 }
@@ -57,6 +59,12 @@ void TransformCmpt::Transform(_In_ const TransformCmpt& tsfm)
 void TransformCmpt::RotationY(_In_ real theta)
 {
     m_rotationXYZ.y = theta;
+    CalcTransform();
+}
+
+void TransformCmpt::RotationX(_In_ real theta)
+{
+    m_rotationXYZ.x = theta;
     CalcTransform();
 }
 

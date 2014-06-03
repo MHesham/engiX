@@ -1,4 +1,5 @@
 #include "GameLogic.h"
+#include <algorithm>
 #include "Logger.h"
 #include "EventManager.h"
 #include "TransformCmpt.h"
@@ -39,6 +40,22 @@ WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
         return WeakActorPtr();
 
     ActorRegistry::iterator itr = m_actors.find(id);
+
+    if (itr != m_actors.end())
+        return WeakActorPtr(itr->second);
+    else
+        return WeakActorPtr();
+}
+
+WeakActorPtr GameLogic::FindActor(_In_ const std::wstring &name)
+{
+    if (name.empty())
+        return WeakActorPtr();
+
+    // Perform case sensitive search by actor name in the actor registry
+    ActorRegistry::iterator itr = find_if(m_actors.begin(), m_actors.end(), [name](const pair<ActorID, StrongActorPtr>& entry){
+        return _wcsicmp(entry.second->Typename(), name.c_str()) == 0;
+    });
 
     if (itr != m_actors.end())
         return WeakActorPtr(itr->second);

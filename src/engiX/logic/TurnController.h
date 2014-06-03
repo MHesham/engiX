@@ -14,6 +14,8 @@ namespace engiX
         TurnController::TurnController() :
             m_isTurningRight(false),
             m_isTurningLeft(false),
+            m_isTurningUp(false),
+            m_isTurningDown(false),
             m_turnVelocity(1.5f)
         { }
 
@@ -22,7 +24,7 @@ namespace engiX
         void Update(_In_ const Timer& time);
 
     protected:
-        void OnStartTurnRight(EventPtr evt)
+        void OnStartTurnRightEvt(EventPtr evt)
         {
             if (m_actorTsfm.expired())
                 return;
@@ -31,7 +33,7 @@ namespace engiX
             m_isTurningRight = true;
         }
 
-        void OnEndTurnRight(EventPtr evt)
+        void OnEndTurnRightEvt(EventPtr evt)
         {
             if (m_actorTsfm.expired())
                 return;
@@ -40,7 +42,7 @@ namespace engiX
             m_isTurningRight = false;
         }
 
-        void OnStartTurnLeft(EventPtr evt)
+        void OnStartTurnLeftEvt(EventPtr evt)
         {
             if (m_actorTsfm.expired())
                 return;
@@ -49,7 +51,7 @@ namespace engiX
             m_isTurningLeft = true;
         }
 
-        void OnEndTurnLeft(EventPtr evt)
+        void OnEndTurnLeftEvt(EventPtr evt)
         {
             if (m_actorTsfm.expired())
                 return;
@@ -58,8 +60,46 @@ namespace engiX
             m_isTurningLeft = false;
         }
 
+        void OnStartForwardThrustEvt(EventPtr evt)
+        {
+            if (m_actorTsfm.expired())
+                return;
+
+            _ASSERTE(!m_isTurningUp);
+            m_isTurningUp = true;
+        }
+
+        void OnEndForwardThrustEvt(EventPtr evt)
+        {
+            if (m_actorTsfm.expired())
+                return;
+
+            _ASSERTE(m_isTurningUp);
+            m_isTurningUp = false;
+        }
+
+        void OnStartBackwardThrustEvt(EventPtr evt)
+        {
+            if (m_actorTsfm.expired())
+                return;
+
+            _ASSERTE(!m_isTurningDown);
+            m_isTurningDown = true;
+        }
+
+        void OnEndBackwardThrustEvt(EventPtr evt)
+        {
+            if (m_actorTsfm.expired())
+                return;
+
+            _ASSERTE(m_isTurningDown);
+            m_isTurningDown = false;
+        }
+
         bool m_isTurningRight;
         bool m_isTurningLeft;
+        bool m_isTurningUp;
+        bool m_isTurningDown;
         real m_turnVelocity;
         std::weak_ptr<TransformCmpt> m_actorTsfm;
     };

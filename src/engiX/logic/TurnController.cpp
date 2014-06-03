@@ -6,10 +6,14 @@ using namespace std;
 
 bool TurnController::Init()
 {
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &TurnController::OnStartTurnRight), StartTurnRightEvt::TypeID);
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &TurnController::OnEndTurnRight), EndTurnRightEvt::TypeID);
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &TurnController::OnStartTurnLeft), StartTurnLeftEvt::TypeID);
-    g_EventMgr->Register(MakeDelegateP1<EventPtr>(this, &TurnController::OnEndTurnLeft), EndTurnLeftEvt::TypeID);
+    REGISTER_EVT(TurnController, StartTurnRightEvt);
+    REGISTER_EVT(TurnController, EndTurnRightEvt);
+    REGISTER_EVT(TurnController, StartTurnLeftEvt);
+    REGISTER_EVT(TurnController, EndTurnLeftEvt);
+    REGISTER_EVT(TurnController, StartForwardThrustEvt);
+    REGISTER_EVT(TurnController, EndForwardThrustEvt);
+    REGISTER_EVT(TurnController, StartBackwardThrustEvt);
+    REGISTER_EVT(TurnController, EndBackwardThrustEvt);
 
     return true;
 }
@@ -29,5 +33,15 @@ void TurnController::Update(_In_ const Timer& time)
     if (m_isTurningLeft)
     {
         pTsfm->RotationY(pTsfm->RotationY() - (m_turnVelocity * time.DeltaTime()));
+    }
+
+    if (m_isTurningUp)
+    {
+        pTsfm->RotationX(pTsfm->RotationX() - (m_turnVelocity * time.DeltaTime()));
+    }
+
+    if (m_isTurningDown)
+    {
+        pTsfm->RotationX(pTsfm->RotationX() + (m_turnVelocity * time.DeltaTime()));
     }
 }

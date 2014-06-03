@@ -16,10 +16,12 @@ namespace engiX
         bool Init() {  return true; }
 
         real RotationY() const { return m_rotationXYZ.y; }
+        real RotationX() const { return m_rotationXYZ.x; }
         Mat4x4 InverseTransform() const;
         Vec3 Position() const { return Vec3(m_transform._41, m_transform._42, m_transform._43); }
         Vec3 Direction() const;
         void RotationY(_In_ real theta);
+        void RotationX(_In_ real theta);
         
         void Position(_In_ const Vec3& newPos);
         void Transform(_In_ const TransformCmpt& tsfm);

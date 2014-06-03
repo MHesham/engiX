@@ -39,3 +39,13 @@ shared_ptr<ISceneNode> GridMeshComponent::CreateSceneNode(_In_ GameScene* pScene
     return shared_ptr<ISceneNode>(eNEW D3dGeneratedMeshNode(Owner()->Id(), data, m_props.Color, pScene));
 }
 
+shared_ptr<ISceneNode> CylinderMeshComponent::CreateSceneNode(_In_ GameScene* pScene)
+{
+    GeometryGenerator g;
+    GeometryGenerator::MeshData data;
+
+    g.CreateCylinder(m_props.BottomRadius, m_props.TopRadius, m_props.Height, m_props.SliceCount, m_props.StackCount, data);
+
+    _ASSERTE(pScene);
+    return shared_ptr<ISceneNode>(eNEW D3dGeneratedMeshNode(Owner()->Id(), data, m_props.Color, pScene));
+}

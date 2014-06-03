@@ -81,4 +81,28 @@ namespace engiX
     protected:
         Properties m_props;
     };
+
+
+    class CylinderMeshComponent : public RenderComponent
+    {
+    public:
+        struct Properties
+        {
+            real TopRadius;
+            real BottomRadius;
+            real Height;
+            real SliceCount;
+            real StackCount;
+            Color3 Color;
+        };
+
+        CylinderMeshComponent(_In_ const Properties& prop) :
+            m_props(prop) {}
+
+        const Properties& Props() const { return m_props; }
+        std::shared_ptr<ISceneNode> CreateSceneNode(_In_ GameScene* pScene);
+
+    protected:
+        Properties m_props;
+    };
 }

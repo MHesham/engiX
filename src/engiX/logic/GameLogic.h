@@ -21,6 +21,7 @@ namespace engiX
         void View(_In_ IGameView* pView) { m_pView = pView; }
         IGameView* View() { return m_pView; }
         WeakActorPtr FindActor(_In_ ActorID id);
+        WeakActorPtr FindActor(_In_ const std::wstring& name);
 
     protected:
         virtual void LoadLevel() = 0;

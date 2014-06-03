@@ -28,16 +28,21 @@ namespace engiX
         // Azimuth Phi: Rotation angle in radians around the axis between the sphere center and the rotate point around the Y axis, Phi = [0, Pi]
         // The method assumes the provided Theta and Phi are within the correct range
         // More on the spherical coordinates here: http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
-        void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
+        void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi, _In_ Vec3 lookat = Vec3(DirectX::g_XMZero));
         HRESULT OnConstruct();
         void OnRender() {}
         HRESULT OnPreRender() { return S_OK; }
         void OnPostRender() {}
+        void SetAsThirdPerson(WeakActorPtr target);
+        void OnUpdate(_In_ const Timer& time);
 
     protected:
         Mat4x4 m_projMat;
         real m_nearPlane;
         real m_farPlane;
         real m_fovAngle;
+        Vec3 m_pos;
+        Vec3 m_lookat;
+        WeakActorPtr m_target;
     };
 }

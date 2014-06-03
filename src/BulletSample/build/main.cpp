@@ -20,6 +20,7 @@ using namespace DirectX;
 
 #define BulletActorName L"Bullet"
 #define TargetActorName L"Target"
+#define HeroActorName L"Hero"
 
 class BulletGameLogic : public GameLogic
 {
@@ -61,30 +62,50 @@ public:
         m_controller.Control(pHeroTank->Get<TransformCmpt>());
 
         CBR(AddInitActor(CreateTerrain()));
+        CBR(AddInitActor(CreateWorldBounds()));
 
         m_pHero = WeakActorPtr(pHeroTank);
     }
 
-    StrongActorPtr CreateTerrain()
+    StrongActorPtr CreateWorldBounds()
     {
-        StrongActorPtr pTrnActor(eNEW Actor(L"Terrain"));
+        StrongActorPtr pActor(eNEW Actor(L"WorldBounds"));
 
         // 1. Build grid visuals
         SphereMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Green);
         props.Radius = 50.0;
 
-        pTrnActor->Add<SphereMeshComponent>(props);
-        pTrnActor->Add<TransformCmpt>();
+        pActor->Add<SphereMeshComponent>(props);
+        pActor->Add<TransformCmpt>();
 
         m_worldBounds.Radius(50.0f);
 
-        return pTrnActor;
+        return pActor;
+    }
+
+    StrongActorPtr CreateTerrain()
+    {
+        StrongActorPtr pActor(eNEW Actor(L"Terrain"));
+
+        // 1. Build grid visuals
+        CylinderMeshComponent::Properties props;
+        props.Color = Color3(DirectX::Colors::Brown);
+        props.TopRadius = 35.0;
+        props.BottomRadius = 15.0;
+        props.Height = 20.0;
+        props.StackCount = 1.0;
+        props.SliceCount = 40.0;
+
+        pActor->Add<CylinderMeshComponent>(props);
+        pActor->Add<TransformCmpt>()->Position(Vec3(0.0, -30.0, 0.0));
+
+        return pActor;
     }
 
     StrongActorPtr CreateHero()
     {
-        StrongActorPtr pTank(eNEW Actor(L"HeroTank"));
+        StrongActorPtr pTank(eNEW Actor(L"Hero"));
 
         // 1. Build hero visuals
         BoxMeshComponent::Properties props;
@@ -92,11 +113,11 @@ public:
 
         props.Width = 1.0f;
         props.Height = 1.0f;
-        props.Depth = 3.0f;
+        props.Depth = 4.0f;
 
         pTank->Add<BoxMeshComponent>(props);
 
-        shared_ptr<TransformCmpt> pTankTsfm = pTank->Add<TransformCmpt>();
+        pTank->Add<TransformCmpt>()->Position(Vec3(0.0, 0.0, -10));
 
         return pTank;
     }
@@ -275,11 +296,12 @@ public:
         pTarget->Add<BoxMeshComponent>(props);
 
         real randZ = Math::RandF(15, 45);
-        pTarget->Add<TransformCmpt>()->Position(Vec3(0.0, 0.0, randZ));
+        real randX = Math::RandF(-45, 45);
+        pTarget->Add<TransformCmpt>()->Position(Vec3(randX, 0.0, randZ));
 
         shared_ptr<ParticlePhysicsCmpt> pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
         pTargetPhy->Mass(1.0);
-        pTargetPhy->Velocity(Vec3(0.0, 7.0, 0.0));
+        pTargetPhy->Velocity(Vec3(0.0, Math::RandF(7, 15), 0.0));
         pTargetPhy->Radius(2.0);
         pTargetPhy->LifetimeBound(m_worldBounds);
 
@@ -307,6 +329,13 @@ public:
     bool Init()
     {
         CBRB(HumanD3dGameView::Init());
+
+        WeakActorPtr pHero = g_pApp->Logic()->FindActor(HeroActorName);
+        _ASSERTE(!pHero.expired());
+
+        std::shared_ptr<SceneCameraNode> pTpc = m_pScene->AddCamera();
+        pTpc->PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
+        pTpc->SetAsThirdPerson(pHero);
 
         m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
         m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);

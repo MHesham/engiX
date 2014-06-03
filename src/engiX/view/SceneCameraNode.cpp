@@ -11,10 +11,10 @@ const real SceneCameraNode::DefaultFarPlane = 1500.0f;
 const real SceneCameraNode::DefaultFovAngle = 0.25 * R_PI;
 
 SceneCameraNode::SceneCameraNode(GameScene* pScene) :
-    SceneNode(NullActorID, pScene),
-    m_nearPlane(DefaultNearPlane),
-    m_farPlane(DefaultFarPlane),
-    m_fovAngle(DefaultFovAngle)
+SceneNode(NullActorID, pScene),
+m_nearPlane(DefaultNearPlane),
+m_farPlane(DefaultFarPlane),
+m_fovAngle(DefaultFovAngle)
 {
     XMStoreFloat4x4(&m_projMat, XMMatrixIdentity());
 }
@@ -30,15 +30,37 @@ HRESULT SceneCameraNode::OnConstruct()
     return S_OK;
 }
 
-Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const 
-{ 
+void SceneCameraNode::OnUpdate(_In_ const Timer& time)
+{
+    XMMATRIX cameraTsfm;
+    
+    if (!m_target.expired())
+    {
+        auto pTargetTsfm = m_target.lock()->Get<TransformCmpt>().lock();
+
+        cameraTsfm = XMMatrixLookAtLH(
+            XMVector3TransformCoord(XMLoadFloat3(&m_pos), XMLoadFloat4x4(&pTargetTsfm->Transform())),
+            XMVector3TransformCoord(XMLoadFloat3(&m_lookat), XMLoadFloat4x4(&pTargetTsfm->Transform())),
+            g_XMIdentityR1);
+    }
+    else
+    {
+        cameraTsfm = XMMatrixLookAtLH(XMLoadFloat3(&m_pos), XMLoadFloat3(&m_lookat), g_XMIdentityR1);
+    }
+
+    XMStoreFloat4x4(&m_worldTsfm, cameraTsfm);
+}
+
+Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const
+{
     const Mat4x4 sceneWorldTsfm = m_pScene->TopTransformation();
 
     XMMATRIX world = XMLoadFloat4x4(&sceneWorldTsfm);
     XMMATRIX view = XMLoadFloat4x4(&m_worldTsfm);
     XMMATRIX proj = XMLoadFloat4x4(&m_projMat);
 
-    XMMATRIX xWvp = world * view * proj;
+    XMMATRIX xWvp;
+    xWvp = world * view * proj;
 
     Mat4x4 wvp;
     XMStoreFloat4x4(&wvp, xWvp);
@@ -46,14 +68,13 @@ Mat4x4 SceneCameraNode::SceneWorldViewProjMatrix() const
     return wvp;
 }
 
-void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
+void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi, _In_ Vec3 lookat)
 {
-    Vec3 pos;
-    Math::ConvertSphericalToCartesian(radius, theta, phi, pos);
-    FXMVECTOR xPos = XMLoadFloat3(&pos);
-
-    XMMATRIX lookat = XMMatrixLookAtLH(xPos, g_XMZero, g_XMIdentityR1);
-
-    XMStoreFloat4x4(&m_worldTsfm, lookat);
+    Math::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
+    m_lookat = lookat;
 }
 
+void SceneCameraNode::SetAsThirdPerson(WeakActorPtr target)
+{
+    m_target = target;
+}

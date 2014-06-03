@@ -188,13 +188,13 @@
     <ClCompile Include="..\logic\CollisionDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\logic\TurnController.cpp">
-      <Filter>Header Files\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="..\logic\ParticlePhysicsCmpt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\logic\TransformCmpt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\TurnController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
