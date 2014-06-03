@@ -29,6 +29,8 @@ namespace engiX
         void Damping(_In_ real val) { m_damping = val; }
         void ScaleVelocity(_In_ real scale);
         void LifetimeBound(_In_ const BoundingSphere& lifetimeBound) { m_lifetimeBound = lifetimeBound; }
+        BoundingSphere BoundingMesh() const;
+        void Radius(_In_ real radius) { m_radius = radius; }
 
         // res = res + vec * scale
         static void AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res);
@@ -44,5 +46,6 @@ namespace engiX
         real m_damping;
         std::weak_ptr<TransformCmpt> m_pObjTsfm;
         BoundingSphere m_lifetimeBound;
+        real m_radius;
     };
 }

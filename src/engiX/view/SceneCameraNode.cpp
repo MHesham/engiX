@@ -7,7 +7,7 @@ using namespace engiX;
 using namespace DirectX;
 
 const real SceneCameraNode::DefaultNearPlane = 1.0f;
-const real SceneCameraNode::DefaultFarPlane = 1000.0f;
+const real SceneCameraNode::DefaultFarPlane = 1500.0f;
 const real SceneCameraNode::DefaultFovAngle = 0.25 * R_PI;
 
 SceneCameraNode::SceneCameraNode(GameScene* pScene) :

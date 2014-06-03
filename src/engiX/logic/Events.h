@@ -187,4 +187,24 @@ namespace engiX
         EventTypeID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"ChangeWeaponEvt"; }
     };
+
+    class ActorCollisionEvt : public Event
+    {
+    public:
+        static const EventTypeID TypeID = 0x41B16773;
+
+        ActorCollisionEvt(real timestamp, ActorID actorA, ActorID actorB) :
+            Event(timestamp),
+            m_actorA(actorA),
+            m_actorB(actorB)
+        {}
+        EventTypeID TypeId() const { return TypeID; }
+        const wchar_t* Typename() const { return L"ActorCollisionEvt"; }
+        ActorID ActorA() const { return m_actorA; }
+        ActorID ActorB() const { return m_actorB; }
+
+    private:
+        ActorID m_actorA;
+        ActorID m_actorB;
+    };
 }

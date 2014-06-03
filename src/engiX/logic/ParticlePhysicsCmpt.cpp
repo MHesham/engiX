@@ -12,7 +12,8 @@ ParticlePhysicsCmpt::ParticlePhysicsCmpt() :
     m_baseAcceleraiton(g_XMZero),
     m_accumulatedForce(g_XMZero),
     m_inverseMass(0.0), // 0 inverse mass = 1 / infinite mass, which means a non movable object
-    m_damping(DefaultDamping)
+    m_damping(DefaultDamping),
+    m_radius(0.0)
 {
 
 }
@@ -21,6 +22,12 @@ bool ParticlePhysicsCmpt::Init()
 {
     m_pObjTsfm = m_pOwner->Get<TransformCmpt>();
     return true;
+}
+
+BoundingSphere ParticlePhysicsCmpt::BoundingMesh() const
+{
+    _ASSERTE(!m_pObjTsfm.expired());
+    return BoundingSphere(m_radius, m_pObjTsfm.lock()->Position());
 }
 
 void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)

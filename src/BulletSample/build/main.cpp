@@ -18,6 +18,9 @@ using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
+#define BulletActorName L"Bullet"
+#define TargetActorName L"Target"
+
 class BulletGameLogic : public GameLogic
 {
 public:
@@ -41,6 +44,9 @@ public:
         REGISTER_EVT(BulletGameLogic, StartFireWeaponEvt);
         REGISTER_EVT(BulletGameLogic, EndFireWeaponEvt);
         REGISTER_EVT(BulletGameLogic, ChangeWeaponEvt);
+        REGISTER_EVT(BulletGameLogic, ActorCreatedEvt);
+        REGISTER_EVT(BulletGameLogic, ActorDestroyedEvt);
+        REGISTER_EVT(BulletGameLogic, ActorCollisionEvt);
 
         CBRB(m_controller.Init());
 
@@ -64,12 +70,11 @@ public:
         StrongActorPtr pTrnActor(eNEW Actor(L"Terrain"));
 
         // 1. Build grid visuals
-        GridMeshComponent::Properties props;
+        SphereMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Green);
-        props.Width = 100.0;
-        props.Depth = 100.0;
+        props.Radius = 50.0;
 
-        pTrnActor->Add<GridMeshComponent>(props);
+        pTrnActor->Add<SphereMeshComponent>(props);
         pTrnActor->Add<TransformCmpt>();
 
         m_worldBounds.Radius(50.0f);
@@ -92,7 +97,6 @@ public:
         pTank->Add<BoxMeshComponent>(props);
 
         shared_ptr<TransformCmpt> pTankTsfm = pTank->Add<TransformCmpt>();
-        pTankTsfm->Position(Vec3(-10.0f, 2.0f, -10.0));
 
         return pTank;
     }
@@ -103,18 +107,48 @@ public:
 
         m_controller.Update(time);
 
-        if (time.TotalTime() - m_lastTargetGenerationTime > 2)
+        // Target timed generation logic
+        if (time.TotalTime() - m_lastTargetGenerationTime > 0.25f)
         {
             GenerateTarget();
             m_lastTargetGenerationTime = time.TotalTime();
         }
 
+        // Firepower scaling logic
         if (m_isChargingFirePower && m_firePowerScale < 5.0f)
         {
             m_firePowerScale += m_firePowerScaleVelocity * time.DeltaTime();
         }
+
+        CollideActors(time);
     }
 
+    void CollideActors(const Timer& time)
+    {
+        for (auto bulletId : m_bullets)
+        {
+            WeakActorPtr pBullet = FindActor(bulletId);
+            
+            if (pBullet.expired())
+                continue;
+
+            for (auto targetId : m_targets)
+            {
+                WeakActorPtr pTarget = FindActor(targetId);
+
+                if (pTarget.expired())
+                    continue;;
+
+                BoundingSphere sphereA = pTarget.lock()->Get<ParticlePhysicsCmpt>().lock()->BoundingMesh();
+                BoundingSphere sphereB = pBullet.lock()->Get<ParticlePhysicsCmpt>().lock()->BoundingMesh();
+
+                if (sphereA.Collide(sphereB))
+                {
+                    g_EventMgr->Queue(EventPtr(eNEW ActorCollisionEvt(time.TotalTime(), bulletId, targetId)));
+                }
+            }
+        }
+    }
     
     void GenerateTarget()
     {
@@ -155,10 +189,36 @@ public:
         m_isChargingFirePower = false;
     }
 
+    void OnActorCreatedEvt(EventPtr evt)
+    {
+        std::shared_ptr<ActorCreatedEvt> pActorEvt = static_pointer_cast<ActorCreatedEvt>(evt);
+        StrongActorPtr pActor = FindActor(pActorEvt->ActorId()).lock();
+
+        if (wcscmp(pActor->Typename(), TargetActorName) == 0)
+            m_targets.insert(pActorEvt->ActorId());
+        else if (wcscmp(pActor->Typename(), BulletActorName) == 0)
+            m_bullets.insert(pActorEvt->ActorId());
+    }
+
+    void OnActorDestroyedEvt(EventPtr evt)
+    {
+        std::shared_ptr<ActorCreatedEvt> pActorEvt = static_pointer_cast<ActorCreatedEvt>(evt);
+        
+        if (!m_targets.erase(pActorEvt->ActorId()))
+            m_bullets.erase(pActorEvt->ActorId());
+    }
+
+    void OnActorCollisionEvt(EventPtr evt)
+    {
+        std::shared_ptr<ActorCollisionEvt> pActorEvt = static_pointer_cast<ActorCollisionEvt>(evt);
+
+        RemoveActor(pActorEvt->ActorA());
+        RemoveActor(pActorEvt->ActorB());
+    }
     
     StrongActorPtr CreateShellBullet(const TransformCmpt& nozzleTsfm)
     {
-        StrongActorPtr pBullet(eNEW Actor(L"ShellBullet"));
+        StrongActorPtr pBullet(eNEW Actor(BulletActorName));
 
         BoxMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Brown);
@@ -175,13 +235,14 @@ public:
         pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
         pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
+        pBulletPhy->Radius(1.0);
 
         return pBullet;
     }
 
     StrongActorPtr CreatePistolBullet(const TransformCmpt& nozzleTsfm)
     {
-        StrongActorPtr pBullet(eNEW Actor(L"PistolBullet"));
+        StrongActorPtr pBullet(eNEW Actor(BulletActorName));
 
         SphereMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Black);
@@ -196,13 +257,14 @@ public:
         pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
         pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
         pBulletPhy->LifetimeBound(m_worldBounds);
+        pBulletPhy->Radius(0.25);
 
         return pBullet;
     }
 
     StrongActorPtr CreateTarget()
     {
-        StrongActorPtr pTarget(eNEW Actor(L"HitTarget"));
+        StrongActorPtr pTarget(eNEW Actor(TargetActorName));
 
         BoxMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Red);
@@ -216,9 +278,10 @@ public:
         pTarget->Add<TransformCmpt>()->Position(Vec3(0.0, 0.0, randZ));
 
         shared_ptr<ParticlePhysicsCmpt> pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
-
         pTargetPhy->Mass(1.0);
-        pTargetPhy->Velocity(Vec3(0.0, 5.0, 0.0));
+        pTargetPhy->Velocity(Vec3(0.0, 7.0, 0.0));
+        pTargetPhy->Radius(2.0);
+        pTargetPhy->LifetimeBound(m_worldBounds);
 
         return pTarget;
     }
@@ -234,6 +297,24 @@ private:
     real m_firePowerScaleVelocity;
     TurnController m_controller;
     BoundingSphere m_worldBounds;
+    std::set<ActorID> m_bullets;
+    std::set<ActorID> m_targets;
+};
+
+class BulletD3dGameView : public HumanD3dGameView
+{
+public:
+    bool Init()
+    {
+        CBRB(HumanD3dGameView::Init());
+
+        m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
+        m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
+        m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.5f * R_PI, 0.01f * R_PI);
+        m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.0f, 0.48f * R_PI);
+
+        return true;
+    }
 };
 
 class BulletGameApp : public WinGameApp
@@ -246,7 +327,7 @@ protected:
     GameLogic* CreateLogicAndStartView() const 
     {
         GameLogic* pLogic = eNEW BulletGameLogic; 
-        pLogic->View(eNEW HumanD3dGameView);
+        pLogic->View(eNEW BulletD3dGameView);
 
         return pLogic;
     }

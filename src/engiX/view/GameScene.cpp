@@ -12,13 +12,10 @@ using namespace DirectX;
 
 GameScene::GameScene() :
     m_pSceneRoot(eNEW RootSceneNode(this)),
-    m_pWireframeRS(nullptr)
+    m_pWireframeRS(nullptr),
+    m_currCameraIdx(-1)
 {
-    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
-    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
-    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
-    m_pCameraNodes.push_back(shared_ptr<SceneCameraNode>(eNEW SceneCameraNode(this)));
-    m_currCameraIdx = 0;
+
 }
 
 GameScene::~GameScene()
@@ -29,18 +26,6 @@ GameScene::~GameScene()
 
 bool GameScene::Init()
 {
-    m_pCameraNodes[0]->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
-    m_pSceneRoot->AddChild(m_pCameraNodes[0]);
-
-    m_pCameraNodes[1]->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
-    m_pSceneRoot->AddChild(m_pCameraNodes[1]);
-
-    m_pCameraNodes[2]->PlaceOnSphere(125.0, 0.5f * R_PI, 0.01f * R_PI);
-    m_pSceneRoot->AddChild(m_pCameraNodes[2]);
-
-    m_pCameraNodes[3]->PlaceOnSphere(100.0, 0.0f, 0.48f * R_PI);
-    m_pSceneRoot->AddChild(m_pCameraNodes[3]);
-
     Mat4x4 identity;
     XMStoreFloat4x4(&identity, XMMatrixIdentity());
     m_worldTransformationStack.push(identity);
@@ -50,6 +35,31 @@ bool GameScene::Init()
     REGISTER_EVT(GameScene, ToggleCameraEvt);
 
     return true;
+}
+
+shared_ptr<SceneCameraNode> GameScene::Camera()
+{
+    if (m_cameras.empty())
+    {
+        LogWarning("Scene camera was requsted and there is no one set yet, will create a default one");
+        AddCamera();
+    }
+
+    return m_cameras[m_currCameraIdx]; 
+}
+
+shared_ptr<SceneCameraNode> GameScene::AddCamera()
+{
+    shared_ptr<SceneCameraNode> pCamera(eNEW SceneCameraNode(this));
+
+    // In case this is the first camera to add, then set the camera idx to it
+    if (m_cameras.empty())
+        m_currCameraIdx = 0;
+
+    m_cameras.push_back(pCamera);
+    m_pSceneRoot->AddChild(pCamera);
+
+    return pCamera;
 }
 
 HRESULT GameScene::OnConstruct()
@@ -84,7 +94,7 @@ void GameScene::OnRender()
 
     DXUTGetD3D11DeviceContext()->RSSetState(m_pWireframeRS);
 
-    if (m_pSceneRoot && m_pCameraNodes[m_currCameraIdx])
+    if (m_pSceneRoot && m_cameras[m_currCameraIdx])
     {
         // Make sure that the stack has only the identify transformation
         _ASSERTE(m_worldTransformationStack.size() == 1);
@@ -132,7 +142,7 @@ void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)
 void GameScene::OnToggleCameraEvt(_In_ EventPtr pEvt)
 {
     LogInfo("Game scene is toggle its camera");
-    m_currCameraIdx = (m_currCameraIdx + 1) % m_pCameraNodes.size();
+    m_currCameraIdx = (m_currCameraIdx + 1) % m_cameras.size();
 }
 
 void GameScene::PushTransformation(_In_ const Mat4x4& t)
