@@ -14,6 +14,7 @@
     <ClInclude Include="..\app\engiX.h" />
     <ClInclude Include="..\app\Logger.h" />
     <ClInclude Include="..\app\WinGameApp.h" />
+    <ClInclude Include="..\common\D3dUtil.h" />
     <ClInclude Include="..\common\engiXDefs.h" />
     <ClInclude Include="..\common\Timer.h" />
     <ClInclude Include="..\common\MathHelper.h" />
@@ -44,6 +45,7 @@
     <ClCompile Include="..\app\Logger.cpp" />
     <ClCompile Include="..\app\WinGameApp.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
+    <ClCompile Include="..\common\D3dUtil.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />
     <ClCompile Include="..\common\Vector.cpp" />
@@ -96,14 +98,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\3rdParty\DXUT\Windows81SDK_x86.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\..\lib\$(PlatformName)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\..\temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +113,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\common;..\app;..\view;..\logic;..\..\3rdParty\DXUT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\app;..\view;..\logic;..\..\3rdParty\DXUT;..\..\3rdParty\Effects11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <DisableSpecificWarnings>4005;4100;4127</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

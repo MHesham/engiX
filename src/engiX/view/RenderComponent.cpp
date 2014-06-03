@@ -44,7 +44,7 @@ shared_ptr<ISceneNode> CylinderMeshComponent::CreateSceneNode(_In_ GameScene* pS
     GeometryGenerator g;
     GeometryGenerator::MeshData data;
 
-    g.CreateCylinder(m_props.BottomRadius, m_props.TopRadius, m_props.Height, m_props.SliceCount, m_props.StackCount, data);
+    g.CreateCylinder(m_props.BottomRadius, m_props.TopRadius, m_props.Height, (UINT)m_props.SliceCount, (UINT)m_props.StackCount, data);
 
     _ASSERTE(pScene);
     return shared_ptr<ISceneNode>(eNEW D3dGeneratedMeshNode(Owner()->Id(), data, m_props.Color, pScene));

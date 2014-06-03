@@ -1,0 +1,26 @@
+[Info@15:25:49.102@engiX::WinGameApp::Main] engiX is initializing ...
+[Info@15:25:49.106@engiX::WinGameApp::Init] Initializing Game App
+[Info@15:25:49.110@engiX::Actor::AddComponent] RenderComponent[6211ec48] has been added to Actor Hero[1]
+[Info@15:25:49.115@engiX::Actor::AddComponent] TransformComponent[76ee7b4e] has been added to Actor Hero[1]
+[Info@15:25:49.121@engiX::Actor::AddComponent] ParticlePhysicsComponent[37c19534] has been added to Actor Hero[1]
+[Info@15:25:49.127@engiX::EventManager::Queue] Event ActorCreatedEvt queued
+[Info@15:25:49.132@engiX::Actor::AddComponent] RenderComponent[6211ec48] has been added to Actor Terrain[2]
+[Info@15:25:49.138@engiX::Actor::AddComponent] TransformComponent[76ee7b4e] has been added to Actor Terrain[2]
+[Info@15:25:49.144@engiX::EventManager::Queue] Event ActorCreatedEvt queued
+[Info@15:25:52.019@engiX::SceneCameraNode::OnConstruct] Display settings changed, updating camera
+[Info@15:25:52.091@engiX::SceneCameraNode::OnConstruct] Display settings changed, updating camera
+[Info@15:25:52.164@engiX::SceneCameraNode::OnConstruct] Display settings changed, updating camera
+[Info@15:25:52.236@engiX::SceneCameraNode::OnConstruct] Display settings changed, updating camera
+[Info@15:25:52.310@engiX::EventManager::Queue] Event DisplaySettingsChangedEvt queued
+[Info@15:25:52.426@engiX::WinGameApp::Run] Starting Main Loop ...
+[Error@15:25:52.492@engiX::D3dShader::OnConstruct] Failed to open fx file data/fx/default.fxo
+[Error@15:25:52.564@engiX::D3dGeneratedMeshNode::OnConstruct] 'm_shader.OnConstruct()' failed, hr=80070005
+[Error@15:25:52.644@engiX::GameScene::OnActorCreated] 'pSceneNode->OnConstruct()' failed, hr=80070005
+[Info@15:25:52.725@engiX::EventManager::OnUpdate] Event ActorCreatedEvt dispatched
+[Error@15:25:52.794@engiX::D3dShader::OnConstruct] Failed to open fx file data/fx/default.fxo
+[Error@15:25:52.870@engiX::D3dGeneratedMeshNode::OnConstruct] 'm_shader.OnConstruct()' failed, hr=80070005
+[Error@15:25:52.955@engiX::GameScene::OnActorCreated] 'pSceneNode->OnConstruct()' failed, hr=80070005
+[Info@15:25:53.035@engiX::EventManager::OnUpdate] Event ActorCreatedEvt dispatched
+[Info@15:25:53.102@engiX::EventManager::OnUpdate] Event DisplaySettingsChangedEvt dispatched
+[Info@15:25:58.128@engiX::WinGameApp::Main] engiX is finalizing ...
+[Info@15:25:58.180@engiX::WinGameApp::Deinit] Finalizing Game App

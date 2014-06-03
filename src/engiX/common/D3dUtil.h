@@ -9,11 +9,11 @@
 #include <crtdbg.h>
 #endif
 
-#include <d3dx11.h>
-#include "d3dx11Effect.h"
+#include <d3d11.h>
+#include "d3dx11effect.h"
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
-#include <dxerr.h>
+//#include <d3derr.h>
 #include <cassert>
 #include <ctime>
 #include <algorithm>
@@ -59,7 +59,7 @@ namespace engiX
     //---------------------------------------------------------------------------------------
     // Utility classes.
     //---------------------------------------------------------------------------------------
-
+/*
     class D3dHelper
     {
     public:
@@ -100,7 +100,7 @@ namespace engiX
             return x;
         }
     };
-
+*/
     // Order: left, right, bottom, top, near, far.
     void ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX M);
 
@@ -127,7 +127,7 @@ namespace engiX
         XMGLOBALCONST DirectX::XMVECTORF32 LightSteelBlue = {0.69f, 0.77f, 0.87f, 1.0f};
     }
 
-    ///<summary>
+    /*///<summary>
     /// Utility class for converting between types and formats.
     ///</summary>
     class Convert
@@ -163,5 +163,5 @@ namespace engiX
             return (A << 24) | (B << 16) | (G << 8) | (R << 0);
         }
 
-    };
+    };*/
 }

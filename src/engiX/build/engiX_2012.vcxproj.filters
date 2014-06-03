@@ -126,6 +126,9 @@
     <ClInclude Include="..\logic\TransformCmpt.h">
       <Filter>Header Files\Logic\Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\D3dUtil.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp">
@@ -195,6 +198,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\logic\TurnController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\D3dUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
