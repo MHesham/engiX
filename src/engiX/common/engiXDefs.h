@@ -4,8 +4,7 @@
 #include "Logger.h"
 
 #include <DirectXMath.h>
-
-#if defined(DEBUG) | defined(_DEBUG)
+#include <dxerr.h>
 
 #ifndef CHR
 #define CHR(x)                                               \
@@ -54,7 +53,8 @@
     HRESULT hr = (x);                                       \
     if(FAILED(hr))                                          \
     {                                                       \
-    LogError("'%s' failed, hr=%x", L#x, hr);                \
+	LogError("'%s' failed, hr=%x, error=%d, %s", L#x, hr, HRESULT_CODE(hr), DXGetErrorString(hr));                \
+	DXTRACE_ERR_MSGBOX(L#x, hr); \
     return (SUCCEEDED(hr) ? true : false);                                        \
     }                                                       \
     }
@@ -125,5 +125,3 @@ typedef DirectX::XMFLOAT3 Vec3;
 typedef DirectX::XMFLOAT4 Vec4;
 typedef DirectX::XMFLOAT2 Vec2;
 typedef DirectX::XMFLOAT3 Color3;
-
-#endif 

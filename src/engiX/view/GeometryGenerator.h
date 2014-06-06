@@ -13,7 +13,7 @@
 //   3. Update the texture coordinates and tangent vectors.
 //***************************************************************************************
 
-#include "d3dUtil.h"
+#include "D3dUtil.h"
 
 namespace engiX
 {

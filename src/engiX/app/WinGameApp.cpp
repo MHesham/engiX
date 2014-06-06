@@ -65,8 +65,12 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     {
         ID3D11Debug* m_d3dDebug = nullptr;
         DXUTGetD3D11Device()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug));
-        m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-        SAFE_RELEASE(m_d3dDebug);
+
+		if (m_d3dDebug)
+		{
+			m_d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			SAFE_RELEASE(m_d3dDebug);
+		}
     }
 
     // Don't call any DXUT* method after the sthudown.
@@ -101,7 +105,7 @@ bool WinGameApp::Init(HINSTANCE hInstance, LPWSTR lpCmdLine)
 
     CHRRB(DXUTInit(false, true));
     CHRRB(DXUTCreateWindow(GameAppTitle(), hInstance));
-    CHRRB(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
+	CHRRB(DXUTCreateDevice(D3D_FEATURE_LEVEL_11_0, true, m_screenSize.cx, m_screenSize.cy));
 
     return true;
 }
