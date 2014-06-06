@@ -36,7 +36,6 @@ namespace engiX
         ISceneNode* m_pSceneRoot;
         std::vector<std::shared_ptr<SceneCameraNode>> m_cameras;
         std::stack<Mat4x4> m_worldTransformationStack;
-        ID3D11RasterizerState* m_pWireframeRS;
         int m_currCameraIdx;
     };
     

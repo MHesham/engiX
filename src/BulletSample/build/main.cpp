@@ -75,6 +75,7 @@ public:
         SphereMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Green);
         props.Radius = 50.0;
+        props.IsBackfacing = true;
 
         pActor->Add<SphereMeshComponent>(props);
         pActor->Add<TransformCmpt>();
@@ -94,8 +95,8 @@ public:
         props.TopRadius = 35.0;
         props.BottomRadius = 15.0;
         props.Height = 20.0;
-        props.StackCount = 1.0;
-        props.SliceCount = 40.0;
+        props.StackCount = 1;
+        props.SliceCount = 40;
 
         pActor->Add<CylinderMeshComponent>(props);
         pActor->Add<TransformCmpt>()->Position(Vec3(0.0, -30.0, 0.0));

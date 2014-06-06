@@ -20,17 +20,41 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() { return true; }
         virtual std::shared_ptr<ISceneNode> CreateSceneNode(_In_ GameScene* pScene) = 0;
+        void SceneNode(std::weak_ptr<ISceneNode> sceneNode) { m_sceneNode = sceneNode; }
+        std::weak_ptr<ISceneNode> SceneNode() { return m_sceneNode; }
+
+    protected:
+        std::weak_ptr<ISceneNode> m_sceneNode;
+    };
+
+    class MeshCmptProperties
+    {
+    public:
+        MeshCmptProperties() :
+            Color(Color3(0.0, 0.0, 0.0)),
+            IsWireframe(true),
+            IsBackfacing(false)
+        {}
+
+        Color3 Color;
+        bool IsWireframe;
+        bool IsBackfacing;
     };
 
     class BoxMeshComponent : public RenderComponent
     {
     public:
-        struct Properties
+        class Properties : public MeshCmptProperties
         {
+        public:
+            Properties() :
+                Width(0.0),
+                Height(0.0),
+                Depth(0.0)
+            {}
             real Width;
             real Height;
             real Depth;
-            Color3 Color;
         };
 
         BoxMeshComponent(_In_ const Properties& prop) :
@@ -46,10 +70,13 @@ namespace engiX
     class SphereMeshComponent : public RenderComponent
     {
     public:
-        struct Properties
+        class Properties : public MeshCmptProperties
         {
+        public:
+            Properties() :
+            Radius(0.0)
+            {}
             real Radius;
-            Color3 Color;
         };
 
         SphereMeshComponent(_In_ const Properties& prop) :
@@ -65,11 +92,15 @@ namespace engiX
     class GridMeshComponent : public RenderComponent
     {
     public:
-        struct Properties
+        class Properties : public MeshCmptProperties
         {
+        public:
+            Properties() :
+                Width(0.0),
+                Depth(0.0)
+            {}
             real Width;
             real Depth;
-            Color3 Color;
         };
 
         GridMeshComponent(_In_ const Properties& prop) :
@@ -86,14 +117,21 @@ namespace engiX
     class CylinderMeshComponent : public RenderComponent
     {
     public:
-        struct Properties
+        class Properties : public MeshCmptProperties
         {
+        public:
+            Properties() :
+                TopRadius(0.0),
+                BottomRadius(0.0),
+                Height(0.0),
+                SliceCount(0),
+                StackCount(0)
+            {}
             real TopRadius;
             real BottomRadius;
             real Height;
-            real SliceCount;
-            real StackCount;
-            Color3 Color;
+            unsigned SliceCount;
+            unsigned StackCount;
         };
 
         CylinderMeshComponent(_In_ const Properties& prop) :

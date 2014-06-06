@@ -12,7 +12,6 @@ using namespace DirectX;
 
 GameScene::GameScene() :
     m_pSceneRoot(eNEW RootSceneNode(this)),
-    m_pWireframeRS(nullptr),
     m_currCameraIdx(-1)
 {
 
@@ -21,7 +20,6 @@ GameScene::GameScene() :
 GameScene::~GameScene()
 {
     SAFE_DELETE(m_pSceneRoot);
-    SAFE_RELEASE(m_pWireframeRS);
 }
 
 bool GameScene::Init()
@@ -64,17 +62,6 @@ shared_ptr<SceneCameraNode> GameScene::AddCamera()
 
 HRESULT GameScene::OnConstruct()
 {
-    SAFE_RELEASE(m_pWireframeRS);
-
-    D3D11_RASTERIZER_DESC wireframeDesc;
-    ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-    wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-    wireframeDesc.CullMode = D3D11_CULL_BACK;
-    wireframeDesc.FrontCounterClockwise = false;
-    wireframeDesc.DepthClipEnable = true;
-
-    CHRRHR(DXUTGetD3D11Device()->CreateRasterizerState(&wireframeDesc, &m_pWireframeRS));
-
     _ASSERTE(m_pSceneRoot);
     return m_pSceneRoot->OnConstruct();
 }
@@ -91,8 +78,6 @@ void GameScene::OnRender()
     DXUTGetD3D11DeviceContext()->ClearRenderTargetView(pRTV, DirectX::Colors::LightBlue);
     ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
     DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
-
-    DXUTGetD3D11DeviceContext()->RSSetState(m_pWireframeRS);
 
     if (m_pSceneRoot && m_cameras[m_currCameraIdx])
     {
@@ -125,6 +110,7 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
     shared_ptr<RenderComponent> pRenderer = static_pointer_cast<RenderComponent>(pWeakRenderer.lock());
 
     auto pSceneNode = pRenderer->CreateSceneNode(this);
+    pRenderer->SceneNode(pSceneNode);
     CHRR(pSceneNode->OnConstruct());
 
     m_pSceneRoot->AddChild(pSceneNode);

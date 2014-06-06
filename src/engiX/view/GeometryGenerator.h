@@ -39,10 +39,18 @@ namespace engiX
             DirectX::XMFLOAT2 TexC;
         };
 
-        struct MeshData
+        class MeshData
         {
+        public:
+            MeshData() :
+                IsWireframe(true),
+                IsBackfacing(true)
+            {}
+
             std::vector<Vertex> Vertices;
             std::vector<UINT> Indices;
+            bool IsWireframe;
+            bool IsBackfacing;
         };
 
         ///<summary>
