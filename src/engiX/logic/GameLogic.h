@@ -1,10 +1,11 @@
 #pragma once
 
+#include <set>
 #include "Timer.h"
 #include "Actor.h"
 #include "ViewInterfaces.h"
 #include "CollisionDetection.h"
-#include <set>
+#include "TaskManager.h"
 
 namespace engiX
 {
@@ -27,6 +28,8 @@ namespace engiX
         virtual void LoadLevel() = 0;
         bool AddInitActor(_In_ StrongActorPtr pActor);
         bool RemoveActor(_In_ ActorID);
+
+        TaskManager m_taskMgr;
 
     private:
         ActorRegistry m_actors;

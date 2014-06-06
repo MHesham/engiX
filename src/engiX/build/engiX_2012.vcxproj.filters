@@ -34,11 +34,11 @@
     <Filter Include="Header Files\View\Graphics">
       <UniqueIdentifier>{9c18e606-b1a3-4fa9-b952-fb1fce4a3fe8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\View\Components">
-      <UniqueIdentifier>{95a27ccd-ff69-4b61-89e9-ee696e0bf60e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Logic\Component">
       <UniqueIdentifier>{3be74d42-0ed5-4d7e-82cf-ac5898ee02d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logic\Tasks">
+      <UniqueIdentifier>{d8505b63-d68e-499a-b0a0-2dff78f24820}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +108,6 @@
     <ClInclude Include="..\view\Geometry.h">
       <Filter>Header Files\View\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\RenderComponent.h">
-      <Filter>Header Files\View\Components</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\CollisionDetection.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -128,6 +125,18 @@
     </ClInclude>
     <ClInclude Include="..\common\D3dUtil.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\RenderComponent.h">
+      <Filter>Header Files\Logic\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\TaskManager.h">
+      <Filter>Header Files\Logic\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\Task.h">
+      <Filter>Header Files\Logic\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\ActorTurnTask.h">
+      <Filter>Header Files\Logic\Tasks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +210,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\D3dUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\Task.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\TaskManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\ActorTurnTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

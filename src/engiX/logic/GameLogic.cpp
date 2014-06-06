@@ -31,6 +31,8 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
     for (auto deadActor : m_deadActors)
         RemoveActor(deadActor);
 
+    m_taskMgr.OnUpdate(time);
+
     m_pView->OnUpdate(time);
 }
 

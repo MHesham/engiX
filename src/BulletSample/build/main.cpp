@@ -13,6 +13,7 @@
 #include "ParticlePhysicsCmpt.h"
 #include "TurnController.h"
 #include "EventManager.h"
+#include "ActorTurnTask.h"
 
 using namespace engiX;
 using namespace std;
@@ -82,6 +83,9 @@ public:
 
         m_worldBounds.Radius(50.0f);
 
+        m_taskMgr.AttachTask(
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.15f, 0.0))));
+
         return pActor;
     }
 
@@ -100,6 +104,9 @@ public:
 
         pActor->Add<CylinderMeshComponent>(props);
         pActor->Add<TransformCmpt>()->Position(Vec3(0.0, -30.0, 0.0));
+
+        m_taskMgr.AttachTask(
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.25f, 0.0))));
 
         return pActor;
     }
