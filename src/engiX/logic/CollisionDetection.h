@@ -20,7 +20,7 @@ namespace engiX
 
         bool IsPointInside(_In_ const Vec3& point);
         bool Collide(_In_ const BoundingSphere& other);
-        Vec3 Position() const { return m_position; }
+        const Vec3& Position() const { return m_position; }
         void Position(Vec3 val) { m_position = val; }
         real Radius() const { return m_radius; }
         void Radius(real val) { m_radius = val; m_radiusSq = val * val; }

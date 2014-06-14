@@ -29,3 +29,5 @@ Debug
 *.lastbuildstate
 BoxSampleWin32Debug
 /temp
+/Game/Win32Release
+/lib/Win32Release

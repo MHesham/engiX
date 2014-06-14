@@ -4,6 +4,7 @@
 #include "engiXDefs.h"
 #include "TransformCmpt.h"
 #include "CollisionDetection.h"
+#include "MathHelper.h"
 
 namespace engiX
 {
@@ -16,7 +17,7 @@ namespace engiX
         ParticlePhysicsCmpt();
         ComponentID TypeId() const { return TypeID; }
         const wchar_t* Typename() const { return L"ParticlePhysicsCmpt"; }
-        void OnUpdate(_In_ const Timer& time) { Integrate(time); }
+        void OnUpdate(_In_ const Timer& time) { ApplyForces(time); Integrate(time); }
         bool Init();
         Vec3 Velocity() const { return m_velocity; }
         void Velocity(_In_ Vec3 val) { m_velocity = val; }
@@ -31,14 +32,13 @@ namespace engiX
         void LifetimeBound(_In_ const BoundingSphere& lifetimeBound) { m_lifetimeBound = lifetimeBound; }
         BoundingSphere BoundingMesh() const;
         void Radius(_In_ real radius) { m_radius = radius; }
-
-        // res = res + vec * scale
-        static void AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res);
-        // res = res + a^b
-        static void AddPowVector(_In_ const real& a, _In_ real b, _Inout_ Vec3& res);
+        void AddForce(_In_ const Vec3& force) { Math::Vec3Accumulate(m_accumulatedForce, force); }
 
     protected:
+        void ApplyForces(_In_ const Timer& time);
         void Integrate(_In_ const Timer& time);
+        void ClearForceAccum() { m_accumulatedForce.x = m_accumulatedForce.y = m_accumulatedForce.z = 0.0; }
+
         Vec3 m_velocity;
         Vec3 m_baseAcceleraiton;
         Vec3 m_accumulatedForce;

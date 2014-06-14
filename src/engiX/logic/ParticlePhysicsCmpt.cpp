@@ -30,6 +30,18 @@ BoundingSphere ParticlePhysicsCmpt::BoundingMesh() const
     return BoundingSphere(m_radius, m_pObjTsfm.lock()->Position());
 }
 
+void ParticlePhysicsCmpt::ApplyForces(_In_ const Timer& time)
+{
+    const ParticleForceRegistry& forceRegistry = g_pApp->Logic()->ForceRegistry();
+
+    if (forceRegistry.ActorHasForces(Owner()->Id()))
+    {
+        auto& actorForces = forceRegistry.GetActorForces(Owner()->Id());
+        for (auto pfgenId : actorForces)
+            forceRegistry.GetForceGen(pfgenId)->ApplyForce(Owner(), time);
+    }
+}
+
 void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)
 {
     if (m_inverseMass <= 0.0) return;
@@ -39,23 +51,27 @@ void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)
 
     Vec3 newPos = pTsfmCmpt->Position();
 
+    //
     // Work out new position p, where p = p0 + vt
-    AddScaledVector(m_velocity, time.DeltaTime(), newPos);
+    //
+    Math::Vec3ScaledAdd(m_velocity, time.DeltaTime(), newPos);
     pTsfmCmpt->Position(newPos);
 
+    //
     // Work out acceleration and velocity for next update
-
+    //
     // 1. Work out the acceleration a, where f = m a
     Vec3 netAcceleration = m_baseAcceleraiton;
-    AddScaledVector(m_accumulatedForce, m_inverseMass, netAcceleration);
-    // 2. Work out the velocity V from the acceleration A, where v = v0 + at
-    AddScaledVector(netAcceleration, time.DeltaTime(), m_velocity);
+    Math::Vec3ScaledAdd(m_accumulatedForce, m_inverseMass, netAcceleration);
+
+    // 2. Work out the velocity v from the acceleration a, where v = v0 + at
+    Math::Vec3ScaledAdd(netAcceleration, time.DeltaTime(), m_velocity);
 
     // 3. Apply drag to velocity to simulate loss of energy
-    AddPowVector(m_damping, time.DeltaTime(), m_velocity);
+    Math::Vec3AddPow(m_damping, time.DeltaTime(), m_velocity);
 
     // 4. Clear accumulated force during this update cycle
-    m_accumulatedForce.x = m_accumulatedForce.y = m_accumulatedForce.z = 0.0;
+    ClearForceAccum();
 
     // 5. Check for particle lifetime in case a bound was set
     if (!m_lifetimeBound.IsNull() &&
@@ -69,18 +85,4 @@ void ParticlePhysicsCmpt::ScaleVelocity(_In_ real scale)
 {
     XMStoreFloat3(&m_velocity,
         XMVectorScale(XMLoadFloat3(&m_velocity), scale));
-}
-
-void ParticlePhysicsCmpt::AddScaledVector(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res)
-{
-    // res = res + vec * scale
-    XMStoreFloat3(&res,
-        XMVectorMultiplyAdd(XMLoadFloat3(&vec), XMVectorReplicate(scale), XMLoadFloat3(&res)));
-}
-
-void ParticlePhysicsCmpt::AddPowVector(_In_ const real& a, _In_ real b, _Inout_ Vec3& res)
-{
-    // res = res + a^b
-    XMStoreFloat3(&res,
-        XMVectorMultiply(XMLoadFloat3(&res), XMVectorReplicate(real_pow(a, b))));
 }

@@ -102,5 +102,6 @@ namespace engiX
         bool m_isTurningDown;
         real m_turnVelocity;
         std::weak_ptr<TransformCmpt> m_actorTsfm;
+
     };
 }

@@ -1,5 +1,6 @@
 #include "ActorTurnTask.h"
 #include "WinGameApp.h"
+#include "MathHelper.h"
 
 using namespace engiX;
 
@@ -22,7 +23,10 @@ void ActorTurnTask::OnUpdate(_In_ const Timer& time)
     {
         auto pTsfm = m_actorTsfm.lock();
 
-        pTsfm->RotationX(pTsfm->RotationX() + m_turnVelocities.x * time.DeltaTime());
-        pTsfm->RotationY(pTsfm->RotationY() + m_turnVelocities.y * time.DeltaTime());
+        real xRot = pTsfm->RotationX() + m_turnVelocities.x * time.DeltaTime();
+        pTsfm->RotationX(xRot);
+
+        real yRot = pTsfm->RotationY() + m_turnVelocities.y * time.DeltaTime();
+        pTsfm->RotationY(yRot);
     }
 }

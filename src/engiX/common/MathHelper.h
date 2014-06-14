@@ -48,7 +48,7 @@ namespace engiX
         }
 
         template<typename T>
-        static T Clamp(const T& x, const T& low, const T& high)
+        static T Clamp(T x, T low, T high)
         {
             return x < low ? low : (x > high ? high : x); 
         }
@@ -65,7 +65,7 @@ namespace engiX
             A.r[3] = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
             DirectX::XMVECTOR det = XMMatrixDeterminant(A);
-            return XMMatrixTranspose(XMMatrixInverse(&det, A));
+            return DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(&det, A));
         }
 
         // Spherical Coordinates (radius r, inclination Theta, azimuth Phi)
@@ -92,20 +92,6 @@ namespace engiX
 	        cartesianXyz.y = sphericalRadius * real_cos(sphericalPhi);
         }
 
-        static Vec3 Vec3RotTransform(_In_ const Vec3& v0, _In_ const Mat4x4& tsfm)
-        {
-            Mat4x4 rotTsfm = tsfm;
-            Math::TransformZeroPosition(rotTsfm);
-
-            Vec3 v;
-            XMStoreFloat3(&v,
-                XMVector3Transform(
-                XMLoadFloat3(&v0),
-                XMLoadFloat4x4(&rotTsfm)));
-
-            return v;
-        }
-
         static void TransformSetPosition(_Inout_ Mat4x4& m, _In_ const Vec3& p)
         {
             m._41 = p.x;
@@ -116,6 +102,43 @@ namespace engiX
         static void TransformZeroPosition(_Inout_ Mat4x4& m)
         {
             TransformSetPosition(m, Vec3(0.0f, 0.0f, 0.0f));
+        }
+
+        // res = res + vec * scale
+        static void Vec3ScaledAdd(_In_ const Vec3& vec, _In_ real scale, _Inout_ Vec3& res)
+        {
+            // res = res + vec * scale
+            DirectX::XMStoreFloat3(&res,
+                DirectX::XMVectorMultiplyAdd(
+                DirectX::XMLoadFloat3(&vec), DirectX::XMVectorReplicate(scale), DirectX::XMLoadFloat3(&res)));
+        }
+
+        // res = res + a^b
+        static void Vec3AddPow(_In_ const real& a, _In_ real b, _Inout_ Vec3& res)
+        {
+            // res = res + a^b
+            DirectX::XMStoreFloat3(&res,
+                DirectX::XMVectorMultiply(DirectX::XMLoadFloat3(&res), DirectX::XMVectorReplicate(real_pow(a, b))));
+        }
+
+        static Vec3 Vec3RotTransform(_In_ const Vec3& v0, _In_ const Mat4x4& tsfm)
+        {
+            Mat4x4 rotTsfm = tsfm;
+            Math::TransformZeroPosition(rotTsfm);
+
+            Vec3 v;
+            DirectX::XMStoreFloat3(&v,
+                DirectX::XMVector3Transform(
+                DirectX::XMLoadFloat3(&v0),
+                DirectX::XMLoadFloat4x4(&rotTsfm)));
+
+            return v;
+        }
+
+        static void Vec3Accumulate(_Inout_ Vec3& v, _In_ const Vec3& acc)
+        {
+            DirectX::XMStoreFloat3(&v,
+                DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&v), DirectX::XMLoadFloat3(&acc)));
         }
 
         static DirectX::XMVECTOR RandUnitVec3();

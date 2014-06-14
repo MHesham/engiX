@@ -25,6 +25,7 @@
     <ClInclude Include="..\logic\EventManager.h" />
     <ClInclude Include="..\logic\Events.h" />
     <ClInclude Include="..\logic\Actor.h" />
+    <ClInclude Include="..\logic\ParticleForceGen.h" />
     <ClInclude Include="..\logic\GameLogic.h" />
     <ClInclude Include="..\logic\ParticlePhysicsCmpt.h" />
     <ClInclude Include="..\logic\Task.h" />
@@ -58,6 +59,7 @@
     <ClCompile Include="..\logic\EventManager.cpp" />
     <ClCompile Include="..\logic\GameActor.cpp" />
     <ClCompile Include="..\logic\GameLogic.cpp" />
+    <ClCompile Include="..\logic\ParticleForceGen.cpp" />
     <ClCompile Include="..\logic\ParticlePhysicsCmpt.cpp" />
     <ClCompile Include="..\logic\Task.cpp" />
     <ClCompile Include="..\logic\TaskManager.cpp" />

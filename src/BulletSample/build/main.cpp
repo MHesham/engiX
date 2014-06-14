@@ -14,6 +14,7 @@
 #include "TurnController.h"
 #include "EventManager.h"
 #include "ActorTurnTask.h"
+#include "ParticleForceGen.h"
 
 using namespace engiX;
 using namespace std;
@@ -84,7 +85,11 @@ public:
         m_worldBounds.Radius(50.0f);
 
         m_taskMgr.AttachTask(
-            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.15f, 0.0))));
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.10f, 0.0))));
+
+        m_worldPullForceId = ForceRegistry().RegisterGenerator(
+            std::shared_ptr<ParticleAnchoredSpring>(
+            eNEW ParticleAnchoredSpring(Vec3(0.0, 60.0, 0.0), 55, 0.5)));
 
         return pActor;
     }
@@ -99,14 +104,14 @@ public:
         props.TopRadius = 35.0;
         props.BottomRadius = 15.0;
         props.Height = 20.0;
-        props.StackCount = 1;
-        props.SliceCount = 40;
+        props.StackCount = 2;
+        props.SliceCount = 20;
 
         pActor->Add<CylinderMeshComponent>(props);
         pActor->Add<TransformCmpt>()->Position(Vec3(0.0, -30.0, 0.0));
 
         m_taskMgr.AttachTask(
-            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.25f, 0.0))));
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.20f, 0.0))));
 
         return pActor;
     }
@@ -309,9 +314,11 @@ public:
 
         shared_ptr<ParticlePhysicsCmpt> pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
         pTargetPhy->Mass(1.0);
-        pTargetPhy->Velocity(Vec3(0.0, Math::RandF(7, 15), 0.0));
+        //pTargetPhy->Velocity(Vec3(0.0, Math::RandF(7, 15), 0.0));
         pTargetPhy->Radius(2.0);
         pTargetPhy->LifetimeBound(m_worldBounds);
+
+        ForceRegistry().RegisterActorForce(pTarget->Id(), m_worldPullForceId);
 
         return pTarget;
     }
@@ -329,6 +336,7 @@ private:
     BoundingSphere m_worldBounds;
     std::set<ActorID> m_bullets;
     std::set<ActorID> m_targets;
+    ParticleForceGenID m_worldPullForceId;
 };
 
 class BulletD3dGameView : public HumanD3dGameView

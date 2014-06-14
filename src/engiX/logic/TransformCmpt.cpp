@@ -4,7 +4,7 @@ using namespace engiX;
 using namespace DirectX;
 
 TransformCmpt::TransformCmpt() :
-    m_rotationXYZ(DirectX::g_XMZero)
+m_rotationXYZ(DirectX::g_XMZero)
 {
     XMStoreFloat4x4(&m_transform, XMMatrixIdentity());
 }
@@ -13,7 +13,7 @@ Mat4x4 TransformCmpt::InverseTransform() const
 {
     Mat4x4 rotMat = CalcRotationMat();
     Mat4x4 invTsfm;
-    
+
     XMStoreFloat4x4(&invTsfm,
         XMMatrixTranspose(XMLoadFloat4x4(&rotMat)));
 
@@ -58,21 +58,32 @@ void TransformCmpt::Transform(_In_ const TransformCmpt& tsfm)
 
 void TransformCmpt::RotationY(_In_ real theta)
 {
-    m_rotationXYZ.y = theta;
+    /*if (theta > 2.0 * R_PI ||
+        theta < -2.0 * R_PI)
+        m_rotationXYZ.y = 0.0;
+    else
+        */
+        m_rotationXYZ.y = theta;
+
     CalcTransform();
 }
 
 void TransformCmpt::RotationX(_In_ real theta)
 {
-    m_rotationXYZ.x = theta;
+    /*if (theta > 2.0 * R_PI ||
+        theta < -2.0 * R_PI)
+        m_rotationXYZ.x = 0.0;
+    else*/
+        m_rotationXYZ.x = theta;
+
     CalcTransform();
 }
 
 void TransformCmpt::Position(_In_ const Vec3& newPos)
 {
-   m_transform._41 = newPos.x;
-   m_transform._42 = newPos.y;
-   m_transform._43 = newPos.z;
+    m_transform._41 = newPos.x;
+    m_transform._42 = newPos.y;
+    m_transform._43 = newPos.z;
 }
 
 void TransformCmpt::CalcTransform()

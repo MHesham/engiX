@@ -6,6 +6,7 @@
 #include "ViewInterfaces.h"
 #include "CollisionDetection.h"
 #include "TaskManager.h"
+#include "ParticleForceGen.h"
 
 namespace engiX
 {
@@ -23,6 +24,7 @@ namespace engiX
         IGameView* View() { return m_pView; }
         WeakActorPtr FindActor(_In_ ActorID id);
         WeakActorPtr FindActor(_In_ const std::wstring& name);
+        ParticleForceRegistry& ForceRegistry() { return m_forceRegistry; }
 
     protected:
         virtual void LoadLevel() = 0;
@@ -35,5 +37,6 @@ namespace engiX
         ActorRegistry m_actors;
         IGameView* m_pView;
         std::set<ActorID> m_deadActors;
+        ParticleForceRegistry m_forceRegistry;
     };
 }

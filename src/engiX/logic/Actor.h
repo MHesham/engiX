@@ -13,6 +13,8 @@ namespace engiX
 
     typedef unsigned ComponentID;
     typedef unsigned ActorID;
+    typedef unsigned ActorTypeID;
+    typedef std::wstring ActorName;
     typedef std::wstring ActorTypename;
 
     typedef std::shared_ptr<Actor> StrongActorPtr;
