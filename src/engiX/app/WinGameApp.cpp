@@ -38,6 +38,7 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
 
     g_Logger->Init();
+    g_Logger->LogLevel(LOG_Info);
     LogInfo("engiX is initializing ...");
     g_EventMgr->Init();
 

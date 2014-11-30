@@ -2,7 +2,6 @@
 
 #include <memory>
 #include "engiXDefs.h"
-#include "Vector.h"
 #include "Actor.h"
 
 namespace engiX

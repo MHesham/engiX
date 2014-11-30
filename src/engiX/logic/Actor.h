@@ -6,6 +6,11 @@
 #include "Timer.h"
 #include "engiXDefs.h"
 
+#define DECLARE_COMPONENT(CmptName, CmptGuid) \
+    static const ComponentID TypeID = CmptGuid; \
+    ComponentID TypeId() const { return TypeID; } \
+    const wchar_t* Typename() const { return L#CmptName; } \
+
 namespace engiX
 {
     class Actor;

@@ -6,9 +6,9 @@ using namespace engiX;
 using namespace std;
 
 const wchar_t* LogTypeName[] = {
-    L"Warning",
-    L"Error",
-    L"Info",
+    L"E",
+    L"W",
+    L"I",
 };
 
 Logger* g_pLoggerInst = nullptr;
@@ -61,7 +61,11 @@ void Logger::Deinit()
     SAFE_DELETE(g_pLoggerInst);
 }
 //////////////////////////////////////////////////////////////////////////
-void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtFormat, ...)
+void Logger::Log(LogType type,
+    const wchar_t* pFilename,
+    const wchar_t* pFuncName,
+    unsigned line, 
+    const wchar_t* pTxtFormat, ...)
 {
     _ASSERTE(m_isInitialized);
 
@@ -73,14 +77,11 @@ void Logger::Log(LogType type, const wchar_t* pFuncName, const wchar_t* pTxtForm
     vswprintf_s(buffer1, pTxtFormat, formatArgs);
     va_end(formatArgs);
 
-    SYSTEMTIME sysTime;
-    GetLocalTime(&sysTime);
-
-    swprintf_s(buffer2, LogBufferMax, L"[%s@%02d:%02d:%02d.%03d@%s] %s\n",
+    swprintf_s(buffer2, LogBufferMax, L"[%s] %s. %s:%d\n",
         LogTypeName[(unsigned)type],
-        sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds,
+        buffer1,
         pFuncName,
-        buffer1);
+        line);
 
     wprintf_s(buffer2);
 

@@ -11,12 +11,11 @@ namespace engiX
     class ParticlePhysicsCmpt : public ActorComponent
     {
     public:
+        DECLARE_COMPONENT(ParticlePhysicsCmpt, 0x37C19534);
+
         static const real DefaultDamping;
-        static const ComponentID TypeID = 0x37C19534;
 
         ParticlePhysicsCmpt();
-        ComponentID TypeId() const { return TypeID; }
-        const wchar_t* Typename() const { return L"ParticlePhysicsCmpt"; }
         void OnUpdate(_In_ const Timer& time) { ApplyForces(time); Integrate(time); }
         bool Init();
         Vec3 Velocity() const { return m_velocity; }

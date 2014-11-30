@@ -19,7 +19,6 @@
     <ClInclude Include="..\common\Timer.h" />
     <ClInclude Include="..\common\MathHelper.h" />
     <ClInclude Include="..\common\Precision.h" />
-    <ClInclude Include="..\common\Vector.h" />
     <ClInclude Include="..\logic\ActorTurnTask.h" />
     <ClInclude Include="..\logic\CollisionDetection.h" />
     <ClInclude Include="..\logic\EventManager.h" />
@@ -52,7 +51,6 @@
     <ClCompile Include="..\common\D3dUtil.cpp" />
     <ClCompile Include="..\common\MathHelper.cpp" />
     <ClCompile Include="..\common\Timer.cpp" />
-    <ClCompile Include="..\common\Vector.cpp" />
     <ClCompile Include="..\logic\Actor.cpp" />
     <ClCompile Include="..\logic\ActorTurnTask.cpp" />
     <ClCompile Include="..\logic\CollisionDetection.cpp" />

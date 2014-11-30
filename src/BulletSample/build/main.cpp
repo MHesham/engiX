@@ -56,17 +56,19 @@ public:
         return true;
     }
 
-    void LoadLevel()
+    bool LoadLevel()
     {
         StrongActorPtr pHeroTank = CreateHero();
-        CBR(AddInitActor(pHeroTank));
+        CBRB(AddInitActor(pHeroTank));
 
         m_controller.Control(pHeroTank->Get<TransformCmpt>());
 
-        CBR(AddInitActor(CreateTerrain()));
-        CBR(AddInitActor(CreateWorldBounds()));
+        CBRB(AddInitActor(CreateTerrain()));
+        CBRB(AddInitActor(CreateWorldBounds()));
 
         m_pHero = WeakActorPtr(pHeroTank);
+
+        return true;
     }
 
     StrongActorPtr CreateWorldBounds()

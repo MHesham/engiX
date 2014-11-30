@@ -34,9 +34,6 @@
     <Filter Include="Header Files\View\Graphics">
       <UniqueIdentifier>{9c18e606-b1a3-4fa9-b952-fb1fce4a3fe8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Logic\Component">
-      <UniqueIdentifier>{3be74d42-0ed5-4d7e-82cf-ac5898ee02d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Logic\Tasks">
       <UniqueIdentifier>{d8505b63-d68e-499a-b0a0-2dff78f24820}</UniqueIdentifier>
     </Filter>
@@ -48,9 +45,6 @@
     <ClInclude Include="..\common\Precision.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\Vector.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\Timer.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -59,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="..\system\Delegate.h">
       <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\app\Logger.h">
-      <Filter>Header Files\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\logic\EventManager.h">
       <Filter>Header Files\Logic</Filter>
@@ -123,9 +114,6 @@
     <ClInclude Include="..\common\D3dUtil.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\RenderComponent.h">
-      <Filter>Header Files\Logic\Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\TaskManager.h">
       <Filter>Header Files\Logic\Tasks</Filter>
     </ClInclude>
@@ -143,6 +131,12 @@
     </ClInclude>
     <ClInclude Include="..\logic\ParticleForceGen.h">
       <Filter>Header Files\Logic\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\app\Logger.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\RenderComponent.h">
+      <Filter>Header Files\View</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -165,9 +159,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\Vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\view\D3dShader.cpp">

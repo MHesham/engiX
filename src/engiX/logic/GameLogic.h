@@ -27,7 +27,7 @@ namespace engiX
         ParticleForceRegistry& ForceRegistry() { return m_forceRegistry; }
 
     protected:
-        virtual void LoadLevel() = 0;
+        virtual bool LoadLevel() = 0;
         bool AddInitActor(_In_ StrongActorPtr pActor);
         bool RemoveActor(_In_ ActorID);
 

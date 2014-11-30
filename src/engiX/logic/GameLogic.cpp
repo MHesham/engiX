@@ -92,8 +92,7 @@ bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor)
 
 bool GameLogic::Init()
 {
-    LoadLevel();
-
+    CBRB(LoadLevel());
     CBRB(m_pView->Init());
 
     return true;

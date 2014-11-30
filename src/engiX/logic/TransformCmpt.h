@@ -8,10 +8,9 @@ namespace engiX
     class TransformCmpt : public ActorComponent
     {
     public:
-        static const ComponentID TypeID = 0x76EE7B4E;
+        DECLARE_COMPONENT(TransformCmpt, 0x76EE7B4E);
+
         TransformCmpt();
-        ComponentID TypeId() const { return TypeID; }
-        const wchar_t* Typename() const { return L"TransformCmpt"; }
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() {  return true; }
 

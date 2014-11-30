@@ -13,9 +13,7 @@ namespace engiX
     class RenderComponent : public ActorComponent
     {
     public:
-        static const ComponentID TypeID = 0x6211EC48;
-        ComponentID TypeId() const { return TypeID; }
-        const wchar_t* Typename() const { return L"RenderComponent"; }
+        DECLARE_COMPONENT(RenderComponent, 0x6211EC48);
 
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() { return true; }
