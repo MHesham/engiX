@@ -12,7 +12,7 @@ ParticleForceGenID ParticleForceGen::m_lastId = 0;
 
 ParticleForceGenID ParticleForceRegistry::RegisterGenerator(_In_ std::shared_ptr<ParticleForceGen> pFGen)
 {
-    LogInfo("Registering force generator %s[%d]", pFGen->Typename(), pFGen->Id());
+    LogVerbose("Registering force generator %s[%d]", pFGen->Typename(), pFGen->Id());
     m_forceRegistry.insert(make_pair(pFGen->Id(), pFGen));
 
     return pFGen->Id();
@@ -21,7 +21,7 @@ ParticleForceGenID ParticleForceRegistry::RegisterGenerator(_In_ std::shared_ptr
 void ParticleForceRegistry::RegisterActorForce(_In_ ActorID actorId, _In_ ParticleForceGenID pfgenId)
 {
     _ASSERTE(m_forceRegistry.count(pfgenId) > 0);
-    LogInfo("Adding actor-force registration {%d, %s[%d]}", actorId, m_forceRegistry.at(pfgenId)->Typename(), pfgenId);
+    LogVerbose("Adding actor-force registration {%d, %s[%d]}", actorId, m_forceRegistry.at(pfgenId)->Typename(), pfgenId);
     m_actorRegistry[actorId].insert(pfgenId);
 }
 
@@ -34,7 +34,7 @@ void ParticleForceRegistry::UnregisterActorForce(_In_ ActorID actorId, _In_ Part
     }
 
     auto forces = m_actorRegistry[actorId];
-    LogInfo("Removing actor-force registration {%d, %s[%d]}", actorId, m_forceRegistry.at(fgenId)->Typename(), fgenId);
+    LogVerbose("Removing actor-force registration {%d, %s[%d]}", actorId, m_forceRegistry.at(fgenId)->Typename(), fgenId);
     forces.erase(fgenId);
 }
 

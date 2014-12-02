@@ -9,6 +9,7 @@ const wchar_t* LogTypeName[] = {
     L"E",
     L"W",
     L"I",
+    L"V"
 };
 
 Logger* g_pLoggerInst = nullptr;
@@ -77,7 +78,7 @@ void Logger::Log(LogType type,
     vswprintf_s(buffer1, pTxtFormat, formatArgs);
     va_end(formatArgs);
 
-    swprintf_s(buffer2, LogBufferMax, L"[%s] %s. %s:%d\n",
+    swprintf_s(buffer2, LogBufferMax, L"[%s] %s. {%s:%d}\n",
         LogTypeName[(unsigned)type],
         buffer1,
         pFuncName,

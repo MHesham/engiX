@@ -34,7 +34,7 @@ void EventManager::Unregister(_In_ EventHandlerPtr pHandler, _In_ const EventTyp
 void EventManager::Queue(_In_ EventPtr evt)
 {
     m_eventQ.push_back(evt);
-    LogInfo("Event %s queued", evt->Typename());
+    LogVerbose("Event %s queued", evt->Typename());
 }
 //////////////////////////////////////////////////////////////////////////
 void EventManager::OnUpdate(_In_ const Timer& time)
@@ -43,7 +43,7 @@ void EventManager::OnUpdate(_In_ const Timer& time)
     {
         EventHandlerList& handlers = m_eventRegistry[evt->TypeId()];
         handlers.Fire(evt);
-        LogInfo("Event %s dispatched", evt->Typename());
+        LogVerbose("Event %s dispatched", evt->Typename());
     }
 
     m_eventQ.clear();

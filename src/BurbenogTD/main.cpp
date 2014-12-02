@@ -185,7 +185,7 @@ public:
     
     void GenerateTarget()
     {
-        LogInfo("Generating Target");
+        LogVerbose("Generating Target");
 
         StrongActorPtr pTarget(CreateTarget());
         CBR(AddInitActor(pTarget));
@@ -212,7 +212,7 @@ public:
         else if (m_currentWeapon == WPN_Shell)
             pBullet = CreateShellBullet(*m_pHero.lock()->Get<TransformCmpt>().lock());
 
-        LogInfo("Firing a bullet with fire power scale %f", m_firePowerScale);
+        LogVerbose("Firing a bullet with fire power scale %f", m_firePowerScale);
 
         pBullet->Get<ParticlePhysicsCmpt>().lock()->ScaleVelocity(m_firePowerScale);
         pBullet->Get<TransformCmpt>().lock()->Transform(

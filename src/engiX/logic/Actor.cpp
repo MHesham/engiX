@@ -10,7 +10,7 @@ void Actor::Add(_In_ StrongActorComponentPtr pComponent)
 
     pComponent->Owner(this);
     m_components.insert(make_pair(pComponent->TypeId(), pComponent));
-    LogInfo("%s[%x] has been added to Actor %s[%x]", pComponent->Typename(), pComponent->TypeId(), Typename(), Id());
+    LogVerbose("%s[%x] has been added to Actor %s[%x]", pComponent->Typename(), pComponent->TypeId(), Typename(), Id());
 }
 
 void Actor::OnUpdate(_In_ const Timer& time)

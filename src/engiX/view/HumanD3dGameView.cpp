@@ -54,7 +54,7 @@ void HumanD3dGameView::OnKeyDown(_In_ const Timer& time, _In_ const BYTE c)
     if (m_downKeys[c])
         return;
 
-    LogInfo("KeyDown=%c", c);
+    LogVerbose("KeyDown=%c", c);
 
     if (c == 'A')
         g_EventMgr->Queue(EventPtr(eNEW StartTurnLeftEvt(time.TotalTime())));
@@ -72,7 +72,7 @@ void HumanD3dGameView::OnKeyDown(_In_ const Timer& time, _In_ const BYTE c)
 
 void HumanD3dGameView::OnKeyUp(_In_ const Timer& time, _In_ const BYTE c) 
 { 
-    LogInfo("KeyUp=%c", c);
+    LogVerbose("KeyUp=%c", c);
 
     if (c == 'C')
         g_EventMgr->Queue(EventPtr(eNEW ToggleCameraEvt(time.TotalTime())));

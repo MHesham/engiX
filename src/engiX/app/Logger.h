@@ -13,6 +13,7 @@ namespace engiX
         LOG_Error,
         LOG_Warning,
         LOG_Info,
+        LOG_Verbose,
         LOG_END
     };
 
@@ -60,3 +61,4 @@ namespace engiX
 #define LogError(Format, ...)		LogMsg(LOG_Error, Format, __VA_ARGS__)
 #define LogWarning(Format, ...)		LogMsg(LOG_Warning, Format, __VA_ARGS__)
 #define LogInfo(Format, ...)		LogMsg(LOG_Info, Format, __VA_ARGS__)
+#define LogVerbose(Format, ...)     LogMsg(LOG_Verbose, Format, __VA_ARGS__)

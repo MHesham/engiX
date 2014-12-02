@@ -115,7 +115,7 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
 
     m_pSceneRoot->AddChild(pSceneNode);
 
-    LogInfo("Actor %s[%x] ScenNode created and added to scene root node children", pActor->Typename(), pActor->Id());
+    LogVerbose("Actor %s[%x] ScenNode created and added to scene root node children", pActor->Typename(), pActor->Id());
 }
 
 void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)
@@ -127,7 +127,7 @@ void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)
 
 void GameScene::OnToggleCameraEvt(_In_ EventPtr pEvt)
 {
-    LogInfo("Game scene is toggle its camera");
+    LogInfo("Game scene toggle its camera");
     m_currCameraIdx = (m_currCameraIdx + 1) % m_cameras.size();
 }
 
