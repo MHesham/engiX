@@ -1,7 +1,7 @@
 engiX
 =====
 
-Experimental Game Engine based on DirectX11 and the high performance SIMD DirectXMath library
+engiX is an experimental 3D Game Engine based on DirectX11 and the high performance SIMD DirectXMath library. Its name is 2 parts 'engi'+'X' where 'engi' comes from engine and X refers to being DirectX based.
 
 engiX design is inspired by the sample Game Engine that comes with Game Coding Complete 4 book, https://code.google.com/p/gamecode4/
 
