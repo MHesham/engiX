@@ -104,14 +104,7 @@
 #define DISALLOW_COPY_AND_ASSIGN(C) \
     C(const C&); C& operator = (const C&);
 
-#if defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#define eNEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#else
 #define eNEW new
-#endif
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }

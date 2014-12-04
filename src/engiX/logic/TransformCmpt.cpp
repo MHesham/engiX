@@ -17,9 +17,9 @@ Mat4x4 TransformCmpt::InverseTransform() const
     XMStoreFloat4x4(&invTsfm,
         XMMatrixTranspose(XMLoadFloat4x4(&rotMat)));
 
-    invTsfm._41 = -m_transform._41;
-    invTsfm._42 = -m_transform._42;
-    invTsfm._43 = -m_transform._43;
+    invTsfm._41 = -m_pos.x;
+    invTsfm._42 = -m_pos.y;
+    invTsfm._43 = -m_pos.z;
 
     return invTsfm;
 }
@@ -38,7 +38,7 @@ Mat4x4 TransformCmpt::CalcRotationMat() const
 
 Vec3 TransformCmpt::Direction() const
 {
-    Mat4x4 rotMat = m_transform;
+    Mat4x4 rotMat = Transform();
     rotMat._41 = rotMat._42 = rotMat._43 = 0.0f;
 
     Vec3 dir;
@@ -53,45 +53,34 @@ Vec3 TransformCmpt::Direction() const
 void TransformCmpt::Transform(_In_ const TransformCmpt& tsfm)
 {
     m_rotationXYZ = tsfm.m_rotationXYZ;
-    m_transform = tsfm.m_transform;
+    m_pos = tsfm.m_pos;
+    CalcTransform();
 }
 
 void TransformCmpt::RotationY(_In_ real theta)
 {
-    /*if (theta > 2.0 * R_PI ||
-        theta < -2.0 * R_PI)
-        m_rotationXYZ.y = 0.0;
-    else
-        */
-        m_rotationXYZ.y = theta;
-
+    m_rotationXYZ.y = theta;
     CalcTransform();
 }
 
 void TransformCmpt::RotationX(_In_ real theta)
 {
-    /*if (theta > 2.0 * R_PI ||
-        theta < -2.0 * R_PI)
-        m_rotationXYZ.x = 0.0;
-    else*/
-        m_rotationXYZ.x = theta;
-
+    m_rotationXYZ.x = theta;
     CalcTransform();
 }
 
 void TransformCmpt::Position(_In_ const Vec3& newPos)
 {
-    m_transform._41 = newPos.x;
-    m_transform._42 = newPos.y;
-    m_transform._43 = newPos.z;
+    m_pos = newPos;
+    CalcTransform();
 }
 
 void TransformCmpt::CalcTransform()
 {
-    Vec3 pos = Position();
-
     m_transform = CalcRotationMat();
 
-    Position(pos);
+    m_transform._41 = m_pos.x;
+    m_transform._42 = m_pos.y;
+    m_transform._43 = m_pos.z;
 }
 

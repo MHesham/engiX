@@ -1,5 +1,6 @@
 #include "ParticlePhysicsCmpt.h"
 #include "WinGameApp.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace std;
@@ -18,16 +19,9 @@ ParticlePhysicsCmpt::ParticlePhysicsCmpt() :
 
 }
 
-bool ParticlePhysicsCmpt::Init()
-{
-    m_pObjTsfm = m_pOwner->Get<TransformCmpt>();
-    return true;
-}
-
 BoundingSphere ParticlePhysicsCmpt::BoundingMesh() const
 {
-    _ASSERTE(!m_pObjTsfm.expired());
-    return BoundingSphere(m_radius, m_pObjTsfm.lock()->Position());
+    return BoundingSphere(m_radius, Owner()->Get<TransformCmpt>().Position());
 }
 
 void ParticlePhysicsCmpt::ApplyForces(_In_ const Timer& time)
@@ -46,16 +40,15 @@ void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)
 {
     if (m_inverseMass <= 0.0) return;
 
-    _ASSERTE(!m_pObjTsfm.expired());
-    shared_ptr<TransformCmpt> pTsfmCmpt = m_pObjTsfm.lock();
+    auto& tsfmCmpt = Owner()->Get<TransformCmpt>();
 
-    Vec3 newPos = pTsfmCmpt->Position();
+    Vec3 newPos = tsfmCmpt.Position();
 
     //
     // Work out new position p, where p = p0 + vt
     //
     Math::Vec3ScaledAdd(m_velocity, time.DeltaTime(), newPos);
-    pTsfmCmpt->Position(newPos);
+    tsfmCmpt.Position(newPos);
 
     //
     // Work out acceleration and velocity for next update
@@ -75,7 +68,7 @@ void ParticlePhysicsCmpt::Integrate(_In_ const Timer& time)
 
     // 5. Check for particle lifetime in case a bound was set
     if (!m_lifetimeBound.IsNull() &&
-        !m_lifetimeBound.IsPointInside(pTsfmCmpt->Position()))
+        !m_lifetimeBound.IsPointInside(tsfmCmpt.Position()))
     {
         m_pOwner->MarkForRemove();
     }

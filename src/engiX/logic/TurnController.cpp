@@ -1,5 +1,7 @@
 #include "TurnController.h"
 #include "EventManager.h"
+#include "GameApp.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace std;
@@ -20,28 +22,30 @@ bool TurnController::Init()
 
 void TurnController::Update(_In_ const Timer& time)
 {
-    if (m_actorTsfm.expired())
+    auto pActor = g_pApp->Logic()->FindActor(m_actorId);
+
+    if (pActor.expired())
         return;
 
-    shared_ptr<TransformCmpt> pTsfm = m_actorTsfm.lock();
+    auto& tsfm = pActor.lock()->Get<TransformCmpt>();
 
     if (m_isTurningRight)
     {
-        pTsfm->RotationY(pTsfm->RotationY() + (m_turnVelocity * time.DeltaTime()));
+        tsfm.RotationY(tsfm.RotationY() + (m_turnVelocity * time.DeltaTime()));
     }
 
     if (m_isTurningLeft)
     {
-        pTsfm->RotationY(pTsfm->RotationY() - (m_turnVelocity * time.DeltaTime()));
+        tsfm.RotationY(tsfm.RotationY() - (m_turnVelocity * time.DeltaTime()));
     }
 
     if (m_isTurningUp)
     {
-        pTsfm->RotationX(pTsfm->RotationX() - (m_turnVelocity * time.DeltaTime()));
+        tsfm.RotationX(tsfm.RotationX() - (m_turnVelocity * time.DeltaTime()));
     }
 
     if (m_isTurningDown)
     {
-        pTsfm->RotationX(pTsfm->RotationX() + (m_turnVelocity * time.DeltaTime()));
+        tsfm.RotationX(tsfm.RotationX() + (m_turnVelocity * time.DeltaTime()));
     }
 }

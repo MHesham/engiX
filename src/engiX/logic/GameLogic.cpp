@@ -36,6 +36,11 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
     m_pView->OnUpdate(time);
 }
 
+bool GameLogic::ActorExist(_In_ ActorID id)
+{
+    return !FindActor(id).expired();
+}
+
 WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
 {
     if (id == NullActorID)

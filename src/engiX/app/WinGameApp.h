@@ -3,18 +3,16 @@
 #include <memory>
 #include "DXUT.h"
 #include "engiXDefs.h"
-#include "GameLogic.h"
 #include "HumanD3dGameView.h"
+#include "GameApp.h"
 
 namespace engiX
 {
-    class WinGameApp
+    class WinGameApp : public GameApp
     {
     public:
         static const int DEFAULT_SCREEN_WIDTH = 1024;
         static const int DEFAULT_SCREEN_HEIGHT = 768;
-
-        static WinGameApp* Inst();
 
         static int Main(
             WinGameApp* pGameInst,
@@ -31,7 +29,6 @@ namespace engiX
         const SIZE& ScreenSize() const { return m_screenSize; }
         const Timer& GameTime() const { return m_gameTime; }
         real AspectRatio() const { return (real)m_screenSize.cx / (real)m_screenSize.cy; }
-        GameLogic* Logic() const { return m_pGameLogic; }
 
     protected:
         virtual const wchar_t* GameAppTitle() const = 0;
@@ -56,8 +53,5 @@ namespace engiX
         SIZE m_screenSize;
         Timer m_gameTime;
         bool m_firstUpdate;
-        GameLogic *m_pGameLogic;
    };
-
-#define g_pApp engiX::WinGameApp::Inst() 
 }

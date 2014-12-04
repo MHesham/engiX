@@ -22,6 +22,7 @@ namespace engiX
 
         void View(_In_ IGameView* pView) { m_pView = pView; }
         IGameView* View() { return m_pView; }
+        bool ActorExist(_In_ ActorID id);
         WeakActorPtr FindActor(_In_ ActorID id);
         WeakActorPtr FindActor(_In_ const std::wstring& name);
         ParticleForceRegistry& ForceRegistry() { return m_forceRegistry; }

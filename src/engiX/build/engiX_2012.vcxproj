@@ -21,6 +21,7 @@
     <ClInclude Include="..\common\Precision.h" />
     <ClInclude Include="..\logic\ActorTurnTask.h" />
     <ClInclude Include="..\logic\CollisionDetection.h" />
+    <ClInclude Include="..\logic\EngineObject.h" />
     <ClInclude Include="..\logic\EventManager.h" />
     <ClInclude Include="..\logic\Events.h" />
     <ClInclude Include="..\logic\Actor.h" />
@@ -45,6 +46,7 @@
     <ClInclude Include="..\view\ViewInterfaces.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\app\GameApp.h" />
     <ClCompile Include="..\app\Logger.cpp" />
     <ClCompile Include="..\app\WinGameApp.cpp" />
     <ClCompile Include="..\common\Console.cpp" />
@@ -54,6 +56,7 @@
     <ClCompile Include="..\logic\Actor.cpp" />
     <ClCompile Include="..\logic\ActorTurnTask.cpp" />
     <ClCompile Include="..\logic\CollisionDetection.cpp" />
+    <ClCompile Include="..\logic\EngineObject.cpp" />
     <ClCompile Include="..\logic\EventManager.cpp" />
     <ClCompile Include="..\logic\GameActor.cpp" />
     <ClCompile Include="..\logic\GameLogic.cpp" />

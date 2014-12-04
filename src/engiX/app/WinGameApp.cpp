@@ -3,13 +3,12 @@
 #include <sstream>
 #include "Logger.h"
 #include "EventManager.h"
-#
+#include "GameLogic.h"
+
 using namespace engiX;
 using namespace std;
 
-WinGameApp* g_pAppInst = nullptr;
-
-WinGameApp* WinGameApp::Inst() { _ASSERTE(g_pAppInst); return g_pAppInst; }
+GameApp* engiX::g_pApp = nullptr;
 
 int WinGameApp::Main (WinGameApp* pGameInst,
                       HINSTANCE hInstance,
@@ -41,6 +40,8 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     g_Logger->LogLevel(LOG_Info);
     LogInfo("engiX is initializing ...");
     g_EventMgr->Init();
+
+    g_pApp = pGameInst;
 
     DXUTSetCallbackMsgProc( WinGameApp::OnMsgProc, (void*)g_pApp);
     DXUTSetCallbackFrameMove( WinGameApp::OnUpdateGame, (void*)g_pApp);
@@ -86,8 +87,6 @@ int WinGameApp::Main (WinGameApp* pGameInst,
 
 WinGameApp::WinGameApp()
 {
-    g_pAppInst = this;
-
     m_pGameLogic = nullptr;
     m_screenSize.cx = DEFAULT_SCREEN_WIDTH;
     m_screenSize.cy = DEFAULT_SCREEN_HEIGHT;
@@ -116,7 +115,7 @@ void WinGameApp::Deinit()
     LogInfo("Finalizing Game App");
 
     SAFE_DELETE(m_pGameLogic);
-    SAFE_DELETE(g_pAppInst);
+    SAFE_DELETE(g_pApp);
 }
 
 void WinGameApp::Run()
@@ -198,7 +197,7 @@ void CALLBACK WinGameApp::OnUpdateGame( double fTime, float fElapsedTime, void* 
 
     // 2. Update game logic
     _ASSERTE(pApp->m_pGameLogic);
-    pApp->m_pGameLogic->OnUpdate(pApp->m_gameTime);
+    pApp->Logic()->OnUpdate(pApp->m_gameTime);
 }
 
 //--------------------------------------------------------------------------------------

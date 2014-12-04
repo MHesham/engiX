@@ -17,7 +17,6 @@ namespace engiX
 
         ParticlePhysicsCmpt();
         void OnUpdate(_In_ const Timer& time) { ApplyForces(time); Integrate(time); }
-        bool Init();
         Vec3 Velocity() const { return m_velocity; }
         void Velocity(_In_ Vec3 val) { m_velocity = val; }
         Vec3 BaseAcceleraiton() const { return m_baseAcceleraiton; }
@@ -40,11 +39,11 @@ namespace engiX
 
         Vec3 m_velocity;
         Vec3 m_baseAcceleraiton;
-        Vec3 m_accumulatedForce;
         real m_inverseMass;
         real m_damping;
-        std::weak_ptr<TransformCmpt> m_pObjTsfm;
-        BoundingSphere m_lifetimeBound;
         real m_radius;
+
+        Vec3 m_accumulatedForce;
+        BoundingSphere m_lifetimeBound;
     };
 }

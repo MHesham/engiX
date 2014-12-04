@@ -138,6 +138,9 @@
     <ClInclude Include="..\view\RenderComponent.h">
       <Filter>Header Files\View</Filter>
     </ClInclude>
+    <ClInclude Include="..\logic\EngineObject.h">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\app\Logger.cpp">
@@ -220,6 +223,12 @@
     </ClCompile>
     <ClCompile Include="..\logic\ParticleForceGen.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logic\EngineObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\app\GameApp.h">
+      <Filter>Header Files\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

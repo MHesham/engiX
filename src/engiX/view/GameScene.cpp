@@ -5,6 +5,7 @@
 #include "EventManager.h"
 #include "WinGameApp.h"
 #include "RenderComponent.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace std;
@@ -104,13 +105,11 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
 
     StrongActorPtr pActor = pWeakActor.lock();
 
-    WeakActorComponentPtr pWeakRenderer(pActor->Get<RenderComponent>());
-    _ASSERTE(!pWeakRenderer.expired());
+    auto &renderCmpt = pActor->Get<RenderComponent>();
 
-    shared_ptr<RenderComponent> pRenderer = static_pointer_cast<RenderComponent>(pWeakRenderer.lock());
 
-    auto pSceneNode = pRenderer->CreateSceneNode(this);
-    pRenderer->SceneNode(pSceneNode);
+    auto pSceneNode = renderCmpt.CreateSceneNode(this);
+    renderCmpt.SceneNode(pSceneNode);
     CHRR(pSceneNode->OnConstruct());
 
     m_pSceneRoot->AddChild(pSceneNode);

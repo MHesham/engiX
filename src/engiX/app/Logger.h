@@ -53,9 +53,9 @@ namespace engiX
 #define g_Logger					engiX::Logger::Inst()
 
 #if defined(UNICODE) | defined(_UNICODE)
-#define LogMsg(Type, Format, ...)   { if ((int)engiX::Type <= g_Logger->LogLevel()) g_Logger->Log(engiX::Type, __FILEW__, __FUNCTIONW__, __LINE__, L##Format, __VA_ARGS__); }
+#define LogMsg(Type, Format, ...)   if ((int)engiX::Type <= g_Logger->LogLevel()) g_Logger->Log(engiX::Type, __FILEW__, __FUNCTIONW__, __LINE__, L##Format, __VA_ARGS__)
 #else
-#define LogMsg(Type, Format, ...)   { if ((int)engiX::Type <= g_Logger->LogLevel()) g_Logger->Log(engiX::Type, __FILE__, __FUNCTION__, __LINE__, Format, __VA_ARGS__); }
+#define LogMsg(Type, Format, ...)   if ((int)engiX::Type <= g_Logger->LogLevel()) g_Logger->Log(engiX::Type, __FILE__, __FUNCTION__, __LINE__, Format, __VA_ARGS__)
 #endif
 
 #define LogError(Format, ...)		LogMsg(LOG_Error, Format, __VA_ARGS__)

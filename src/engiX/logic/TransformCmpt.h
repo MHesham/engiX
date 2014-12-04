@@ -17,7 +17,7 @@ namespace engiX
         real RotationY() const { return m_rotationXYZ.y; }
         real RotationX() const { return m_rotationXYZ.x; }
         Mat4x4 InverseTransform() const;
-        Vec3 Position() const { return Vec3(m_transform._41, m_transform._42, m_transform._43); }
+        Vec3 Position() const { return m_pos; }
         Vec3 Direction() const;
         void RotationY(_In_ real theta);
         void RotationX(_In_ real theta);
@@ -31,6 +31,10 @@ namespace engiX
         Mat4x4 CalcRotationMat() const;
 
         Vec3 m_rotationXYZ;
+        Vec3 m_pos;
+
+    private:
+        bool m_isDirty;
         Mat4x4 m_transform;
     };
 }

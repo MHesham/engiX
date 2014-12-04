@@ -36,11 +36,11 @@ void SceneCameraNode::OnUpdate(_In_ const Timer& time)
     
     if (!m_target.expired())
     {
-        auto pTargetTsfm = m_target.lock()->Get<TransformCmpt>().lock();
+        auto& targetTsfm = m_target.lock()->Get<TransformCmpt>();
 
         cameraTsfm = XMMatrixLookAtLH(
-            XMVector3TransformCoord(XMLoadFloat3(&m_pos), XMLoadFloat4x4(&pTargetTsfm->Transform())),
-            XMVector3TransformCoord(XMLoadFloat3(&m_lookat), XMLoadFloat4x4(&pTargetTsfm->Transform())),
+            XMVector3TransformCoord(XMLoadFloat3(&m_pos), XMLoadFloat4x4(&targetTsfm.Transform())),
+            XMVector3TransformCoord(XMLoadFloat3(&m_lookat), XMLoadFloat4x4(&targetTsfm.Transform())),
             g_XMIdentityR1);
     }
     else

@@ -4,6 +4,7 @@
 #include "GameScene.h"
 #include "WinGameApp.h"
 #include "TransformCmpt.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace std;
@@ -17,12 +18,6 @@ SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
     XMStoreFloat4x4(&m_worldTsfm, XMMatrixIdentity());
 
     m_actor = g_pApp->Logic()->FindActor(actorId);
-
-    if (!m_actor.expired())
-    {
-        m_actorTsfm = m_actor.lock()->Get<TransformCmpt>();
-        _ASSERTE(!m_actorTsfm.expired());
-    }
 }
 
 HRESULT SceneNode::OnPreRender()
@@ -52,9 +47,9 @@ void SceneNode::RenderChildren()
 
 void SceneNode::OnUpdate(_In_ const Timer& time)
 {
-    if (!m_actorTsfm.expired())
+    if (!m_actor.expired())
     {
-        m_worldTsfm = m_actorTsfm.lock()->Transform();
+        m_worldTsfm = m_actor.lock()->Get<TransformCmpt>().Transform();
     }
 
     for (auto pChild : m_children)

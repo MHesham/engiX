@@ -42,7 +42,7 @@ void ParticleAnchoredSpring::ApplyForce(_In_ Actor* pActor, _In_ const Timer& ti
 {
     // d = xa - xb; xa is particle end of spring, xb is the anchor end of spring
     // f = -k(|d| - l0)d; l0 is rest length, k is spring constant
-    Vec3 particlePos = pActor->Get<TransformCmpt>().lock()->Position();
+    Vec3 particlePos = pActor->Get<TransformCmpt>().Position();
     XMVECTOR xa = XMLoadFloat3(&particlePos);
     XMVECTOR xb = XMLoadFloat3(&m_anchor);
     XMVECTOR d = XMVectorSubtract(xa, xb);
@@ -55,5 +55,5 @@ void ParticleAnchoredSpring::ApplyForce(_In_ Actor* pActor, _In_ const Timer& ti
         XMVectorMultiply(k,
         XMVectorSubtract(dLen, l0))));
 
-    pActor->Get<ParticlePhysicsCmpt>().lock()->AddForce(f);
+    pActor->Get<ParticlePhysicsCmpt>().AddForce(f);
 }

@@ -1,32 +1,19 @@
 #include "ActorTurnTask.h"
 #include "WinGameApp.h"
 #include "MathHelper.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 
-bool ActorTurnTask::Init()
-{
-    CBRB(Task::Init());
-
-    WeakActorPtr actor = g_pApp->Logic()->FindActor(m_actorId);
-    CBRB(!actor.expired());
-
-    m_actorTsfm = actor.lock()->Get<TransformCmpt>();
-    CBRB(!actor.expired());
-
-    return true;
-}
-
 void ActorTurnTask::OnUpdate(_In_ const Timer& time)
 {
-    if (!m_actorTsfm.expired())
-    {
-        auto pTsfm = m_actorTsfm.lock();
+    _ASSERTE(g_pApp->Logic()->ActorExist(m_actorId));
 
-        real xRot = pTsfm->RotationX() + m_turnVelocities.x * time.DeltaTime();
-        pTsfm->RotationX(xRot);
+    auto& tsfm = g_pApp->Logic()->FindActor(m_actorId).lock()->Get<TransformCmpt>();
 
-        real yRot = pTsfm->RotationY() + m_turnVelocities.y * time.DeltaTime();
-        pTsfm->RotationY(yRot);
-    }
+    real xRot = tsfm.RotationX() + m_turnVelocities.x * time.DeltaTime();
+    tsfm.RotationX(xRot);
+
+    real yRot = tsfm.RotationY() + m_turnVelocities.y * time.DeltaTime();
+    tsfm.RotationY(yRot);
 }

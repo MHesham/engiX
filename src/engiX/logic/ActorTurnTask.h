@@ -13,12 +13,10 @@ namespace engiX
             m_actorId(actorId),
             m_turnVelocities(turnVelocities)
         {}
-        bool Init();
         void OnUpdate(_In_ const Timer& time);
 
     private:
         Vec3 m_turnVelocities;
-        std::weak_ptr<TransformCmpt> m_actorTsfm;
         ActorID m_actorId;
     };
 }

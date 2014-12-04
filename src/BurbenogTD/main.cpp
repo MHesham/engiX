@@ -58,7 +58,7 @@ public:
         StrongActorPtr pHeroTank = CreateHero();
         CBRB(AddInitActor(pHeroTank));
 
-        m_controller.Control(pHeroTank->Get<TransformCmpt>());
+        m_controller.Control(pHeroTank->Id());
 
         CBRB(AddInitActor(CreateTerrain()));
         CBRB(AddInitActor(CreateWorldBounds()));
@@ -172,8 +172,8 @@ public:
                 if (pTarget.expired())
                     continue;;
 
-                BoundingSphere sphereA = pTarget.lock()->Get<ParticlePhysicsCmpt>().lock()->BoundingMesh();
-                BoundingSphere sphereB = pBullet.lock()->Get<ParticlePhysicsCmpt>().lock()->BoundingMesh();
+                BoundingSphere sphereA = pTarget.lock()->Get<ParticlePhysicsCmpt>().BoundingMesh();
+                BoundingSphere sphereB = pBullet.lock()->Get<ParticlePhysicsCmpt>().BoundingMesh();
 
                 if (sphereA.Collide(sphereB))
                 {
@@ -208,15 +208,15 @@ public:
         StrongActorPtr pBullet;
 
         if (m_currentWeapon == WPN_Pistol)
-            pBullet = CreatePistolBullet(*m_pHero.lock()->Get<TransformCmpt>().lock());
+            pBullet = CreatePistolBullet(m_pHero.lock()->Get<TransformCmpt>());
         else if (m_currentWeapon == WPN_Shell)
-            pBullet = CreateShellBullet(*m_pHero.lock()->Get<TransformCmpt>().lock());
+            pBullet = CreateShellBullet(m_pHero.lock()->Get<TransformCmpt>());
 
         LogVerbose("Firing a bullet with fire power scale %f", m_firePowerScale);
 
-        pBullet->Get<ParticlePhysicsCmpt>().lock()->ScaleVelocity(m_firePowerScale);
-        pBullet->Get<TransformCmpt>().lock()->Transform(
-            *m_pHero.lock()->Get<TransformCmpt>().lock());
+        pBullet->Get<ParticlePhysicsCmpt>().ScaleVelocity(m_firePowerScale);
+        pBullet->Get<TransformCmpt>().Transform(
+            m_pHero.lock()->Get<TransformCmpt>());
 
         CBR(AddInitActor(pBullet));
         m_isChargingFirePower = false;

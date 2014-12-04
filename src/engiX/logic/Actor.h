@@ -5,6 +5,7 @@
 #include <string>
 #include "Timer.h"
 #include "engiXDefs.h"
+#include "EngineObject.h"
 
 #define DECLARE_COMPONENT(CmptName, CmptGuid) \
     static const ComponentID TypeID = CmptGuid; \
@@ -23,9 +24,13 @@ namespace engiX
     typedef std::wstring ActorTypename;
 
     typedef std::shared_ptr<Actor> StrongActorPtr;
+    typedef Actor* ActorPtr;
+    typedef const Actor* ConstActorPtr;
     typedef std::weak_ptr<Actor> WeakActorPtr;
     typedef std::shared_ptr<ActorComponent> StrongActorComponentPtr;
+    typedef ActorComponent* ComponentPtr;
     typedef std::weak_ptr<ActorComponent> WeakActorComponentPtr;
+    typedef const ActorComponent* ConstActorComponentPtr;
 
     const ActorID NullActorID = 0;
     const ComponentID NullComponentID = 0;
@@ -38,16 +43,16 @@ namespace engiX
         virtual ComponentID TypeId() const = 0;
         virtual const wchar_t* Typename() const = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
-        virtual bool Init() = 0;
-        Actor* Owner() const { return m_pOwner; } 
-        void Owner(Actor* pOwner) { m_pOwner = pOwner; } 
+        virtual bool Init() { return true; }
+        Actor* Owner() const { return m_pOwner; }
+        void Owner(Actor* pOwner) { m_pOwner = pOwner; }
 
     protected:
 
         Actor *m_pOwner;
     };
 
-    class Actor
+    class Actor : public EngineObject
     {
     public:
         typedef std::unordered_map<ComponentID, StrongActorComponentPtr> ActorComponentRegistry;
@@ -65,20 +70,17 @@ namespace engiX
 
         // template function for retrieving components
         template <class ComponentType>
-        std::weak_ptr<ComponentType> Get()
+        ComponentType& Get()
         {
             ActorComponentRegistry::iterator findIt = m_components.find(ComponentType::TypeID);
-            if (findIt != m_components.end())
-            {
-                StrongActorComponentPtr pBase(findIt->second);
-                std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));  // cast to subclass version of the pointer
-                std::weak_ptr<ComponentType> pWeakSub(pSub);  // convert strong pointer to weak pointer
-                return pWeakSub;  // return the weak pointer
-            }
-            else
-            {
-                return std::weak_ptr<ComponentType>();
-            }
+            _ASSERTE(findIt != m_components.end());
+
+            StrongActorComponentPtr pBase(findIt->second);
+
+            // cast to subclass version of the pointer
+            std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+
+            return *pSub;  
         }
 
         const ActorComponentRegistry& GetComponents() const { return m_components; }
