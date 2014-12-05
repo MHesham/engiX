@@ -34,7 +34,8 @@ public:
     BurbenogLogic() :
         m_isChargingFirePower(false),
         m_firePowerScaleVelocity(2.0f),
-        m_currentWeapon(WPN_Pistol)
+        m_currentWeapon(WPN_Pistol),
+        m_heroId(NullActorID)
     {}
 
     bool Init()
@@ -55,22 +56,19 @@ public:
 
     bool LoadLevel()
     {
-        StrongActorPtr pHeroTank = CreateHero();
-        CBRB(AddInitActor(pHeroTank));
-
+        ActorUniquePtr pHeroTank(CreateHero());
         m_controller.Control(pHeroTank->Id());
 
+        CBRB(AddInitActor(std::move(pHeroTank)));
         CBRB(AddInitActor(CreateTerrain()));
         CBRB(AddInitActor(CreateWorldBounds()));
-
-        m_pHero = WeakActorPtr(pHeroTank);
 
         return true;
     }
 
-    StrongActorPtr CreateWorldBounds()
+    ActorUniquePtr CreateWorldBounds()
     {
-        StrongActorPtr pActor(eNEW Actor(L"WorldBounds"));
+        ActorUniquePtr pActor(eNEW Actor(L"WorldBounds"));
 
         // 1. Build grid visuals
         SphereMeshComponent::Properties props;
@@ -93,9 +91,9 @@ public:
         return pActor;
     }
 
-    StrongActorPtr CreateTerrain()
+    ActorUniquePtr CreateTerrain()
     {
-        StrongActorPtr pActor(eNEW Actor(L"Terrain"));
+        ActorUniquePtr pActor(eNEW Actor(L"Terrain"));
 
         // 1. Build grid visuals
         CylinderMeshComponent::Properties props;
@@ -107,7 +105,7 @@ public:
         props.SliceCount = 20;
 
         pActor->Add<CylinderMeshComponent>(props);
-        pActor->Add<TransformCmpt>()->Position(Vec3(0.0, -30.0, 0.0));
+        pActor->Add<TransformCmpt>().Position(Vec3(0.0, -30.0, 0.0));
 
         m_taskMgr.AttachTask(
             StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.20f, 0.0))));
@@ -115,9 +113,9 @@ public:
         return pActor;
     }
 
-    StrongActorPtr CreateHero()
+    ActorUniquePtr CreateHero()
     {
-        StrongActorPtr pTank(eNEW Actor(L"Hero"));
+        ActorUniquePtr pTank(eNEW Actor(L"Hero"));
 
         // 1. Build hero visuals
         BoxMeshComponent::Properties props;
@@ -129,7 +127,7 @@ public:
 
         pTank->Add<BoxMeshComponent>(props);
 
-        pTank->Add<TransformCmpt>()->Position(Vec3(0.0, 0.0, -10));
+        pTank->Add<TransformCmpt>().Position(Vec3(0.0, 0.0, -10));
 
         return pTank;
     }
@@ -160,20 +158,20 @@ public:
     {
         for (auto bulletId : m_bullets)
         {
-            WeakActorPtr pBullet = FindActor(bulletId);
+            auto& b = GetActor(bulletId);
             
-            if (pBullet.expired())
+            if (b.IsNull())
                 continue;
 
             for (auto targetId : m_targets)
             {
-                WeakActorPtr pTarget = FindActor(targetId);
+                auto& t = GetActor(targetId);
 
-                if (pTarget.expired())
+                if (t.IsNull())
                     continue;;
 
-                BoundingSphere sphereA = pTarget.lock()->Get<ParticlePhysicsCmpt>().BoundingMesh();
-                BoundingSphere sphereB = pBullet.lock()->Get<ParticlePhysicsCmpt>().BoundingMesh();
+                BoundingSphere sphereA = t.Get<ParticlePhysicsCmpt>().BoundingMesh();
+                BoundingSphere sphereB = b.Get<ParticlePhysicsCmpt>().BoundingMesh();
 
                 if (sphereA.Collide(sphereB))
                 {
@@ -187,8 +185,7 @@ public:
     {
         LogVerbose("Generating Target");
 
-        StrongActorPtr pTarget(CreateTarget());
-        CBR(AddInitActor(pTarget));
+        CBR(AddInitActor(CreateTarget()));
     }
 
     void OnChangeWeaponEvt(EventPtr evt)
@@ -205,31 +202,32 @@ public:
 
     void OnEndFireWeaponEvt(EventPtr evt)
     {
-        StrongActorPtr pBullet;
+        ActorUniquePtr pBullet;
+
+        auto& a= g_pApp->Logic()->GetActor(m_heroId);
 
         if (m_currentWeapon == WPN_Pistol)
-            pBullet = CreatePistolBullet(m_pHero.lock()->Get<TransformCmpt>());
+            pBullet = std::move(CreatePistolBullet(a.Get<TransformCmpt>()));
         else if (m_currentWeapon == WPN_Shell)
-            pBullet = CreateShellBullet(m_pHero.lock()->Get<TransformCmpt>());
+            pBullet = std::move(CreateShellBullet(a.Get<TransformCmpt>()));
 
         LogVerbose("Firing a bullet with fire power scale %f", m_firePowerScale);
 
         pBullet->Get<ParticlePhysicsCmpt>().ScaleVelocity(m_firePowerScale);
-        pBullet->Get<TransformCmpt>().Transform(
-            m_pHero.lock()->Get<TransformCmpt>());
+        pBullet->Get<TransformCmpt>().Transform(a.Get<TransformCmpt>());
 
-        CBR(AddInitActor(pBullet));
+        CBR(AddInitActor(std::move(pBullet)));
         m_isChargingFirePower = false;
     }
 
     void OnActorCreatedEvt(EventPtr evt)
     {
         std::shared_ptr<ActorCreatedEvt> pActorEvt = static_pointer_cast<ActorCreatedEvt>(evt);
-        StrongActorPtr pActor = FindActor(pActorEvt->ActorId()).lock();
+        auto& a = GetActor(pActorEvt->ActorId());
 
-        if (wcscmp(pActor->Typename(), TargetActorName) == 0)
+        if (wcscmp(a.Typename(), TargetActorName) == 0)
             m_targets.insert(pActorEvt->ActorId());
-        else if (wcscmp(pActor->Typename(), BulletActorName) == 0)
+        else if (wcscmp(a.Typename(), BulletActorName) == 0)
             m_bullets.insert(pActorEvt->ActorId());
     }
 
@@ -249,9 +247,9 @@ public:
         RemoveActor(pActorEvt->ActorB());
     }
     
-    StrongActorPtr CreateShellBullet(const TransformCmpt& nozzleTsfm)
+    ActorUniquePtr CreateShellBullet(const TransformCmpt& nozzleTsfm)
     {
-        StrongActorPtr pBullet(eNEW Actor(BulletActorName));
+        ActorUniquePtr pBullet(eNEW Actor(BulletActorName));
 
         BoxMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Brown);
@@ -261,21 +259,21 @@ public:
         props.Depth = 1.0;
 
         pBullet->Add<BoxMeshComponent>(props);
-        pBullet->Add<TransformCmpt>()->Transform(nozzleTsfm);
+        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
 
-        shared_ptr<ParticlePhysicsCmpt> pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
-        pBulletPhy->Mass(1.0);
-        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
-        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
-        pBulletPhy->LifetimeBound(m_worldBounds);
-        pBulletPhy->Radius(1.0);
+        ParticlePhysicsCmpt& pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
+        pBulletPhy.Mass(1.0);
+        pBulletPhy.Velocity(Math::Vec3RotTransform(Vec3(0.0, 10.0, 20.0), nozzleTsfm.Transform()));
+        pBulletPhy.BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -20.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy.LifetimeBound(m_worldBounds);
+        pBulletPhy.Radius(1.0);
 
         return pBullet;
     }
 
-    StrongActorPtr CreatePistolBullet(const TransformCmpt& nozzleTsfm)
+    ActorUniquePtr CreatePistolBullet(const TransformCmpt& nozzleTsfm)
     {
-        StrongActorPtr pBullet(eNEW Actor(BulletActorName));
+        ActorUniquePtr pBullet(eNEW Actor(BulletActorName));
 
         SphereMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Black);
@@ -283,21 +281,21 @@ public:
 
         pBullet->Add<SphereMeshComponent>(props);
 
-        pBullet->Add<TransformCmpt>()->Transform(nozzleTsfm);
+        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
 
-        shared_ptr<ParticlePhysicsCmpt> pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
-        pBulletPhy->Mass(1.0);
-        pBulletPhy->Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
-        pBulletPhy->BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
-        pBulletPhy->LifetimeBound(m_worldBounds);
-        pBulletPhy->Radius(0.25);
+        ParticlePhysicsCmpt& pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
+        pBulletPhy.Mass(1.0);
+        pBulletPhy.Velocity(Math::Vec3RotTransform(Vec3(0.0, 5.0, 30.0), nozzleTsfm.Transform()));
+        pBulletPhy.BaseAcceleraiton(Math::Vec3RotTransform(Vec3(0.0, -5.0f, 0.0f), nozzleTsfm.Transform()));
+        pBulletPhy.LifetimeBound(m_worldBounds);
+        pBulletPhy.Radius(0.25);
 
         return pBullet;
     }
 
-    StrongActorPtr CreateTarget()
+    ActorUniquePtr CreateTarget()
     {
-        StrongActorPtr pTarget(eNEW Actor(TargetActorName));
+        ActorUniquePtr pTarget(eNEW Actor(TargetActorName));
 
         BoxMeshComponent::Properties props;
         props.Color = Color3(DirectX::Colors::Red);
@@ -309,13 +307,13 @@ public:
 
         real randZ = Math::RandF(15, 45);
         real randX = Math::RandF(-45, 45);
-        pTarget->Add<TransformCmpt>()->Position(Vec3(randX, 0.0, randZ));
+        pTarget->Add<TransformCmpt>().Position(Vec3(randX, 0.0, randZ));
 
-        shared_ptr<ParticlePhysicsCmpt> pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
-        pTargetPhy->Mass(1.0);
+        ParticlePhysicsCmpt& pTargetPhy = pTarget->Add<ParticlePhysicsCmpt>();
+        pTargetPhy.Mass(1.0);
         //pTargetPhy->Velocity(Vec3(0.0, Math::RandF(7, 15), 0.0));
-        pTargetPhy->Radius(2.0);
-        pTargetPhy->LifetimeBound(m_worldBounds);
+        pTargetPhy.Radius(2.0);
+        pTargetPhy.LifetimeBound(m_worldBounds);
 
         ForceRegistry().RegisterActorForce(pTarget->Id(), m_worldPullForceId);
 
@@ -323,7 +321,7 @@ public:
     }
 
 private:
-    WeakActorPtr m_pHero;
+    ActorID m_heroId;
     WeakActorComponentPtr m_pHeroTsfm;
     GeometryGenerator m_meshGenerator;
     bool m_isChargingFirePower;
@@ -345,12 +343,12 @@ public:
     {
         CBRB(HumanD3dGameView::Init());
 
-        WeakActorPtr pHero = g_pApp->Logic()->FindActor(HeroActorName);
-        _ASSERTE(!pHero.expired());
+        auto& a = g_pApp->Logic()->GetActor(HeroActorName);
+        _ASSERTE(!a.IsNull());
 
         std::shared_ptr<SceneCameraNode> pTpc = m_pScene->AddCamera();
         pTpc->PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
-        pTpc->SetAsThirdPerson(pHero);
+        pTpc->SetAsThirdPerson(a.Id());
 
         m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
         m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);

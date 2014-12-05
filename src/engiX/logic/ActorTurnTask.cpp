@@ -7,9 +7,9 @@ using namespace engiX;
 
 void ActorTurnTask::OnUpdate(_In_ const Timer& time)
 {
-    _ASSERTE(g_pApp->Logic()->ActorExist(m_actorId));
-
-    auto& tsfm = g_pApp->Logic()->FindActor(m_actorId).lock()->Get<TransformCmpt>();
+    auto& a = g_pApp->Logic()->GetActor(m_actorId);
+    _ASSERTE(!a.IsNull());
+    auto& tsfm = a.Get<TransformCmpt>();
 
     real xRot = tsfm.RotationX() + m_turnVelocities.x * time.DeltaTime();
     tsfm.RotationX(xRot);

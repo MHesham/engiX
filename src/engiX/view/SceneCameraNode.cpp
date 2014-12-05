@@ -2,6 +2,7 @@
 #include "MathHelper.h"
 #include "WinGameApp.h"
 #include "EventManager.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace DirectX;
@@ -14,7 +15,8 @@ SceneCameraNode::SceneCameraNode(GameScene* pScene) :
 SceneNode(NullActorID, pScene),
 m_nearPlane(DefaultNearPlane),
 m_farPlane(DefaultFarPlane),
-m_fovAngle(DefaultFovAngle)
+m_fovAngle(DefaultFovAngle),
+m_targetId(NullActorID)
 {
     XMStoreFloat4x4(&m_projMat, XMMatrixIdentity());
 }
@@ -34,9 +36,10 @@ void SceneCameraNode::OnUpdate(_In_ const Timer& time)
 {
     XMMATRIX cameraTsfm;
     
-    if (!m_target.expired())
+    if (m_targetId != NullActorID)
     {
-        auto& targetTsfm = m_target.lock()->Get<TransformCmpt>();
+        auto& a = g_pApp->Logic()->GetActor(m_targetId);
+        auto& targetTsfm = a.Get<TransformCmpt>();
 
         cameraTsfm = XMMatrixLookAtLH(
             XMVector3TransformCoord(XMLoadFloat3(&m_pos), XMLoadFloat4x4(&targetTsfm.Transform())),
@@ -72,9 +75,4 @@ void SceneCameraNode::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real
 {
     Math::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
     m_lookat = lookat;
-}
-
-void SceneCameraNode::SetAsThirdPerson(WeakActorPtr target)
-{
-    m_target = target;
 }

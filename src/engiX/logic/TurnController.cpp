@@ -22,12 +22,12 @@ bool TurnController::Init()
 
 void TurnController::Update(_In_ const Timer& time)
 {
-    auto pActor = g_pApp->Logic()->FindActor(m_actorId);
+    auto& a = g_pApp->Logic()->GetActor(m_actorId);
 
-    if (pActor.expired())
+    if (a.IsNull())
         return;
 
-    auto& tsfm = pActor.lock()->Get<TransformCmpt>();
+    auto& tsfm = a.Get<TransformCmpt>();
 
     if (m_isTurningRight)
     {

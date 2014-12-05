@@ -1,4 +1,4 @@
-#include "EngineObject.h"
+#include "Object.h"
 #include "Logger.h"
 #include "engiXDefs.h"
 #include <unordered_set>
@@ -10,10 +10,10 @@ using namespace engiX;
 using namespace std;
 
 HANDLE g_hHeap = NULL;
-unordered_set<EngineObject*>* g_pAliveObjects = nullptr;
+unordered_set<Object*>* g_pAliveObjects = nullptr;
 size_t g_AliveObjectsUsedMem = 0;
 
-void* EngineObject::Alloc(std::size_t sz)
+void* Object::Alloc(std::size_t sz)
 {
     if (NULL == g_hHeap)
     {
@@ -21,24 +21,24 @@ void* EngineObject::Alloc(std::size_t sz)
         _ASSERTE(NULL != g_hHeap);
 
 		if (nullptr == g_pAliveObjects)
-			g_pAliveObjects = new unordered_set<EngineObject*>;
+			g_pAliveObjects = new unordered_set<Object*>;
     }
 
     void* pMem = HeapAlloc(g_hHeap, 0, sz);
     g_AliveObjectsUsedMem += HeapSize(g_hHeap, 0, pMem);
-	g_pAliveObjects->insert((EngineObject*)pMem);
+	g_pAliveObjects->insert((Object*)pMem);
 
     return pMem;
 }
 //////////////////////////////////////////////////////////////////////////
-void EngineObject::Free(void* pMem)
+void Object::Free(void* pMem)
 {
-	g_pAliveObjects->erase((EngineObject*)pMem);
+	g_pAliveObjects->erase((Object*)pMem);
     g_AliveObjectsUsedMem -= HeapSize(g_hHeap, 0, pMem);
     (void)HeapFree(g_hHeap, 0, pMem);
 }
 //////////////////////////////////////////////////////////////////////////
-void EngineObject::FreeMemoryPool()
+void Object::FreeMemoryPool()
 {
     if (g_hHeap)
     {
@@ -69,10 +69,12 @@ void EngineObject::FreeMemoryPool()
     }
 }
 //////////////////////////////////////////////////////////////////////////
-void EngineObject::DumpAliveObjects()
+void Object::DumpAliveObjects()
 {
     if (g_pAliveObjects->empty())
+    {
         LogInfo("All EngineObject instances are dead, nothing to dump");
+    }
     else
     {
         LogInfo("Dumping %d alive EngineObject", g_pAliveObjects->size());
@@ -86,12 +88,12 @@ void EngineObject::DumpAliveObjects()
     }
 }
 //////////////////////////////////////////////////////////////////////////
-EngineObject::EngineObject()
+Object::Object()
 {
     LogVerbose("EngineObject@0x%x created", (void*)this);
 }
 //////////////////////////////////////////////////////////////////////////
-EngineObject::~EngineObject()
+Object::~Object()
 {
     LogVerbose("EngineObject@0x%x destroyed", (void*)this);
 }

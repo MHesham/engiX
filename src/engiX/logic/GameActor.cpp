@@ -2,4 +2,4 @@
 
 using namespace engiX;
 
-ActorID Actor::m_lastActorId = 0;
+ActorID Actor::sm_lastActorId = 0;

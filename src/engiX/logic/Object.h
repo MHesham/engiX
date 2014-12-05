@@ -4,11 +4,11 @@
 
 namespace engiX
 {
-    class EngineObject
+    class Object
     {
     public:
-        EngineObject();
-        ~EngineObject();
+        Object();
+        ~Object();
 
         virtual const wchar_t* Typename() const = 0;
 

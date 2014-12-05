@@ -100,13 +100,10 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
 {
     shared_ptr<ActorCreatedEvt> pActrEvt = static_pointer_cast<ActorCreatedEvt>(pEvt);
 
-    WeakActorPtr pWeakActor(g_pApp->Logic()->FindActor(pActrEvt->ActorId()));
-    _ASSERTE(!pWeakActor.expired());
+    auto& a = g_pApp->Logic()->GetActor(pActrEvt->ActorId());
+    _ASSERTE(!a.IsNull());
 
-    StrongActorPtr pActor = pWeakActor.lock();
-
-    auto &renderCmpt = pActor->Get<RenderComponent>();
-
+    auto &renderCmpt = a.Get<RenderComponent>();
 
     auto pSceneNode = renderCmpt.CreateSceneNode(this);
     renderCmpt.SceneNode(pSceneNode);
@@ -114,7 +111,7 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
 
     m_pSceneRoot->AddChild(pSceneNode);
 
-    LogVerbose("Actor %s[%x] ScenNode created and added to scene root node children", pActor->Typename(), pActor->Id());
+    LogVerbose("Actor %s[%x] ScenNode created and added to scene root node children", a.Typename(), a.Id());
 }
 
 void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)

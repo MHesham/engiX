@@ -13,7 +13,7 @@ namespace engiX
     class GameLogic
     {
     public:
-        typedef std::unordered_map<ActorID, StrongActorPtr> ActorRegistry;
+        typedef std::unordered_map<ActorID, ActorUniquePtr> ActorRegistry;
 
         GameLogic() : m_pView(nullptr) {}
         virtual ~GameLogic();
@@ -22,14 +22,13 @@ namespace engiX
 
         void View(_In_ IGameView* pView) { m_pView = pView; }
         IGameView* View() { return m_pView; }
-        bool ActorExist(_In_ ActorID id);
-        WeakActorPtr FindActor(_In_ ActorID id);
-        WeakActorPtr FindActor(_In_ const std::wstring& name);
+        Actor& GetActor(_In_ ActorID id);
+        Actor& GetActor(_In_ const wchar_t* pName);
         ParticleForceRegistry& ForceRegistry() { return m_forceRegistry; }
 
     protected:
         virtual bool LoadLevel() = 0;
-        bool AddInitActor(_In_ StrongActorPtr pActor);
+        bool AddInitActor(_In_ ActorUniquePtr pActor);
         bool RemoveActor(_In_ ActorID);
 
         TaskManager m_taskMgr;

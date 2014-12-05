@@ -11,13 +11,11 @@ using namespace std;
 using namespace DirectX;
 
 SceneNode::SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene) :
-    m_pScene(pScene),
-    m_pParent(nullptr),
-    m_actorId(actorId)
+m_pScene(pScene),
+m_pParent(nullptr),
+m_actorId(actorId)
 {
     XMStoreFloat4x4(&m_worldTsfm, XMMatrixIdentity());
-
-    m_actor = g_pApp->Logic()->FindActor(actorId);
 }
 
 HRESULT SceneNode::OnPreRender()
@@ -47,10 +45,12 @@ void SceneNode::RenderChildren()
 
 void SceneNode::OnUpdate(_In_ const Timer& time)
 {
-    if (!m_actor.expired())
-    {
-        m_worldTsfm = m_actor.lock()->Get<TransformCmpt>().Transform();
-    }
+    auto& a = g_pApp->Logic()->GetActor(m_actorId);
+
+    if (a.IsNull())
+        return;
+
+    m_worldTsfm = a.Get<TransformCmpt>().Transform();
 
     for (auto pChild : m_children)
         pChild->OnUpdate(time);
@@ -77,7 +77,7 @@ bool SceneNode::AddChild(_In_ shared_ptr<ISceneNode> pChild)
 
 bool SceneNode::RemoveChild(_In_ ActorID actor)
 {
-    auto where = find_if(m_children.begin(), m_children.end(), 
+    auto where = find_if(m_children.begin(), m_children.end(),
         [actor](const shared_ptr<SceneNode>& child){ return child->m_actorId == actor; });
 
     if (where == m_children.end())

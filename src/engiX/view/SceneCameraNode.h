@@ -35,6 +35,7 @@ namespace engiX
         void OnPostRender() {}
         void SetAsThirdPerson(WeakActorPtr target);
         void OnUpdate(_In_ const Timer& time);
+        void SetAsThirdPerson(ActorID targetId) { m_targetId = targetId; }
 
     protected:
         Mat4x4 m_projMat;
@@ -43,6 +44,6 @@ namespace engiX
         real m_fovAngle;
         Vec3 m_pos;
         Vec3 m_lookat;
-        WeakActorPtr m_target;
+        ActorID m_targetId;
     };
 }

@@ -2,6 +2,7 @@
 #include <memory>
 #include "WinGameApp.h"
 #include "RenderComponent.h"
+#include "GameLogic.h"
 
 using namespace engiX;
 using namespace std;
@@ -62,11 +63,8 @@ HRESULT D3dGeneratedMeshNode::OnPreRender()
 
 void D3dGeneratedMeshNode::OnRender()
 {
-    if (m_actor.expired())
-        return;
-
-    StrongActorPtr pActor(m_actor);
-    _ASSERTE(pActor);
+    auto& a = g_pApp->Logic()->GetActor(m_actorId);
+    _ASSERTE(!a.IsNull());
 
     UINT stride = sizeof(D3D11Vertex_PositionColored);
     UINT offset = 0;

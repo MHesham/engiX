@@ -35,7 +35,6 @@ namespace engiX
         NodeList m_children;
         ISceneNode* m_pParent;
         Mat4x4 m_worldTsfm;
-        WeakActorPtr m_actor;
     };
 
     class RootSceneNode : public SceneNode

@@ -60,7 +60,6 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     int exitCode = g_pApp->ExitCode();
     g_pApp->Deinit();
     g_EventMgr->Deinit();
-    g_Logger->Deinit();
 
     // Dump DirectX object life states to catch leaking ones
     if (DXUTGetD3D11Device())
@@ -79,6 +78,9 @@ int WinGameApp::Main (WinGameApp* pGameInst,
     // After shutting down DXUT, any call to DXUT* methods may yield an unexpected behaivor
     // e.g DXUTGetD3D11Device() will return null
     DXUTShutdown();
+
+    Object::DumpAliveObjects();
+    g_Logger->Deinit();
 
     _CrtDumpMemoryLeaks();
 

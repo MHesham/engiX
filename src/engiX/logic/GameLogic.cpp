@@ -18,7 +18,7 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
     g_EventMgr->OnUpdate(time);
 
     m_deadActors.clear();
-    for (auto actor : m_actors)
+    for (auto& actor : m_actors)
     {
         if (actor.second->IsMarkedForRemove())
         {
@@ -36,38 +36,25 @@ void GameLogic::OnUpdate(_In_ const Timer& time)
     m_pView->OnUpdate(time);
 }
 
-bool GameLogic::ActorExist(_In_ ActorID id)
+Actor& GameLogic::GetActor(_In_ ActorID id)
 {
-    return !FindActor(id).expired();
+    auto it = m_actors.find(id);
+
+    if (it != m_actors.end())
+        return *it->second;
+    else
+        return Actor::Null;
 }
 
-WeakActorPtr GameLogic::FindActor(_In_ ActorID id)
+Actor& GameLogic::GetActor(_In_ const wchar_t* pName)
 {
-    if (id == NullActorID)
-        return WeakActorPtr();
+    for (auto& p : m_actors)
+    {
+        if (_wcsicmp(p.second->Typename(), pName) == 0)
+            return *p.second;
+    }
 
-    ActorRegistry::iterator itr = m_actors.find(id);
-
-    if (itr != m_actors.end())
-        return WeakActorPtr(itr->second);
-    else
-        return WeakActorPtr();
-}
-
-WeakActorPtr GameLogic::FindActor(_In_ const std::wstring &name)
-{
-    if (name.empty())
-        return WeakActorPtr();
-
-    // Perform case sensitive search by actor name in the actor registry
-    ActorRegistry::iterator itr = find_if(m_actors.begin(), m_actors.end(), [name](const pair<ActorID, StrongActorPtr>& entry){
-        return _wcsicmp(entry.second->Typename(), name.c_str()) == 0;
-    });
-
-    if (itr != m_actors.end())
-        return WeakActorPtr(itr->second);
-    else
-        return WeakActorPtr();
+    return Actor::Null;
 }
 
 bool GameLogic::RemoveActor(_In_ ActorID id)
@@ -78,10 +65,8 @@ bool GameLogic::RemoveActor(_In_ ActorID id)
     return true;
 }
 
-bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor) 
+bool GameLogic::AddInitActor(_In_ ActorUniquePtr pActor) 
 { 
-    CBRB(m_actors.insert(std::make_pair(pActor->Id(), pActor)).second);
-
     if (!pActor->Init())
     {
         LogError("Actor %s[%d] initialization failed", pActor->Typename(), pActor->Id());
@@ -90,6 +75,8 @@ bool GameLogic::AddInitActor(_In_ StrongActorPtr pActor)
     }
 
     g_EventMgr->Queue(EventPtr(eNEW ActorCreatedEvt(pActor->Id(), 0.0f)));
+
+    m_actors[pActor->Id()] = std::move(pActor);
 
     return true;
 }
