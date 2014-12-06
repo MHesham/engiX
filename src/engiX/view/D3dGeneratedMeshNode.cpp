@@ -63,17 +63,13 @@ HRESULT D3dGeneratedMeshNode::OnPreRender()
 
 void D3dGeneratedMeshNode::OnRender()
 {
-    auto& a = g_pApp->Logic()->GetActor(m_actorId);
-    _ASSERTE(!a.IsNull());
-
     UINT stride = sizeof(D3D11Vertex_PositionColored);
     UINT offset = 0;
 
-    _ASSERTE(m_pVertexBuffer);
-    _ASSERTE(m_pIndexBuffer);
-
     DXUTGetD3D11DeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    _ASSERTE(m_pVertexBuffer);
     DXUTGetD3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+    _ASSERTE(m_pIndexBuffer);
     DXUTGetD3D11DeviceContext()->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
     _ASSERTE(m_pRasterizeState);
     DXUTGetD3D11DeviceContext()->RSSetState(m_pRasterizeState);

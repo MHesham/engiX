@@ -58,6 +58,7 @@ public:
     {
         ActorUniquePtr pHeroTank(CreateHero());
         m_controller.Control(pHeroTank->Id());
+        m_heroId = pHeroTank->Id();
 
         CBRB(AddInitActor(std::move(pHeroTank)));
         CBRB(AddInitActor(CreateTerrain()));
@@ -141,7 +142,7 @@ public:
         // Target timed generation logic
         if (time.TotalTime() - m_lastTargetGenerationTime > 0.25f)
         {
-            GenerateTarget();
+            //GenerateTarget();
             m_lastTargetGenerationTime = time.TotalTime();
         }
 
@@ -322,7 +323,6 @@ public:
 
 private:
     ActorID m_heroId;
-    WeakActorComponentPtr m_pHeroTsfm;
     GeometryGenerator m_meshGenerator;
     bool m_isChargingFirePower;
     WeaponType m_currentWeapon;

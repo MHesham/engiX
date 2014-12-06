@@ -47,10 +47,10 @@ void SceneNode::OnUpdate(_In_ const Timer& time)
 {
     auto& a = g_pApp->Logic()->GetActor(m_actorId);
 
-    if (a.IsNull())
-        return;
-
-    m_worldTsfm = a.Get<TransformCmpt>().Transform();
+    if (!a.IsNull())
+    {
+        m_worldTsfm = a.Get<TransformCmpt>().Transform();
+    }
 
     for (auto pChild : m_children)
         pChild->OnUpdate(time);
