@@ -8,7 +8,7 @@
 
 namespace engiX
 {
-    class ParticlePhysicsCmpt : public ActorComponent
+    class ParticlePhysicsCmpt : public ActorCmpt
     {
     public:
         DECLARE_COMPONENT(ParticlePhysicsCmpt, 0x37C19534);

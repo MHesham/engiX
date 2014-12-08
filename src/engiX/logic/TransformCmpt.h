@@ -5,7 +5,7 @@
 
 namespace engiX
 {
-    class TransformCmpt : public ActorComponent
+    class TransformCmpt : public ActorCmpt
     {
     public:
         DECLARE_COMPONENT(TransformCmpt, 0x76EE7B4E);
@@ -14,10 +14,9 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() {  return true; }
 
-        real RotationY() const { return m_rotationXYZ.y; }
         real RotationX() const { return m_rotationXYZ.x; }
-        Mat4x4 InverseTransform() const;
-        Vec3 Position() const { return m_pos; }
+        real RotationY() const { return m_rotationXYZ.y; }
+        const Vec3& Position() const { return m_pos; }
         Vec3 Direction() const;
         void RotationY(_In_ real theta);
         void RotationX(_In_ real theta);
@@ -25,6 +24,10 @@ namespace engiX
         void Position(_In_ const Vec3& newPos);
         void Transform(_In_ const TransformCmpt& tsfm);
         const Mat4x4& Transform() const { return m_transform; }
+        const Mat4x4& InverseTransform() const { return m_invTransform; }
+
+        void LookAt(_In_ const Vec3& target);
+        void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
 
     protected:
         void CalcTransform();
@@ -34,7 +37,7 @@ namespace engiX
         Vec3 m_pos;
 
     private:
-        bool m_isDirty;
         Mat4x4 m_transform;
+        Mat4x4 m_invTransform;
     };
 }

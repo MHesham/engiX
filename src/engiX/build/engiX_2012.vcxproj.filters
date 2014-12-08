@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Logic\Physics">
       <UniqueIdentifier>{046e6a6d-54e8-4838-893c-5f767a4e0d67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic\Component">
+      <UniqueIdentifier>{0ccbd4d1-8984-43c3-b9ab-5f41bfffc63c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Precision.h">
@@ -96,9 +99,6 @@
     <ClInclude Include="..\view\SceneCameraNode.h">
       <Filter>Header Files\View\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\D3dGeneratedMeshNode.h">
-      <Filter>Header Files\View\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\view\Geometry.h">
       <Filter>Header Files\View\Graphics</Filter>
     </ClInclude>
@@ -123,23 +123,29 @@
     <ClInclude Include="..\logic\ActorTurnTask.h">
       <Filter>Header Files\Logic\Tasks</Filter>
     </ClInclude>
-    <ClInclude Include="..\logic\ParticlePhysicsCmpt.h">
-      <Filter>Header Files\Logic\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\logic\TransformCmpt.h">
-      <Filter>Header Files\Logic\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\ParticleForceGen.h">
       <Filter>Header Files\Logic\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\app\Logger.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\view\RenderComponent.h">
-      <Filter>Header Files\View</Filter>
-    </ClInclude>
     <ClInclude Include="..\logic\Object.h">
       <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\ParticlePhysicsCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logic\TransformCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\D3dGeneratedMeshNode.h">
+      <Filter>Header Files\View\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\RenderCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\view\CameraCmpt.h">
+      <Filter>Header Files\Logic\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +200,6 @@
     <ClCompile Include="..\view\SceneCameraNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\view\RenderComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\logic\CollisionDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -228,6 +231,12 @@
       <Filter>Header Files\Application</Filter>
     </ClCompile>
     <ClCompile Include="..\logic\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\RenderCmpt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\view\CameraCmpt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

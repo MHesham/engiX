@@ -1,4 +1,5 @@
 #include "TransformCmpt.h"
+#include "MathHelper.h"
 
 using namespace engiX;
 using namespace DirectX;
@@ -7,21 +8,6 @@ TransformCmpt::TransformCmpt() :
 m_rotationXYZ(DirectX::g_XMZero)
 {
     XMStoreFloat4x4(&m_transform, XMMatrixIdentity());
-}
-
-Mat4x4 TransformCmpt::InverseTransform() const
-{
-    Mat4x4 rotMat = CalcRotationMat();
-    Mat4x4 invTsfm;
-
-    XMStoreFloat4x4(&invTsfm,
-        XMMatrixTranspose(XMLoadFloat4x4(&rotMat)));
-
-    invTsfm._41 = -m_pos.x;
-    invTsfm._42 = -m_pos.y;
-    invTsfm._43 = -m_pos.z;
-
-    return invTsfm;
 }
 
 Mat4x4 TransformCmpt::CalcRotationMat() const
@@ -79,8 +65,39 @@ void TransformCmpt::CalcTransform()
 {
     m_transform = CalcRotationMat();
 
+    XMStoreFloat4x4(&m_invTransform,
+        XMMatrixTranspose(XMLoadFloat4x4(&m_transform)));
+
     m_transform._41 = m_pos.x;
     m_transform._42 = m_pos.y;
     m_transform._43 = m_pos.z;
+
+    m_invTransform._41 = -m_pos.x;
+    m_invTransform._42 = -m_pos.y;
+    m_invTransform._43 = -m_pos.z;
+}
+
+void TransformCmpt::LookAt(_In_ const Vec3& target)
+{
+    // Reference: Frank Luna DX11 Chapter 5.6.2 View Space
+    XMVECTOR T = XMLoadFloat3(&target);
+    XMVECTOR Q = XMLoadFloat3(&m_pos);
+    XMVECTOR j = g_XMIdentityR1;
+
+    // Front Z Axis
+    XMVECTOR w = XMVector3Normalize(XMVectorSubtract(T, Q));
+    // Right X Axis
+    XMVECTOR u = XMVector3Normalize(XMVector3Cross(j, w));
+    // Up Y Axis
+    XMVECTOR v = XMVector3Cross(w, u);
+
+    XMMATRIX m(u, v, w, Q);
+
+}
+
+void TransformCmpt::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)
+{
+    Math::ConvertSphericalToCartesian(radius, theta, phi, m_pos);
+    CalcTransform();
 }
 

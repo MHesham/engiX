@@ -79,7 +79,7 @@ HRESULT D3dShader::OnPreRender(ISceneNode* pNode)
     _ASSERTE(pNode);
     _ASSERTE(pNode->Scene());
     _ASSERTE(pNode->Scene()->Camera());
-    Mat4x4 wvpMat = pNode->Scene()->Camera()->SceneWorldViewProjMatrix();
+    Mat4x4 wvpMat = pNode->Scene()->CameraWorldViewProjMatrix();
 
     XMMATRIX wvpXMat;
     wvpXMat = XMLoadFloat4x4(&wvpMat);

@@ -4,16 +4,16 @@
 #include "DXUT.h"
 #include "EventManager.h"
 #include "WinGameApp.h"
-#include "RenderComponent.h"
+#include "RenderCmpt.h"
 #include "GameLogic.h"
+#include "CameraCmpt.h"
 
 using namespace engiX;
 using namespace std;
 using namespace DirectX;
 
 GameScene::GameScene() :
-    m_pSceneRoot(eNEW RootSceneNode(this)),
-    m_currCameraIdx(-1)
+    m_pSceneRoot(eNEW RootSceneNode(this))
 {
 
 }
@@ -31,34 +31,8 @@ bool GameScene::Init()
 
     REGISTER_EVT(GameScene, ActorCreatedEvt);
     REGISTER_EVT(GameScene, ActorDestroyedEvt);
-    REGISTER_EVT(GameScene, ToggleCameraEvt);
 
     return true;
-}
-
-shared_ptr<SceneCameraNode> GameScene::Camera()
-{
-    if (m_cameras.empty())
-    {
-        LogWarning("Scene camera was requsted and there is no one set yet, will create a default one");
-        AddCamera();
-    }
-
-    return m_cameras[m_currCameraIdx]; 
-}
-
-shared_ptr<SceneCameraNode> GameScene::AddCamera()
-{
-    shared_ptr<SceneCameraNode> pCamera(eNEW SceneCameraNode(this));
-
-    // In case this is the first camera to add, then set the camera idx to it
-    if (m_cameras.empty())
-        m_currCameraIdx = 0;
-
-    m_cameras.push_back(pCamera);
-    m_pSceneRoot->AddChild(pCamera);
-
-    return pCamera;
 }
 
 HRESULT GameScene::OnConstruct()
@@ -80,7 +54,7 @@ void GameScene::OnRender()
     ID3D11DepthStencilView* pDSV = DXUTGetD3D11DepthStencilView();
     DXUTGetD3D11DeviceContext()->ClearDepthStencilView(pDSV, D3D11_CLEAR_DEPTH, 1.0, 0);
 
-    if (m_pSceneRoot && m_cameras[m_currCameraIdx])
+    if (m_pSceneRoot && m_cameraId != NullActorID)
     {
         // Make sure that the stack has only the identify transformation
         _ASSERTE(m_worldTransformationStack.size() == 1);
@@ -91,8 +65,8 @@ void GameScene::OnRender()
             m_pSceneRoot->OnRender();
             m_pSceneRoot->OnPostRender();
         }
-
         m_pSceneRoot->RenderChildren();
+
     }
 }
 
@@ -103,7 +77,7 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
     auto& a = g_pApp->Logic()->GetActor(pActrEvt->ActorId());
     _ASSERTE(!a.IsNull());
 
-    auto &renderCmpt = a.Get<RenderComponent>();
+    auto &renderCmpt = a.Get<MeshCmpt>();
 
     auto pSceneNode = renderCmpt.CreateSceneNode(this);
     renderCmpt.SceneNode(pSceneNode);
@@ -119,12 +93,6 @@ void GameScene::OnActorDestroyedEvt(_In_ EventPtr pEvt)
     shared_ptr<ActorDestroyedEvt> pActrEvt = static_pointer_cast<ActorDestroyedEvt>(pEvt);
 
     m_pSceneRoot->RemoveChild(pActrEvt->ActorId());
-}
-
-void GameScene::OnToggleCameraEvt(_In_ EventPtr pEvt)
-{
-    LogInfo("Game scene toggle its camera");
-    m_currCameraIdx = (m_currCameraIdx + 1) % m_cameras.size();
 }
 
 void GameScene::PushTransformation(_In_ const Mat4x4& t)
@@ -144,4 +112,23 @@ void GameScene::PopTransformation()
     // should ever pop it if the scene rendering logic is correct
     _ASSERTE(m_worldTransformationStack.size() > 1);
     m_worldTransformationStack.pop(); 
+}
+
+Mat4x4 GameScene::CameraWorldViewProjMatrix() const
+{
+    const Mat4x4 sceneWorldTsfm = TopTransformation();
+    auto& cA = g_pApp->Logic()->GetActor(m_cameraId);
+    auto& cameraCmpt = cA.Get<CameraCmpt>();
+
+    XMMATRIX world = XMLoadFloat4x4(&sceneWorldTsfm);
+    XMMATRIX view = XMLoadFloat4x4(&cameraCmpt.ViewTsfm());
+    XMMATRIX proj = XMLoadFloat4x4(&cameraCmpt.ProjTsfm());
+
+    XMMATRIX xWvp;
+    xWvp = world * view * proj;
+
+    Mat4x4 wvp;
+    XMStoreFloat4x4(&wvp, xWvp);
+
+    return wvp;
 }

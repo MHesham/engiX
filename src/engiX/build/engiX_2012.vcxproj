@@ -33,9 +33,10 @@
     <ClInclude Include="..\logic\TransformCmpt.h" />
     <ClInclude Include="..\logic\TurnController.h" />
     <ClInclude Include="..\system\Delegate.h" />
+    <ClInclude Include="..\view\CameraCmpt.h" />
     <ClInclude Include="..\view\D3dGeneratedMeshNode.h" />
     <ClInclude Include="..\view\D3dShader.h" />
-    <ClInclude Include="..\view\RenderComponent.h" />
+    <ClInclude Include="..\view\RenderCmpt.h" />
     <ClInclude Include="..\view\Geometry.h" />
     <ClInclude Include="..\view\SceneCameraNode.h" />
     <ClInclude Include="..\view\HumanD3dGameView.h" />
@@ -66,10 +67,11 @@
     <ClCompile Include="..\logic\TaskManager.cpp" />
     <ClCompile Include="..\logic\TransformCmpt.cpp" />
     <ClCompile Include="..\logic\TurnController.cpp" />
+    <ClCompile Include="..\view\CameraCmpt.cpp" />
     <ClCompile Include="..\view\D3dGeneratedMeshNode.cpp" />
     <ClCompile Include="..\view\D3dShader.cpp" />
     <ClCompile Include="..\view\GameScene.cpp" />
-    <ClCompile Include="..\view\RenderComponent.cpp" />
+    <ClCompile Include="..\view\RenderCmpt.cpp" />
     <ClCompile Include="..\view\GeometryGenerator.cpp" />
     <ClCompile Include="..\view\HumanD3dGameView.cpp" />
     <ClCompile Include="..\view\LightHelper.cpp" />

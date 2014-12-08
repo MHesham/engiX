@@ -5,13 +5,14 @@
 #include "HumanD3dGameView.h"
 #include "Actor.h"
 #include "GeometryGenerator.h"
-#include "RenderComponent.h"
+#include "RenderCmpt.h"
 #include "TransformCmpt.h"
 #include "ParticlePhysicsCmpt.h"
 #include "TurnController.h"
 #include "EventManager.h"
 #include "ActorTurnTask.h"
 #include "ParticleForceGen.h"
+#include "CameraCmpt.h"
 
 using namespace engiX;
 using namespace std;
@@ -20,6 +21,7 @@ using namespace DirectX;
 #define BulletActorName L"Bullet"
 #define TargetActorName L"Target"
 #define HeroActorName L"Hero"
+#define HeroCameraName L"HeroCam"
 
 class BurbenogLogic : public GameLogic
 {
@@ -72,12 +74,12 @@ public:
         ActorUniquePtr pActor(eNEW Actor(L"WorldBounds"));
 
         // 1. Build grid visuals
-        SphereMeshComponent::Properties props;
+        SphereMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Green);
         props.Radius = 50.0;
         props.IsBackfacing = true;
 
-        pActor->Add<SphereMeshComponent>(props);
+        pActor->Add<SphereMeshCmpt>(props);
         pActor->Add<TransformCmpt>();
 
         m_worldBounds.Radius(50.0f);
@@ -97,7 +99,7 @@ public:
         ActorUniquePtr pActor(eNEW Actor(L"Terrain"));
 
         // 1. Build grid visuals
-        CylinderMeshComponent::Properties props;
+        CylinderMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Brown);
         props.TopRadius = 35.0;
         props.BottomRadius = 15.0;
@@ -105,7 +107,7 @@ public:
         props.StackCount = 2;
         props.SliceCount = 20;
 
-        pActor->Add<CylinderMeshComponent>(props);
+        pActor->Add<CylinderMeshCmpt>(props);
         pActor->Add<TransformCmpt>().Position(Vec3(0.0, -30.0, 0.0));
 
         m_taskMgr.AttachTask(
@@ -119,14 +121,14 @@ public:
         ActorUniquePtr pTank(eNEW Actor(L"Hero"));
 
         // 1. Build hero visuals
-        BoxMeshComponent::Properties props;
+        BoxMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Blue.f);
 
         props.Width = 1.0f;
         props.Height = 1.0f;
         props.Depth = 4.0f;
 
-        pTank->Add<BoxMeshComponent>(props);
+        pTank->Add<BoxMeshCmpt>(props);
 
         pTank->Add<TransformCmpt>().Position(Vec3(0.0, 0.0, -10));
 
@@ -252,14 +254,14 @@ public:
     {
         ActorUniquePtr pBullet(eNEW Actor(BulletActorName));
 
-        BoxMeshComponent::Properties props;
+        BoxMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Brown);
 
         props.Width = 0.5;
         props.Height = 0.5;
         props.Depth = 1.0;
 
-        pBullet->Add<BoxMeshComponent>(props);
+        pBullet->Add<BoxMeshCmpt>(props);
         pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
 
         ParticlePhysicsCmpt& pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
@@ -276,11 +278,11 @@ public:
     {
         ActorUniquePtr pBullet(eNEW Actor(BulletActorName));
 
-        SphereMeshComponent::Properties props;
+        SphereMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Black);
         props.Radius = 0.25;
 
-        pBullet->Add<SphereMeshComponent>(props);
+        pBullet->Add<SphereMeshCmpt>(props);
 
         pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
 
@@ -298,13 +300,13 @@ public:
     {
         ActorUniquePtr pTarget(eNEW Actor(TargetActorName));
 
-        BoxMeshComponent::Properties props;
+        BoxMeshCmpt::Properties props;
         props.Color = Color3(DirectX::Colors::Red);
         props.Width = 2.0;
         props.Height = 2.0;
         props.Depth = 0.5;
 
-        pTarget->Add<BoxMeshComponent>(props);
+        pTarget->Add<BoxMeshCmpt>(props);
 
         real randZ = Math::RandF(15, 45);
         real randX = Math::RandF(-45, 45);
@@ -346,14 +348,18 @@ public:
         auto& a = g_pApp->Logic()->GetActor(HeroActorName);
         _ASSERTE(!a.IsNull());
 
-        std::shared_ptr<SceneCameraNode> pTpc = m_pScene->AddCamera();
-        pTpc->PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
-        pTpc->SetAsThirdPerson(a.Id());
+        ActorUniquePtr pHeroCam(eNEW Actor(HeroCameraName));
 
-        m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
-        m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
-        m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.5f * R_PI, 0.01f * R_PI);
-        m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.0f, 0.48f * R_PI);
+        auto& camTsfm = pHeroCam->Add<TransformCmpt>();
+        camTsfm.PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
+        camTsfm.LookAt(Vec3(g_XMZero));
+
+        pHeroCam->Add<CameraCmpt>().SetAsThirdPerson(a.Id());
+
+        //m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
+        //m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
+        //m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.5f * R_PI, 0.01f * R_PI);
+        //m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.0f, 0.48f * R_PI);
 
         return true;
     }

@@ -10,11 +10,9 @@ namespace engiX
 {
     class GameScene;
 
-    class RenderComponent : public ActorComponent
+    class RenderCmpt : public ActorCmpt
     {
     public:
-        DECLARE_COMPONENT(RenderComponent, 0x6211EC48);
-
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() { return true; }
         virtual std::shared_ptr<ISceneNode> CreateSceneNode(_In_ GameScene* pScene) = 0;
@@ -39,7 +37,13 @@ namespace engiX
         bool IsBackfacing;
     };
 
-    class BoxMeshComponent : public RenderComponent
+    class MeshCmpt : public RenderCmpt
+    {
+    public:
+        DECLARE_COMPONENT(MeshCmpt, 0x6211EC48);
+    };
+
+    class BoxMeshCmpt : public MeshCmpt
     {
     public:
         class Properties : public MeshCmptProperties
@@ -55,7 +59,7 @@ namespace engiX
             real Depth;
         };
 
-        BoxMeshComponent(_In_ const Properties& prop) :
+        BoxMeshCmpt(_In_ const Properties& prop) :
             m_props(prop) {}
 
         const Properties& Props() const { return m_props; }
@@ -65,7 +69,7 @@ namespace engiX
         Properties m_props;
     };
 
-    class SphereMeshComponent : public RenderComponent
+    class SphereMeshCmpt : public MeshCmpt
     {
     public:
         class Properties : public MeshCmptProperties
@@ -77,7 +81,7 @@ namespace engiX
             real Radius;
         };
 
-        SphereMeshComponent(_In_ const Properties& prop) :
+        SphereMeshCmpt(_In_ const Properties& prop) :
             m_props(prop) {}
 
         const Properties& Props() const { return m_props; }
@@ -87,7 +91,7 @@ namespace engiX
         Properties m_props;
     };
 
-    class GridMeshComponent : public RenderComponent
+    class GridMeshCmpt : public MeshCmpt
     {
     public:
         class Properties : public MeshCmptProperties
@@ -101,7 +105,7 @@ namespace engiX
             real Depth;
         };
 
-        GridMeshComponent(_In_ const Properties& prop) :
+        GridMeshCmpt(_In_ const Properties& prop) :
             m_props(prop) {}
 
         const Properties& Props() const { return m_props; }
@@ -112,7 +116,7 @@ namespace engiX
     };
 
 
-    class CylinderMeshComponent : public RenderComponent
+    class CylinderMeshCmpt : public MeshCmpt
     {
     public:
         class Properties : public MeshCmptProperties
@@ -132,7 +136,7 @@ namespace engiX
             unsigned StackCount;
         };
 
-        CylinderMeshComponent(_In_ const Properties& prop) :
+        CylinderMeshCmpt(_In_ const Properties& prop) :
             m_props(prop) {}
 
         const Properties& Props() const { return m_props; }

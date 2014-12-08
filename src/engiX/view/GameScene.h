@@ -24,19 +24,18 @@ namespace engiX
         HRESULT OnConstruct();
         void OnActorCreatedEvt(_In_ EventPtr pEvt);
         void OnActorDestroyedEvt(_In_ EventPtr pEvt);
-        void OnToggleCameraEvt(_In_ EventPtr pEvt);
         bool Init();
-        std::shared_ptr<SceneCameraNode> Camera();
+        void Camera(ActorID cameraId) { m_cameraId = cameraId; }
+        ActorID Camera() const { return m_cameraId; }
         void PushTransformation(_In_ const Mat4x4& t);
         void PopTransformation();
         const Mat4x4 TopTransformation() const { return m_worldTransformationStack.top(); }
-        std::shared_ptr<SceneCameraNode> AddCamera();
+        Mat4x4 CameraWorldViewProjMatrix() const;
 
     protected:
         ISceneNode* m_pSceneRoot;
-        std::vector<std::shared_ptr<SceneCameraNode>> m_cameras;
         std::stack<Mat4x4> m_worldTransformationStack;
-        int m_currCameraIdx;
+        ActorID m_cameraId;
     };
     
     typedef std::shared_ptr<GameScene> StrongGameScenePtr;

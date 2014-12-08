@@ -1,7 +1,7 @@
 #include "D3dGeneratedMeshNode.h"
 #include <memory>
 #include "WinGameApp.h"
-#include "RenderComponent.h"
+#include "RenderCmpt.h"
 #include "GameLogic.h"
 
 using namespace engiX;

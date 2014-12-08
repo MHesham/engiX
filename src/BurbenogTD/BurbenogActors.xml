@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<Actors>
+  <Actor Name="Hero">
+    <Transform Position="0.0, 0.0, -10"/>
+    <BoxMesh Color="Blue" Width="1.0" Height="1.0" Depth="4.0"/>
+  </Actor>
+  <Actor Name="Terrain">
+    <Transform Position="0.0, -30.0, 0.0"/>
+    <CylinderMech Color="Brown" TopRadius="35.0" BottomRadius="15.0" Height="20.0" StackCount="2.0" SliceCount="20.0"/>
+  </Actor>
+</Actors>

@@ -15,7 +15,7 @@
 namespace engiX
 {
     class Actor;
-    class ActorComponent;
+    class ActorCmpt;
 
     typedef unsigned ComponentID;
     typedef unsigned ActorID;
@@ -29,20 +29,20 @@ namespace engiX
     typedef std::shared_ptr<Actor> StrongActorPtr;
     typedef std::weak_ptr<Actor> WeakActorPtr;
 
-    typedef ActorComponent* ActorComponentPtr;
-    typedef std::shared_ptr<ActorComponent> StrongActorComponentPtr;
-    typedef std::weak_ptr<ActorComponent> WeakActorComponentPtr;
+    typedef ActorCmpt* ActorComponentPtr;
+    typedef std::shared_ptr<ActorCmpt> StrongActorComponentPtr;
+    typedef std::weak_ptr<ActorCmpt> WeakActorComponentPtr;
 
     const ActorID NullActorID = 0;
     const ComponentID NullComponentID = 0;
 
-    class ActorComponent : public Object
+    class ActorCmpt : public Object
     {
     public:
-        DISALLOW_COPY_AND_ASSIGN(ActorComponent);
+        DISALLOW_COPY_AND_ASSIGN(ActorCmpt);
 
-        ActorComponent() : m_pOwner(nullptr) {}
-        virtual ~ActorComponent() {}
+        ActorCmpt() : m_pOwner(nullptr) {}
+        virtual ~ActorCmpt() {}
         virtual ComponentID TypeId() const = 0;
         virtual void OnUpdate(_In_ const Timer& time) = 0;
         virtual bool Init() { return true; }
@@ -58,7 +58,7 @@ namespace engiX
     public:
         DISALLOW_COPY_AND_ASSIGN(Actor);
 
-        typedef std::unordered_map<ComponentID, std::unique_ptr<ActorComponent>> ActorComponentRegistry;
+        typedef std::unordered_map<ComponentID, std::unique_ptr<ActorCmpt>> ActorComponentRegistry;
 
         Actor(const wchar_t* actorTypename) :
             m_id(++sm_lastActorId),
