@@ -11,9 +11,8 @@ void ActorTurnTask::OnUpdate(_In_ const Timer& time)
     _ASSERTE(!a.IsNull());
     auto& tsfm = a.Get<TransformCmpt>();
 
-    real xRot = tsfm.RotationX() + m_turnVelocities.x * time.DeltaTime();
-    tsfm.RotationX(xRot);
-
-    real yRot = tsfm.RotationY() + m_turnVelocities.y * time.DeltaTime();
-    tsfm.RotationY(yRot);
+    tsfm.RotateLocal(
+        m_turnVelocities.x * time.DeltaTime(),
+        m_turnVelocities.y * time.DeltaTime(),
+        m_turnVelocities.z * time.DeltaTime());
 }

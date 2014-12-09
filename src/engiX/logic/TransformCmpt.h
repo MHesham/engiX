@@ -14,30 +14,26 @@ namespace engiX
         void OnUpdate(_In_ const Timer& time) {}
         bool Init() {  return true; }
 
-        real RotationX() const { return m_rotationXYZ.x; }
-        real RotationY() const { return m_rotationXYZ.y; }
-        const Vec3& Position() const { return m_pos; }
-        Vec3 Direction() const;
-        void RotationY(_In_ real theta);
-        void RotationX(_In_ real theta);
-        
+        // Setters
         void Position(_In_ const Vec3& newPos);
-        void Transform(_In_ const TransformCmpt& tsfm);
-        const Mat4x4& Transform() const { return m_transform; }
-        const Mat4x4& InverseTransform() const { return m_invTransform; }
-
+        void Transform(_In_ const Mat4x4& tsfm) { m_transform = tsfm; }
         void LookAt(_In_ const Vec3& target);
         void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
+        void RotateLocal(_In_ real pitchX, _In_ real yawY, _In_ real rollZ);
+
+        // Getters
+        const Mat4x4& Transform() const { return m_transform; }
+        Mat4x4 InverseTransform() const;
+        Vec3 Right() const { Vec3(m_transform.m[0]); }
+        Vec3 Up() const { Vec3(m_transform.m[1]); }
+        Vec3 Forward() const { Vec3(m_transform.m[2]); }
+        Vec3 Position() const { return Vec3(m_transform.m[3]); }
 
     protected:
-        void CalcTransform();
+        void CalcInverseTransform();
         Mat4x4 CalcRotationMat() const;
-
-        Vec3 m_rotationXYZ;
-        Vec3 m_pos;
 
     private:
         Mat4x4 m_transform;
-        Mat4x4 m_invTransform;
     };
 }

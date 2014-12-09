@@ -24,7 +24,10 @@ m_targetId(NullActorID)
 
     REGISTER_EVT(CameraCmpt, DisplaySettingsChangedEvt);
 }
+CameraCmpt::~CameraCmpt()
+{
 
+}
 void CameraCmpt::OnDisplaySettingsChangedEvt(EventPtr pEvt)
 {
     LogInfo("Display settings changed, updating camera");
@@ -45,9 +48,12 @@ void CameraCmpt::OnUpdate(_In_ const Timer& time)
         auto& a = g_pApp->Logic()->GetActor(m_targetId);
         auto& targetTsfm = a.Get<TransformCmpt>();
 
+        Mat4x4 camInvTsfm = aT.InverseTransform();
+        Mat4x4 targetInvTsfm = targetTsfm.InverseTransform();
+
         XMStoreFloat4x4(&m_viewTsfm, XMMatrixMultiply(
-            XMLoadFloat4x4(&aT.InverseTransform()),
-            XMLoadFloat4x4(&targetTsfm.InverseTransform())));
+            XMLoadFloat4x4(&camInvTsfm),
+            XMLoadFloat4x4(&targetInvTsfm)));
     }
     else
     {

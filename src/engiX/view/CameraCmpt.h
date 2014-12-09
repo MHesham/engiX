@@ -15,6 +15,7 @@ namespace engiX
         const static real DefaultFovAngle;
 
         CameraCmpt();
+        ~CameraCmpt();
 
         // Place the camera in its own space using spherical coordinates (radius r, inclination Theta, azimuth Phi)
         // Radius r: The radius of the spherical coordinate system

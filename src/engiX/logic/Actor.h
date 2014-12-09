@@ -90,16 +90,17 @@ namespace engiX
         template<class T, class... Args>
         T& Add(const Args&... args)
         {
-            auto pCmpt = eNEW T(args...);
+            std::unique_ptr<T> pCmpt(eNEW T(args...));
+            T& cmptRef = *pCmpt;
 
             // An actor should have only 0 or 1 of each component
             _ASSERTE(m_components.count(pCmpt->TypeId()) == 0);
 
             pCmpt->Owner(this);
-            m_components.insert(make_pair(pCmpt->TypeId(), std::unique_ptr<T>(pCmpt)));
+            m_components[pCmpt->TypeId()] = std::move(pCmpt);
             LogVerbose("%s[%x] has been added to Actor %s[%x]", pCmpt->Typename(), pCmpt->TypeId(), Typename(), Id());
 
-            return *pCmpt;
+            return cmptRef;
         }
 
         bool IsMarkedForRemove() const { return m_markedForRemove; }

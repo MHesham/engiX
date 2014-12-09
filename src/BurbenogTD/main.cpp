@@ -65,6 +65,7 @@ public:
         CBRB(AddInitActor(std::move(pHeroTank)));
         CBRB(AddInitActor(CreateTerrain()));
         CBRB(AddInitActor(CreateWorldBounds()));
+        CBRB(AddInitActor(CreateCamera()));
 
         return true;
     }
@@ -133,6 +134,22 @@ public:
         pTank->Add<TransformCmpt>().Position(Vec3(0.0, 0.0, -10));
 
         return pTank;
+    }
+
+    ActorUniquePtr CreateCamera()
+    {
+        auto& a = g_pApp->Logic()->GetActor(HeroActorName);
+        _ASSERTE(!a.IsNull());
+
+        ActorUniquePtr pHeroCam(eNEW Actor(HeroCameraName));
+
+        auto& camTsfm = pHeroCam->Add<TransformCmpt>();
+        camTsfm.PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
+        camTsfm.LookAt(Vec3(g_XMZero));
+
+        pHeroCam->Add<CameraCmpt>().SetAsThirdPerson(a.Id());
+
+        return pHeroCam;
     }
 
     void OnUpdate(_In_ const Timer& time)
@@ -217,7 +234,7 @@ public:
         LogVerbose("Firing a bullet with fire power scale %f", m_firePowerScale);
 
         pBullet->Get<ParticlePhysicsCmpt>().ScaleVelocity(m_firePowerScale);
-        pBullet->Get<TransformCmpt>().Transform(a.Get<TransformCmpt>());
+        pBullet->Get<TransformCmpt>().Transform(a.Get<TransformCmpt>().Transform());
 
         CBR(AddInitActor(std::move(pBullet)));
         m_isChargingFirePower = false;
@@ -262,7 +279,7 @@ public:
         props.Depth = 1.0;
 
         pBullet->Add<BoxMeshCmpt>(props);
-        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
+        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm.Transform());
 
         ParticlePhysicsCmpt& pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
         pBulletPhy.Mass(1.0);
@@ -284,7 +301,7 @@ public:
 
         pBullet->Add<SphereMeshCmpt>(props);
 
-        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm);
+        pBullet->Add<TransformCmpt>().Transform(nozzleTsfm.Transform());
 
         ParticlePhysicsCmpt& pBulletPhy = pBullet->Add<ParticlePhysicsCmpt>();
         pBulletPhy.Mass(1.0);
@@ -338,33 +355,6 @@ private:
     ParticleForceGenID m_worldPullForceId;
 };
 
-class BurbenogView : public HumanD3dGameView
-{
-public:
-    bool Init()
-    {
-        CBRB(HumanD3dGameView::Init());
-
-        auto& a = g_pApp->Logic()->GetActor(HeroActorName);
-        _ASSERTE(!a.IsNull());
-
-        ActorUniquePtr pHeroCam(eNEW Actor(HeroCameraName));
-
-        auto& camTsfm = pHeroCam->Add<TransformCmpt>();
-        camTsfm.PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
-        camTsfm.LookAt(Vec3(g_XMZero));
-
-        pHeroCam->Add<CameraCmpt>().SetAsThirdPerson(a.Id());
-
-        //m_pScene->AddCamera()->PlaceOnSphere(25.0, 1.60f * R_PI, 0.45f * R_PI);
-        //m_pScene->AddCamera()->PlaceOnSphere(25.0, 0.25f * R_PI, 0.25f * R_PI);
-        //m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.5f * R_PI, 0.01f * R_PI);
-        //m_pScene->AddCamera()->PlaceOnSphere(150.0, 0.0f, 0.48f * R_PI);
-
-        return true;
-    }
-};
-
 class BurbenogTD : public WinGameApp
 {
 public:
@@ -375,7 +365,7 @@ protected:
     GameLogic* CreateLogicAndStartView() const 
     {
         GameLogic* pLogic = eNEW BurbenogLogic; 
-        pLogic->View(eNEW BurbenogView);
+        pLogic->View(eNEW HumanD3dGameView);
 
         return pLogic;
     }

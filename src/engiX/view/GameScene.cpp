@@ -13,7 +13,7 @@ using namespace std;
 using namespace DirectX;
 
 GameScene::GameScene() :
-    m_pSceneRoot(eNEW RootSceneNode(this))
+m_pSceneRoot(eNEW RootSceneNode(this))
 {
 
 }
@@ -77,13 +77,14 @@ void GameScene::OnActorCreatedEvt(_In_ EventPtr pEvt)
     auto& a = g_pApp->Logic()->GetActor(pActrEvt->ActorId());
     _ASSERTE(!a.IsNull());
 
-    auto &renderCmpt = a.Get<MeshCmpt>();
-
-    auto pSceneNode = renderCmpt.CreateSceneNode(this);
-    renderCmpt.SceneNode(pSceneNode);
-    CHRR(pSceneNode->OnConstruct());
-
-    m_pSceneRoot->AddChild(pSceneNode);
+    if (a.HasA<MeshCmpt>())
+    {
+        auto &renderCmpt = a.Get<MeshCmpt>();
+        auto pSceneNode = renderCmpt.CreateSceneNode(this);
+        renderCmpt.SceneNode(pSceneNode);
+        CHRR(pSceneNode->OnConstruct());
+        m_pSceneRoot->AddChild(pSceneNode);
+    }
 
     LogVerbose("Actor %s[%x] ScenNode created and added to scene root node children", a.Typename(), a.Id());
 }
@@ -107,11 +108,11 @@ void GameScene::PushTransformation(_In_ const Mat4x4& t)
 }
 
 void GameScene::PopTransformation()
-{ 
+{
     // The identity transform should always be there and no one
     // should ever pop it if the scene rendering logic is correct
     _ASSERTE(m_worldTransformationStack.size() > 1);
-    m_worldTransformationStack.pop(); 
+    m_worldTransformationStack.pop();
 }
 
 Mat4x4 GameScene::CameraWorldViewProjMatrix() const
