@@ -33,6 +33,7 @@ void TransformCmpt::LookAt(_In_ const Vec3& target)
 
     XMMATRIX m(u, v, w, Q);
     XMStoreFloat4x4(&m_transform, m);
+    m_transform._44 = 1.0f;
 }
 
 void TransformCmpt::PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi)

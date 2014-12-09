@@ -41,14 +41,14 @@ void CameraCmpt::OnUpdate(_In_ const Timer& time)
 {
     XMMATRIX cameraTsfm;
 
-    auto& aT = Owner()->Get<TransformCmpt>();
+    auto& pSelfTsfm = Owner()->Get<TransformCmpt>();
 
     if (m_targetId != NullActorID)
     {
-        auto& a = g_pApp->Logic()->GetActor(m_targetId);
-        auto& targetTsfm = a.Get<TransformCmpt>();
+        auto& pTarget = g_pApp->Logic()->GetActor(m_targetId);
+        auto& targetTsfm = pTarget.Get<TransformCmpt>();
 
-        Mat4x4 camInvTsfm = aT.InverseTransform();
+        Mat4x4 camInvTsfm = pSelfTsfm.InverseTransform();
         Mat4x4 targetInvTsfm = targetTsfm.InverseTransform();
 
         XMStoreFloat4x4(&m_viewTsfm, XMMatrixMultiply(
@@ -57,7 +57,14 @@ void CameraCmpt::OnUpdate(_In_ const Timer& time)
     }
     else
     {
-        m_viewTsfm = aT.InverseTransform();
+        /*Vec3 pos = pSelfTsfm.Position();
+        XMMATRIX cameraTsfm = XMMatrixLookAtLH(
+            XMLoadFloat3(&pos),
+            g_XMZero, 
+            g_XMIdentityR1);
+        XMStoreFloat4x4(&m_viewTsfm, cameraTsfm);
+*/
+        m_viewTsfm = pSelfTsfm.InverseTransform();
     }
 }
 

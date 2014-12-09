@@ -29,10 +29,6 @@ namespace engiX
         Vec3 Forward() const { Vec3(m_transform.m[2]); }
         Vec3 Position() const { return Vec3(m_transform.m[3]); }
 
-    protected:
-        void CalcInverseTransform();
-        Mat4x4 CalcRotationMat() const;
-
     private:
         Mat4x4 m_transform;
     };

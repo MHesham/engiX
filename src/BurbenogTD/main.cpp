@@ -65,7 +65,6 @@ public:
         CBRB(AddInitActor(std::move(pHeroTank)));
         CBRB(AddInitActor(CreateTerrain()));
         CBRB(AddInitActor(CreateWorldBounds()));
-        CBRB(AddInitActor(CreateCamera()));
 
         return true;
     }
@@ -85,8 +84,8 @@ public:
 
         m_worldBounds.Radius(50.0f);
 
-        m_taskMgr.AttachTask(
-            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.10f, 0.0))));
+        //m_taskMgr.AttachTask(
+        //    StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.10f, 0.0))));
 
         m_worldPullForceId = ForceRegistry().RegisterGenerator(
             std::shared_ptr<ParticleAnchoredSpring>(
@@ -111,8 +110,8 @@ public:
         pActor->Add<CylinderMeshCmpt>(props);
         pActor->Add<TransformCmpt>().Position(Vec3(0.0, -30.0, 0.0));
 
-        m_taskMgr.AttachTask(
-            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.20f, 0.0))));
+        //m_taskMgr.AttachTask(
+        //    StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.20f, 0.0))));
 
         return pActor;
     }
@@ -134,22 +133,6 @@ public:
         pTank->Add<TransformCmpt>().Position(Vec3(0.0, 0.0, -10));
 
         return pTank;
-    }
-
-    ActorUniquePtr CreateCamera()
-    {
-        auto& a = g_pApp->Logic()->GetActor(HeroActorName);
-        _ASSERTE(!a.IsNull());
-
-        ActorUniquePtr pHeroCam(eNEW Actor(HeroCameraName));
-
-        auto& camTsfm = pHeroCam->Add<TransformCmpt>();
-        camTsfm.PlaceOnSphere(25.0, 1.5f * R_PI, 0.45f * R_PI);
-        camTsfm.LookAt(Vec3(g_XMZero));
-
-        pHeroCam->Add<CameraCmpt>().SetAsThirdPerson(a.Id());
-
-        return pHeroCam;
     }
 
     void OnUpdate(_In_ const Timer& time)
@@ -227,9 +210,9 @@ public:
         auto& a= g_pApp->Logic()->GetActor(m_heroId);
 
         if (m_currentWeapon == WPN_Pistol)
-            pBullet = std::move(CreatePistolBullet(a.Get<TransformCmpt>()));
+            pBullet = CreatePistolBullet(a.Get<TransformCmpt>());
         else if (m_currentWeapon == WPN_Shell)
-            pBullet = std::move(CreateShellBullet(a.Get<TransformCmpt>()));
+            pBullet = CreateShellBullet(a.Get<TransformCmpt>());
 
         LogVerbose("Firing a bullet with fire power scale %f", m_firePowerScale);
 
@@ -355,6 +338,42 @@ private:
     ParticleForceGenID m_worldPullForceId;
 };
 
+class BurbenogTDView : public HumanD3dGameView
+{
+public:
+
+    bool Init()
+    {
+        CBRB(HumanD3dGameView::Init());
+
+        ActorUniquePtr pCam(CreateCamera());
+        ActorID camId = pCam->Id();
+        CBRB(g_pApp->Logic()->AddInitActor(std::move(pCam)));
+
+        m_pScene->Camera(camId);
+
+        return true;
+    }
+
+private:
+    ActorUniquePtr CreateCamera()
+    {
+        auto& a = g_pApp->Logic()->GetActor(HeroActorName);
+        _ASSERTE(!a.IsNull());
+
+        ActorUniquePtr pHeroCam(eNEW Actor(HeroCameraName));
+
+        auto& camTsfm = pHeroCam->Add<TransformCmpt>();
+        //camTsfm.PlaceOnSphere(1200.0, 1.5f * R_PI, 0.45f * R_PI);
+        camTsfm.PlaceOnSphere(100.0, R_PI, R_PI);
+        camTsfm.LookAt(Vec3(g_XMZero));
+
+        pHeroCam->Add<CameraCmpt>();// .SetAsThirdPerson(a.Id());
+
+        return pHeroCam;
+    }
+};
+
 class BurbenogTD : public WinGameApp
 {
 public:
@@ -365,7 +384,7 @@ protected:
     GameLogic* CreateLogicAndStartView() const 
     {
         GameLogic* pLogic = eNEW BurbenogLogic; 
-        pLogic->View(eNEW HumanD3dGameView);
+        pLogic->View(eNEW BurbenogTDView);
 
         return pLogic;
     }

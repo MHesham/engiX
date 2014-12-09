@@ -25,10 +25,10 @@ namespace engiX
         Actor& GetActor(_In_ ActorID id);
         Actor& GetActor(_In_ const wchar_t* pName);
         ParticleForceRegistry& ForceRegistry() { return m_forceRegistry; }
+        bool AddInitActor(_In_ ActorUniquePtr pActor);
 
     protected:
         virtual bool LoadLevel() = 0;
-        bool AddInitActor(_In_ ActorUniquePtr pActor);
         bool RemoveActor(_In_ ActorID);
 
         TaskManager m_taskMgr;
