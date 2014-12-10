@@ -31,21 +31,21 @@ void TurnController::Update(_In_ const Timer& time)
 
     if (m_isTurningRight)
     {
-        tsfm.RotateLocal(0.0f, m_turnVelocity * time.DeltaTime(), 0.0f);
+        tsfm.RotateLocalYaw(m_turnVelocity * time.DeltaTime());
     }
 
     if (m_isTurningLeft)
     {
-        tsfm.RotateLocal(0.0f, -m_turnVelocity * time.DeltaTime(), 0.0f);
+        tsfm.RotateLocalYaw(-m_turnVelocity * time.DeltaTime());
     }
 
     if (m_isTurningUp)
     {
-        tsfm.RotateLocal(-m_turnVelocity * time.DeltaTime(), 0.0f, 0.0f);
+        tsfm.RotateLocalPitch(-m_turnVelocity * time.DeltaTime());
     }
 
     if (m_isTurningDown)
     {
-        tsfm.RotateLocal(m_turnVelocity * time.DeltaTime(), 0.0f, 0.0f);
+        tsfm.RotateLocalPitch(m_turnVelocity * time.DeltaTime());
     }
 }

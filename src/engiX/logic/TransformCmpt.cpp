@@ -63,15 +63,15 @@ Mat4x4 TransformCmpt::InverseTransform() const
     XMStoreFloat4x4(&invTsfm, xInv);
 
     // Set inverse X pos
-    XMStoreFloat(&invTsfm._41, XMVectorMultiply(Q, u));
+    XMStoreFloat(&invTsfm._41, XMVector3Dot(Q, u));
     invTsfm._41 *= -1.0f;
 
     // Set inverse Y poss
-    XMStoreFloat(&invTsfm._42, XMVectorMultiply(Q, v));
+    XMStoreFloat(&invTsfm._42, XMVector3Dot(Q, v));
     invTsfm._42 *= -1.0f;
 
     // Set inverse Z pos
-    XMStoreFloat(&invTsfm._43, XMVectorMultiply(Q, w));
+    XMStoreFloat(&invTsfm._43, XMVector3Dot(Q, w));
     invTsfm._43 *= -1.0f;
 
     return invTsfm;
@@ -81,7 +81,7 @@ void TransformCmpt::RotateLocal(_In_ real pitchX, _In_ real yawY, _In_ real roll
 {
     XMMATRIX deltaRotMat = XMMatrixRotationRollPitchYaw(pitchX, yawY, rollZ);
     XMMATRIX currTsfm = XMLoadFloat4x4(&m_transform);
-    XMMATRIX newTsfm = XMMatrixMultiply(currTsfm, deltaRotMat);
+    XMMATRIX newTsfm = XMMatrixMultiply(deltaRotMat, currTsfm);
 
     XMStoreFloat4x4(&m_transform, newTsfm);
 }

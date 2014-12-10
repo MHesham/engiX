@@ -19,6 +19,9 @@ namespace engiX
         void Transform(_In_ const Mat4x4& tsfm) { m_transform = tsfm; }
         void LookAt(_In_ const Vec3& target);
         void PlaceOnSphere(_In_ real radius, _In_ real theta, _In_ real phi);
+        void RotateLocalPitch(_In_ real pitchX) { RotateLocal(pitchX, 0.0f, 0.0f); }
+        void RotateLocalYaw(_In_ real yawY) { RotateLocal(0.0f, yawY, 0.0f); }
+        void RotateLocalRoll(_In_ real rollZ) { RotateLocal(0.0, 0.0f, rollZ); }
         void RotateLocal(_In_ real pitchX, _In_ real yawY, _In_ real rollZ);
 
         // Getters

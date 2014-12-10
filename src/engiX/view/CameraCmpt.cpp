@@ -57,13 +57,6 @@ void CameraCmpt::OnUpdate(_In_ const Timer& time)
     }
     else
     {
-        /*Vec3 pos = pSelfTsfm.Position();
-        XMMATRIX cameraTsfm = XMMatrixLookAtLH(
-            XMLoadFloat3(&pos),
-            g_XMZero, 
-            g_XMIdentityR1);
-        XMStoreFloat4x4(&m_viewTsfm, cameraTsfm);
-*/
         m_viewTsfm = pSelfTsfm.InverseTransform();
     }
 }

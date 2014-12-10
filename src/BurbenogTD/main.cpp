@@ -84,8 +84,8 @@ public:
 
         m_worldBounds.Radius(50.0f);
 
-        //m_taskMgr.AttachTask(
-        //    StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.10f, 0.0))));
+        m_taskMgr.AttachTask(
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, -0.10f, 0.0))));
 
         m_worldPullForceId = ForceRegistry().RegisterGenerator(
             std::shared_ptr<ParticleAnchoredSpring>(
@@ -110,8 +110,8 @@ public:
         pActor->Add<CylinderMeshCmpt>(props);
         pActor->Add<TransformCmpt>().Position(Vec3(0.0, -30.0, 0.0));
 
-        //m_taskMgr.AttachTask(
-        //    StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.20f, 0.0))));
+        m_taskMgr.AttachTask(
+            StrongTaskPtr(eNEW ActorTurnTask(pActor->Id(), Vec3(0.0, 0.40f, 0.0))));
 
         return pActor;
     }
@@ -365,7 +365,8 @@ private:
 
         auto& camTsfm = pHeroCam->Add<TransformCmpt>();
         //camTsfm.PlaceOnSphere(1200.0, 1.5f * R_PI, 0.45f * R_PI);
-        camTsfm.PlaceOnSphere(100.0, R_PI, R_PI);
+        Vec3 pos(0.0f, 50.0f, 50.0f);
+        camTsfm.Position(pos);
         camTsfm.LookAt(Vec3(g_XMZero));
 
         pHeroCam->Add<CameraCmpt>();// .SetAsThirdPerson(a.Id());
