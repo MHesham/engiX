@@ -6,6 +6,7 @@
 #include "engiXDefs.h"
 #include "Actor.h"
 #include "TransformCmpt.h"
+#include "Geometry.h"
 
 namespace engiX
 {
@@ -14,9 +15,13 @@ namespace engiX
 
     typedef std::set<std::shared_ptr<SceneNode>> NodeList;
 
+
     class SceneNode : public ISceneNode
     {
     public:
+        typedef std::vector<D3D11Vertex_PositionColored> VertexList;
+        typedef std::vector<UINT> IndexList;
+
         SceneNode(_In_ ActorID actorId, _In_ GameScene* pScene);
         HRESULT OnPreRender();
         void OnPostRender();
@@ -35,16 +40,23 @@ namespace engiX
         NodeList m_children;
         ISceneNode* m_pParent;
         Mat4x4 m_worldTsfm;
+
     };
 
     class RootSceneNode : public SceneNode
     {
     public:
-        RootSceneNode(GameScene* pScene) :
-            SceneNode(NullActorID, pScene)
-        {
-        }
+        RootSceneNode(GameScene* pScene);
+        ~RootSceneNode();
 
+        HRESULT OnConstruct();
         void OnRender() {}
+        void RenderCoordAxises();
+
+    private:
+        VertexList m_dbgCoordsVertices;
+        IndexList m_dbgCoordIndices;
+        ID3D11Buffer* m_pDbgCoordsVertexBuffer;
+        ID3D11Buffer* m_pDbgCoordsIndexBuffer;
     };
 }

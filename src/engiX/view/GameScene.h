@@ -31,9 +31,10 @@ namespace engiX
         void PopTransformation();
         const Mat4x4 TopTransformation() const { return m_worldTransformationStack.top(); }
         Mat4x4 CameraWorldViewProjMatrix() const;
+        RootSceneNode* SceneRoot() { return m_pSceneRoot; }
 
     protected:
-        ISceneNode* m_pSceneRoot;
+        RootSceneNode* m_pSceneRoot;
         std::stack<Mat4x4> m_worldTransformationStack;
         ActorID m_cameraId;
     };

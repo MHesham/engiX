@@ -10,6 +10,16 @@ namespace engiX
     class GameApp
     {
     public:
+        class Configurations
+        {
+        public:
+            Configurations() :
+                DebugTransform(false)
+            {}
+
+            bool DebugTransform;
+        };
+
         GameApp() :
             m_pGameLogic(nullptr)
         {}
@@ -20,8 +30,10 @@ namespace engiX
         virtual void Run() = 0;
         virtual int ExitCode() const = 0;
         virtual real AspectRatio() const = 0;
+        const Configurations& Configs() const { return m_configs; }
 
         GameLogic *m_pGameLogic;
+        Configurations m_configs;
     };
 
     extern GameApp* g_pApp;

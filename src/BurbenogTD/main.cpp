@@ -378,7 +378,11 @@ private:
 class BurbenogTD : public WinGameApp
 {
 public:
-    BurbenogTD() {}
+    BurbenogTD() 
+    {
+        m_configs.DebugTransform = true;
+    }
+
     const wchar_t* GameAppTitle() const { return L"Burbenog TD"; }
 
 protected:

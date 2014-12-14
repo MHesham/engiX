@@ -619,3 +619,35 @@ void GeometryGenerator::CreateFullscreenQuad(MeshData& meshData)
 	meshData.Indices[4] = 2;
 	meshData.Indices[5] = 3;
 }
+
+void GeometryGenerator::CreateCartesianCoordAxises(MeshData& meshData)
+{
+    Vertex dbgV;
+    // Front Blue
+    dbgV.Position = Vec3(0.0f, 0.0f, 0.0f);
+    dbgV.Color = Color3(DirectX::Colors::Blue);
+    meshData.Vertices.push_back(dbgV);
+    dbgV.Position = Vec3(0.0f, 0.0f, 3.0f);
+    dbgV.Color = Color3(DirectX::Colors::Blue);
+    meshData.Vertices.push_back(dbgV);
+
+    // Right Red
+    dbgV.Position = Vec3(0.0f, 0.0f, 0.0f);
+    dbgV.Color = Color3(DirectX::Colors::Red);
+    meshData.Vertices.push_back(dbgV);
+    dbgV.Position = Vec3(3.0f, 0.0f, 0.0f);
+    dbgV.Color = Color3(DirectX::Colors::Red);
+    meshData.Vertices.push_back(dbgV);
+
+    // Up Green
+    dbgV.Position = Vec3(0.0f, 0.0f, 0.0f);
+    dbgV.Color = Color3(DirectX::Colors::Green);
+    meshData.Vertices.push_back(dbgV);
+    dbgV.Position = Vec3(0.0f, 3.0f, 0.0f);
+    dbgV.Color = Color3(DirectX::Colors::Green);
+    meshData.Vertices.push_back(dbgV);
+
+    meshData.Indices.resize(meshData.Vertices.size());
+    for (size_t i = 0; i < meshData.Indices.size(); ++i)
+        meshData.Indices[i] = (UINT)i;
+}
